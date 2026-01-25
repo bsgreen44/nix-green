@@ -15,7 +15,7 @@
 
   # Bootloader.
 
-  #Used for UEFI
+  # Used for UEFI
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
