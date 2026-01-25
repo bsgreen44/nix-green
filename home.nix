@@ -1,14 +1,15 @@
 {
   pkgs,
   lib,
+  username,
   ...
 }:
 
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "green";
-  home.homeDirectory = "/home/green";
+  home.username = username;
+  home.homeDirectory = "/home/${username}";
 
   # You can update Home Manager without changing this value. See
   # the Home Manager release notes for a list of state version

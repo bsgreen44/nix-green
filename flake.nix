@@ -20,21 +20,45 @@
       # replace 'nixos' with your hostname here.
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+
+        specialArgs = {
+          hostname = "nixos"; # change to your hostname
+          username = "green"; # change to your username
+        };
+
         modules = [
           ./configuration.nix
+
+          (
+            { hostname, username, ... }:
+            {
+              networking.hostName = hostname;
+              users.users.${username} = {
+                isNormalUser = true;
+                extraGroups = [
+                  "wheel"
+                  "networkmanager"
+                ];
+              };
+            }
+          )
+
           home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              # replace 'green' with your username
-              users.green = import ./home.nix;
-              sharedModules = [
-                catppuccin.homeModules.catppuccin
-              ];
-              backupFileExtension = "backup";
-            };
-          }
+          (
+            { hostname, username, ... }:
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = { inherit hostname username; };
+                users.${username} = import ./home.nix;
+                sharedModules = [
+                  catppuccin.homeModules.catppuccin
+                ];
+                backupFileExtension = "backup";
+              };
+            }
+          )
           (
             { pkgs, ... }:
             {
