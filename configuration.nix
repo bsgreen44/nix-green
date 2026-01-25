@@ -11,13 +11,18 @@
   imports = [
     # Use local hardware configuation file. Use --impure flag
     /etc/nixos/hardware-configuration.nix
-    #./hardware-configuration.nix
   ];
 
   # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+
+  #Used for UEFI
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # Used for VM environment
+  #boot.loader.grub.enable = true;
+  #boot.loader.grub.device = "/dev/sda";
+  #boot.loader.grub.useOSProber = true;
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
