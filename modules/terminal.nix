@@ -7,9 +7,9 @@
     enableBashIntegration = true;
     package = pkgs.ghostty;
     settings = {
-      background-blur-radius = 20;
+      #background-blur-radius = 20;
       theme = "dark:Catppuccin Frappe,light:Catppuccin Latte";
-      background-opacity = 0.6;
+      background-opacity = 0.9;
       window-theme = "dark";
       font-family = "JetBrainsMono Nerd Font";
       font-size = 10;
