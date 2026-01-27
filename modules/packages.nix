@@ -2,6 +2,7 @@
 
 {
   home.packages = with pkgs; [
+    bat
     wget
     git
     fastfetch
@@ -19,7 +20,14 @@
   programs.brave = {
     enable = true;
     package = pkgs.brave;
+  };
 
+  # bat config
+  programs.bat = {
+    enable = true;
+    config = {
+      pager = "never"; # makes bat act like cat
+    };
   };
 
   # btop config

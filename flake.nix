@@ -45,26 +45,23 @@
 
           home-manager.nixosModules.home-manager
           (
-            { hostname, username, ... }:
+            {
+              hostname,
+              username,
+              ghostty,
+              ...
+            }:
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                extraSpecialArgs = { inherit hostname username; };
+                extraSpecialArgs = { inherit hostname username ghostty; };
                 users.${username} = import ./home.nix;
                 sharedModules = [
                   catppuccin.homeModules.catppuccin
                 ];
                 backupFileExtension = "backup";
               };
-            }
-          )
-          (
-            { pkgs, ... }:
-            {
-              environment.systemPackages = [
-                pkgs.ghostty
-              ];
             }
           )
         ];
