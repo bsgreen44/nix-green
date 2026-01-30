@@ -12,6 +12,7 @@
     libreoffice
     gcc
     python315
+    lazygit
     luarocks
     lua51Packages.lua
   ];
@@ -37,5 +38,10 @@
       color_theme = "Default";
       theme_background = false;
     };
+  };
+
+  # VScode config
+  programs.vscode = {
+    enable = true;
   };
 }
