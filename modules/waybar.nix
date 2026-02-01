@@ -1,4 +1,4 @@
-{ config, pkgs, hyprland, ... }:
+{ config, pkgs, ... }:
 {
 programs.waybar = {
     enable = true;
