@@ -83,13 +83,12 @@
 
   # Required services for Hyprland
   services.dbus.enable = true;
-  
+
   # XDG portal for screen sharing, file pickers, etc.
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
-
 
   # Configure keymap in X11
   services.xserver.xkb = {

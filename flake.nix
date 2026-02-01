@@ -13,7 +13,6 @@
     {
       nixpkgs,
       home-manager,
-      hyprland,
       catppuccin,
       ...
     }:
