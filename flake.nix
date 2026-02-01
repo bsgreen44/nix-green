@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    hyprland.url = "github:hyprwlroots/Hyprland";
     ghostty.url = "github:ghostty-org/ghostty";
     catppuccin.url = "github:catppuccin/nix/release-25.11";
   };
@@ -13,6 +14,7 @@
     {
       nixpkgs,
       home-manager,
+      hyprland,
       catppuccin,
       ...
     }:
@@ -24,6 +26,7 @@
         specialArgs = {
           hostname = "nixos"; # change to your hostname
           username = "green"; # change to your username
+          inherit hyprland;
         };
 
         modules = [
@@ -42,23 +45,24 @@
               };
             }
           )
-
           home-manager.nixosModules.home-manager
           (
             {
               hostname,
               username,
               ghostty,
+              hyprland,
               ...
             }:
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                extraSpecialArgs = { inherit hostname username ghostty; };
+                extraSpecialArgs = { inherit hostname username ghostty hyprland; };
                 users.${username} = import ./home.nix;
                 sharedModules = [
                   catppuccin.homeModules.catppuccin
+                  hyprland.homeManagerModules.default
                 ];
                 backupFileExtension = "backup";
               };

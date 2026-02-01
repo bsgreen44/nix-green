@@ -75,6 +75,22 @@
   # Unlock KDE Wallet on login
   security.pam.services.login.enableKwallet = true;
 
+  # Enable Hyprland
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+  };
+
+  # Required services for Hyprland
+  services.dbus.enable = true;
+  
+  # XDG portal for screen sharing, file pickers, etc.
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";

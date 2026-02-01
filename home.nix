@@ -10,6 +10,8 @@
     ./modules/starship.nix
     ./modules/neovim.nix
     ./modules/themes.nix
+    ./modules/hyprland.nix
+    ./modules/waybar.nix
   ];
 
   home.username = username;
