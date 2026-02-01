@@ -1,50 +1,53 @@
 { pkgs, ... }:
 
 {
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
+  #programs.neovim = {
+  #  enable = true;
+  #  defaultEditor = true;
+  #  viAlias = true;
+  #  vimAlias = true;
+  #  vimdiffAlias = true;
 
-    extraPackages = with pkgs; [
-      # LSP servers
-      lua-language-server
-      nil # Nix LSP
-      pyright
-      typescript-language-server
-      vscode-langservers-extracted # HTML/CSS/JSON/ESLint
-      yaml-language-server
-      marksman # Markdown
-      rust-analyzer # Rust
-      gopls # Go
-      clang # C/C++
-      jdt-language-server # Java
+  #  extraPackages = with pkgs; [
+  home.packages = with pkgs; [
+    neovim
 
-      # Formatters
-      stylua
-      nixpkgs-fmt
-      prettierd
-      black
+    # LSP servers
+    lua-language-server
+    nil # Nix LSP
+    pyright
+    typescript-language-server
+    vscode-langservers-extracted # HTML/CSS/JSON/ESLint
+    yaml-language-server
+    marksman # Markdown
+    rust-analyzer # Rust
+    gopls # Go
+    clang-tools # C/C++ LSP (clanged)
+    jdt-language-server # Java
 
-      # Linters
-      eslint_d
+    # Formatters
+    stylua
+    nixpkgs-fmt
+    prettierd
+    black
 
-      # Tools LazyVim expects
-      ripgrep
-      fd
-      lazygit
-      tree-sitter
+    # Linters
+    eslint_d
 
-      # Image support for snacks.nvim
-      imagemagick
-      chafa # Terminal image viewer
-      ghostscript # gs command for PostScript/PDF processing
-      tectonic # Modern LaTeX engine
-      nodePackages.mermaid-cli # mmdc for Mermaid diagrams
-    ];
-  };
+    # Tools LazyVim expects
+    ripgrep
+    fd
+    lazygit
+    tree-sitter
+
+    # Image support for snacks.nvim
+    imagemagick
+    chafa # Terminal image viewer
+    ghostscript # gs command for PostScript/PDF processing
+    tectonic # Modern LaTeX engine
+    nodePackages.mermaid-cli # mmdc for Mermaid diagrams
+  ];
+
   # LazyVim configuration
   home.file.".config/nvim/init.lua".text = ''
     -- Bootstrap lazy.nvim
@@ -177,10 +180,5 @@
     -- Default autocmds that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 
     -- Add your custom autocmds here
-  '';
-
-  home.file.".config/nvim/lua/config/lazy.lua".text = ''
-    -- This file is automatically loaded by LazyVim
-    -- You can add additional lazy.nvim configuration here
   '';
 }
