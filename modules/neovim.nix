@@ -78,7 +78,7 @@
           priority = 1000,
           opts = {
             flavour = "mocha", -- latte, frappe, macchiato, mocha
-            transparent_background = false,
+            transparent_background = true,
             integrations = {
               cmp = true,
               gitsigns = true,
