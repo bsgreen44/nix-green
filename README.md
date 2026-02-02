@@ -7,6 +7,9 @@ This is my nix configuration I use for my systems. The main focus of the configu
 ## In Progress/Future updates
 - Hyprland support
 - Add nix-darwin
+- 
+# DISCLAIMER:
+**WHILE CHANGES ARE TESTED BEFORE EACH COMMIT, THIS IS AN ONGOING PROJECT THAT CAN POSSIBLY BREAK YOUR SYSTEM. PLEASE INSTALL AT YOUR OWN RISK!**
 
 # How to install
 **NOTE: `git` NEEDS TO BE INSTALLED ON YOUR SYSTEM.** 
