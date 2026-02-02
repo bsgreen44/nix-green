@@ -1,11 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, ghostty, ... }:
 
 {
   # ghostty config
   programs.ghostty = {
     enable = true;
     enableBashIntegration = true;
-    package = pkgs.ghostty;
+    package = ghostty.packages.${pkgs.system}.default;
     settings = {
       #background-blur-radius = 20;
       theme = "dark:Catppuccin Frappe,light:Catppuccin Latte";
