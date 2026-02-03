@@ -25,6 +25,7 @@
         specialArgs = {
           hostname = "nixos"; # change to your hostname
           username = "green"; # change to your username
+          inherit ghostty;
         };
 
         modules = [
