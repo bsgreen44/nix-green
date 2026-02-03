@@ -4,125 +4,142 @@
   programs.waybar = {
     enable = true;
     
-    # Use style for CSS
-    style = ''
-      * {
-        font-family: "JetBrainsMono Nerd Font", monospace;
-        font-size: 13px;
-      }
+    settings = {
+      mainBar = {
+        layer = "top";
+        position = "top";
+        height = 36;
+        margin-top = 6;
+        margin-left = 10;
+        margin-right = 10;
+        spacing = 4;
+        
+        modules-left = [ "hyprland/workspaces" "hyprland/window" ];
+        modules-center = [ "clock" ];
+        modules-right = [ "pulseaudio" "network" "battery" "tray" ];
 
-      window#waybar {
-        background-color: rgba(43, 48, 59, 0.8);
-        border-bottom: 3px solid rgba(100, 114, 125, 0.5);
-        color: #ffffff;
-      }
-
-      #workspaces button {
-        padding: 0 5px;
-        background-color: transparent;
-        color: #ffffff;
-        border-bottom: 3px solid transparent;
-      }
-
-      #workspaces button.active {
-        background-color: rgba(100, 114, 125, 0.4);
-        border-bottom: 3px solid #ffffff;
-      }
-
-      #clock, #battery, #cpu, #memory, #network, #pulseaudio {
-        padding: 0 10px;
-      }
-    '';
-    
-    settings = [{
-      layer = "top";
-      position = "top";
-      height = 30;
-      
-      modules-left = [ "hyprland/workspaces" "hyprland/window" ];
-      modules-center = [ "clock" ];
-      modules-right = [ "pulseaudio" "network" "cpu" "memory" "battery" "tray" ];
-      
-      "hyprland/workspaces" = {
-        format = "{name}";
-        on-click = "activate";
-      };
-      
-      "hyprland/window" = {
-        max-length = 50;
-      };
-      
-      "clock" = {
-        format = "{:%H:%M}";
-        format-alt = "{:%A, %B %d, %Y (%R)}";
-        tooltip-format = "<tt><small>{calendar}</small></tt>";
-        calendar = {
-          mode = "year";
-          mode-mon-col = 3;
-          weeks-pos = "right";
-          on-scroll = 1;
-          format = {
-            months = "<span color='#ffead3'><b>{}</b></span>";
-            days = "<span color='#ecc6d9'><b>{}</b></span>";
-            weeks = "<span color='#99ffdd'><b>W{}</b></span>";
-            weekdays = "<span color='#ffcc66'><b>{}</b></span>";
-            today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+        "hyprland/workspaces" = {
+          disable-scroll = true;
+          all-outputs = true;
+          format = "{icon}";
+          format-icons = {
+             "1" = "1";
+             "2" = "2";
+             "3" = "3";
+             "4" = "4";
+             "5" = "5";
+             "6" = "6";
+             "7" = "7";
+             "8" = "8";
+             "9" = "9";
+             "10" = "10";
           };
         };
-      };
-      
-      "battery" = {
-        states = {
-          warning = 30;
-          critical = 15;
+        
+        "hyprland/window" = {
+            max-length = 40;
         };
-        format = "{capacity}% {icon}";
-        format-charging = "{capacity}% ";
-        format-plugged = "{capacity}% ";
-        format-alt = "{time} {icon}";
-        format-icons = [ "" "" "" "" "" ];
-      };
-      
-      "network" = {
-        format-wifi = "{essid} ({signalStrength}%) ";
-        format-ethernet = "{ipaddr}/{cidr} ";
-        tooltip-format = "{ifname} via {gwaddr} ";
-        format-linked = "{ifname} (No IP) ";
-        format-disconnected = "Disconnected ⚠";
-        format-alt = "{ifname}: {ipaddr}/{cidr}";
-      };
-      
-      "pulseaudio" = {
-        format = "{volume}% {icon} {format_source}";
-        format-bluetooth = "{volume}% {icon} {format_source}";
-        format-bluetooth-muted = " {icon} {format_source}";
-        format-muted = " {format_source}";
-        format-source = "{volume}% ";
-        format-source-muted = "";
-        format-icons = {
-          headphone = "";
-          hands-free = "";
-          headset = "";
-          phone = "";
-          portable = "";
-          car = "";
-          default = [ "" "" "" ];
+
+        "clock" = {
+          format = "{:%H:%M}";
+          tooltip-format = "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>";
+          format-alt = "{:%Y-%m-%d}";
         };
-        on-click = "pavucontrol";
+
+        "pulseaudio" = {
+          format = "{volume}% {icon}";
+          format-bluetooth = "{volume}% {icon}";
+          format-muted = "";
+          format-icons = {
+            headphone = "";
+            default = ["" ""];
+          };
+          on-click = "pavucontrol";
+        };
+
+        "network" = {
+            format-wifi = "";
+            format-ethernet = "󰀂"";
+            format-linked = "";
+            format-disconnected = "⚠";
+            tooltip-format = "{essid} ({signalStrength}%)";
+        };
+
+        "battery" = {
+            states = {
+                warning = 30;
+                critical = 15;
+            };
+            format = "{capacity}% {icon}";
+            format-charging = "{capacity}% ";
+            format-plugged = "{capacity}% ";
+            format-icons = ["" "" "" "" ""];
+        };
       };
-      
-      "cpu" = {
-        format = "{usage}% ";
-        tooltip = false;
-      };
-      
-      "memory" = {
-        format = "{}% ";
-      };
-      
-      "tray" = {
-        spacing = 10;
-      };
-    }];
+    };
+
+    style = ''
+        * {
+            font-family: "JetBrainsMono Nerd Font";
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        window#waybar {
+            background-color: rgba(26, 27, 38, 0.85);
+            color: #c0caf5;
+            border-radius: 10px;
+        }
+
+        #workspaces button {
+            padding: 0 5px;
+            color: #c0caf5;
+            background: transparent;
+        }
+
+        #workspaces button.active {
+            color: #7aa2f7;
+            border-bottom: 2px solid #7aa2f7;
+        }
+
+        #clock,
+        #battery,
+        #cpu,
+        #memory,
+        #disk,
+        #temperature,
+        #backlight,
+        #network,
+        #pulseaudio,
+        #wireplumber,
+        #tray,
+        #mode,
+        #idle_inhibitor,
+        #scratchpad,
+        #mpd {
+            padding: 0 10px;
+            background-color: rgba(65, 72, 104, 0.4);
+            border-radius: 6px;
+            margin: 4px 2px;
+            color: #c0caf5;
+        }
+
+        #clock {
+            background-color: transparent;
+            font-size: 15px;
+        }
+
+        #battery {
+            color: #9ece6a;
+        }
+
+        #pulseaudio {
+            color: #bb9af7;
+        }
+        
+        #network {
+            color: #7dcfff;
+        }
+    '';
   };
 }

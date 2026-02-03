@@ -1,12 +1,28 @@
 { config, pkgs, ... }:
 
 {
+  # Hyprland packages
+  home.packages = with pkgs; [
+    waybar
+    wofi
+    dunst
+    swaylock
+    grim
+    slurp
+    wl-clipboard
+  ];
+
   # Hyprland configuration
   wayland.windowManager.hyprland = {
     enable = true;
     
     # Use extraConfig for raw configuration instead of settings
     extraConfig = ''
+      $terminal = ghostty
+      $mod = SUPER
+      $menu = wofi --show drun
+      $browser = brave
+
       # Monitor configuration
       monitor=,preferred,auto,1
 
@@ -83,11 +99,6 @@
           new_status = master
       }
 
-      # Gestures
-      gestures {
-          workspace_swipe = off
-      }
-
       # Window rules
       windowrulev2 = float,class:^(pavucontrol)$
       windowrulev2 = float,class:^(nm-connection-editor)$
@@ -96,11 +107,12 @@
       $mod = SUPER
 
       # Application launchers
-      bind = $mod, Return, exec, ghostty
-      bind = $mod, Q, killactive,
-      bind = $mod, M, exit,
-      bind = $mod, V, togglefloating,
-      bind = $mod, R, exec, wofi --show drun
+      bind = $mod, Return, exec, $terminal
+      bind = $mod, B, $browser
+      bind = $mod SHIFT, Q, killactive,
+      bind = $mod SHIFT CTRL, RETURN, exit,
+      bind = $mod, T, togglefloating,
+      bind = $mod, SPACE, exec, $menu
       bind = $mod, P, pseudo,
       bind = $mod, J, togglesplit,
       bind = $mod, F, fullscreen,
@@ -154,14 +166,4 @@
       bindm = $mod, mouse:273, resizewindow
     '';
   };
-
-  home.packages = with pkgs; [
-    waybar
-    wofi
-    dunst
-    swaylock
-    grim
-    slurp
-    wl-clipboard
-  ];
 }
