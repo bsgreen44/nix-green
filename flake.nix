@@ -14,6 +14,7 @@
       nixpkgs,
       home-manager,
       catppuccin,
+      ghostty,
       ...
     }:
     {
