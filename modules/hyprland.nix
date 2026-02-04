@@ -10,7 +10,7 @@
     grim
     slurp
     wl-clipboard
-    nmtui
+    networkmanager
   ];
 
   # Hyprland configuration
