@@ -4,12 +4,13 @@
   # Hyprland packages
   home.packages = with pkgs; [
     waybar
-    wofi
+    rofi
     dunst
     swaylock
     grim
     slurp
     wl-clipboard
+    nmtui
   ];
 
   # Hyprland configuration
@@ -20,7 +21,7 @@
     extraConfig = ''
       $terminal = ghostty
       $mod = SUPER
-      $menu = wofi --show drun
+      $menu = rofi -show drun -show-icons
       $browser = brave
 
       # Monitor configuration
@@ -108,7 +109,8 @@
 
       # Application launchers
       bind = $mod, Return, exec, $terminal
-      bind = $mod, B, $browser
+      bind = $mod, B, exec, $browser
+      bind = $mod SHIFT, F, exec, dolphin
       bind = $mod SHIFT, Q, killactive,
       bind = $mod SHIFT CTRL, RETURN, exit,
       bind = $mod, T, togglefloating,
