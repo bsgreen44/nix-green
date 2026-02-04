@@ -43,4 +43,12 @@
   programs.vscode = {
     enable = true;
   };
+
+  # Gazelle config
+  programs.gazelle = {
+    enable = true;
+    settings = {
+      theme = "catppuccin"; # choose your theme
+    };
+  };
 }

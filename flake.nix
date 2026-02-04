@@ -7,6 +7,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     ghostty.url = "github:ghostty-org/ghostty";
     catppuccin.url = "github:catppuccin/nix/release-25.11";
+    gazelle.url = "github:Zeus-Deus/gazelle-tui";
   };
 
   outputs =
@@ -15,6 +16,7 @@
       home-manager,
       catppuccin,
       ghostty,
+      gazelle,
       ...
     }:
     {
@@ -25,7 +27,7 @@
         specialArgs = {
           hostname = "nixos"; # change to your hostname
           username = "green"; # change to your username
-          inherit ghostty;
+          inherit ghostty gazelle;
         };
 
         modules = [
@@ -50,16 +52,25 @@
               hostname,
               username,
               ghostty,
+              gazelle,
               ...
             }:
             {
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                extraSpecialArgs = { inherit hostname username ghostty; };
+                extraSpecialArgs = {
+                  inherit
+                    hostname
+                    username
+                    ghostty
+                    gazelle
+                    ;
+                };
                 users.${username} = import ./home.nix;
                 sharedModules = [
                   catppuccin.homeModules.catppuccin
+                  gazelle.homeModules.gazelle
                 ];
                 backupFileExtension = "backup";
               };

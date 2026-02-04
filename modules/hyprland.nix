@@ -11,12 +11,13 @@
     slurp
     wl-clipboard
     networkmanager
+    swaybg
   ];
 
   # Hyprland configuration
   wayland.windowManager.hyprland = {
     enable = true;
-    
+
     # Use extraConfig for raw configuration instead of settings
     extraConfig = ''
       $terminal = ghostty
@@ -35,6 +36,8 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
+      exec-once = swaybg -i /home/byron/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
+
 
       # Input configuration
       input {
