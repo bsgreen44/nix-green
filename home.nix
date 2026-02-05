@@ -11,7 +11,10 @@
     ./modules/neovim.nix
     ./modules/themes.nix
     ./modules/hyprland.nix
+    ./modules/hypridle.nix
+    ./modules/hyprlock.nix
     ./modules/waybar.nix
+    ./modules/rofi.nix
   ];
 
   home.username = username;

@@ -1,10 +1,9 @@
-{ config, pkgs, ... }:
+{ pkgs, username, ... }:
 
 {
   # Hyprland packages
   home.packages = with pkgs; [
-    waybar
-    rofi
+    brightnessctl
     dunst
     swaylock
     grim
@@ -36,7 +35,7 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
-      exec-once = swaybg -i /home/byron/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
+      exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
 
 
       # Input configuration
