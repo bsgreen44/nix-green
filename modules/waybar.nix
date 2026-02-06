@@ -65,7 +65,7 @@
               ""
             ];
           };
-          on-click = "pavucontrol";
+          on-click = "ghostty -e wiremix";
         };
 
         "network" = {

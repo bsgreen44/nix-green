@@ -17,9 +17,10 @@
       lazygit
       luarocks
       lua51Packages.lua
+      wiremix # (audio tui)
     ]
     ++ [
-      gazelle.packages.${pkgs.system}.default
+      gazelle.packages.${pkgs.system}.default # network tui
     ];
 
   # brave config
@@ -53,7 +54,7 @@
   programs.gazelle = {
     enable = true;
     settings = {
-      theme = "catppuccin"; # choose your theme
+      theme = "catppuccin-mocha"; # choose your theme
     };
   };
 }

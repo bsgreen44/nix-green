@@ -35,6 +35,7 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
+      exec-once = qdbus 6 org.kde.kwalletd6 /modules/kwalletd6 org.kde.KWallet.open kdewallet 0 login
       exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
 
 
