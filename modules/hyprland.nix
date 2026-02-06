@@ -21,7 +21,7 @@
     extraConfig = ''
       $terminal = ghostty
       $mod = SUPER
-      $menu = rofi -show drun -show-icons
+      $menu = rofi -show drun -dmenu -show-icons
       $browser = brave
 
       # Monitor configuration
@@ -35,7 +35,6 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
-      exec-once = qdbus 6 org.kde.kwalletd6 /modules/kwalletd6 org.kde.KWallet.open kdewallet 0 login
       exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
 
 
@@ -115,7 +114,7 @@
       bind = $mod SHIFT, B, exec, $browser
       bind = $mod SHIFT, F, exec, dolphin
       bind = $mod SHIFT, O, exec, obsidian
-      bind = $mod SHIFT, V, exec, vscode
+      bind = $mod SHIFT, V, exec, code
       bind = $mod SHIFT, T, exec, $terminal -e btop
       bind = $mod SHIFT, N, exec, $terminal -e nvim
       bind = $mod, Q, killactive,
