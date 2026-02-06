@@ -1,21 +1,26 @@
-{ pkgs, ... }:
+{ pkgs, gazelle, ... }:
 
 {
-  home.packages = with pkgs; [
-    bat
-    wget
-    git
-    fastfetch
-    obsidian
-    nextcloud-client
-    tailscale
-    libreoffice
-    gcc
-    python315
-    lazygit
-    luarocks
-    lua51Packages.lua
-  ];
+  home.packages =
+    with pkgs;
+    [
+      bat
+      wget
+      git
+      fastfetch
+      obsidian
+      nextcloud-client
+      tailscale
+      libreoffice
+      gcc
+      python315
+      lazygit
+      luarocks
+      lua51Packages.lua
+    ]
+    ++ [
+      gazelle.packages.${pkgs.system}.default
+    ];
 
   # brave config
   programs.brave = {

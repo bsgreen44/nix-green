@@ -111,9 +111,13 @@
 
       # Application launchers
       bind = $mod, Return, exec, $terminal
-      bind = $mod, B, exec, $browser
+      bind = $mod SHIFT, B, exec, $browser
       bind = $mod SHIFT, F, exec, dolphin
-      bind = $mod SHIFT, Q, killactive,
+      bind = $mod SHIFT, O, exec, obsidian
+      bind = $mod SHIFT, V, exec, vscode
+      bind = $mod SHIFT, T, exec, $terminal -e btop
+      bind = $mod SHIFT, N, exec, $terminal -e nvim
+      bind = $mod, Q, killactive,
       bind = $mod SHIFT CTRL, RETURN, exit,
       bind = $mod, T, togglefloating,
       bind = $mod, SPACE, exec, $menu
@@ -156,6 +160,16 @@
       bind = $mod SHIFT, 8, movetoworkspace, 8
       bind = $mod SHIFT, 9, movetoworkspace, 9
       bind = $mod SHIFT, 0, movetoworkspace, 10
+
+      # Swap active window with the one next to it
+      bind = $mod SHIFT, LEFT, swapwindow, l
+      bind = $mod SHIFT, RIGHT, swapwindow, r
+      bind = $mod SHIFT, UP, swapwindow, u
+      bind = $mod SHIFT, DOWN, swapwindow, d
+
+      # Cycle through windows in active worksapce
+      bind = ALT, TAB, cyclenext
+      bind = ALT SHIFT, TAB, cyclenext, prev
 
       # Special workspace (scratchpad)
       bind = $mod, S, togglespecialworkspace, magic
