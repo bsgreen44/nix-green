@@ -21,7 +21,8 @@
     extraConfig = ''
       $terminal = ghostty
       $mod = SUPER
-      $menu = rofi -show drun -dmenu -show-icons
+      #$menu = rofi -show drun -show-icons
+      $menu = walker
       $browser = brave
 
       # Monitor configuration
@@ -35,6 +36,7 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
+      exec-once = kdwallet6
       exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
 
 
@@ -106,8 +108,7 @@
       windowrulev2 = float,class:^(pavucontrol)$
       windowrulev2 = float,class:^(nm-connection-editor)$
 
-      # Keybindings
-      $mod = SUPER
+      # ---Keybindings
 
       # Application launchers
       bind = $mod, Return, exec, $terminal
@@ -174,6 +175,12 @@
       # Special workspace (scratchpad)
       bind = $mod, S, togglespecialworkspace, magic
       bind = $mod SHIFT, S, movetoworkspace, special:magic
+
+      # Resize active window
+      bind = $mod, code:20, Expand window left, resizeactive, -100 0    # - key
+      bind = $mod, code:21, Shrink window left, resizeactive, 100 0     # = key
+      bind = $mod SHIFT, code:20, Shrink window up, resizeactive, 0 -100
+      bind = $mod SHIFT, code:21, Expand window down, resizeactive, 0 100
 
       # Scroll through existing workspaces
       bind = $mod, mouse_down, workspace, e+1

@@ -73,6 +73,7 @@
   services.desktopManager.plasma6.enable = true;
 
   # Unlock KDE Wallet on login
+  security.pam.services.sddm.enableKwallet = true;
   security.pam.services.hyprland.enableKwallet = true;
   security.pam.services.login.enableKwallet = true;
 
