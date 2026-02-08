@@ -1,14 +1,6 @@
 { pkgs, ... }:
 
 {
-  #programs.neovim = {
-  #  enable = true;
-  #  defaultEditor = true;
-  #  viAlias = true;
-  #  vimAlias = true;
-  #  vimdiffAlias = true;
-
-  #  extraPackages = with pkgs; [
   home.packages = with pkgs; [
     neovim
 
@@ -39,6 +31,10 @@
     fd
     lazygit
     tree-sitter
+
+    # Build tools for telescope-fzf-native
+    gcc
+    gnumake
 
     # Image support for snacks.nvim
     imagemagick
@@ -133,6 +129,9 @@
       { "mason-org/mason.nvim", enabled = false },
       { "mason-org/mason-lspconfig.nvim", enabled = false },
       { "jay-babu/mason-nvim-dap.nvim", enabled = false },
+
+      -- Disable telescope-fzf-native to avoid build issues
+      { "nvim-telescope/telescope-fzf-native.nvim", enabled = false },
 
       -- Configure LSP servers to use Nix-installed binaries
       {

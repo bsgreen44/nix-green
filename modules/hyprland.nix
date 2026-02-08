@@ -36,7 +36,7 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
-      exec-once = kdwallet6
+      exec-once = "/run/current-system/sw/libexec/kf6/kwalletd6"
       exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
 
 
@@ -177,10 +177,10 @@
       bind = $mod SHIFT, S, movetoworkspace, special:magic
 
       # Resize active window
-      bind = $mod, code:20, Expand window left, resizeactive, -100 0    # - key
-      bind = $mod, code:21, Shrink window left, resizeactive, 100 0     # = key
-      bind = $mod SHIFT, code:20, Shrink window up, resizeactive, 0 -100
-      bind = $mod SHIFT, code:21, Expand window down, resizeactive, 0 100
+      bind = $mod, code:20, resizeactive, -100 0    # - key
+      bind = $mod, code:21, resizeactive, 100 0     # = key
+      bind = $mod SHIFT, code:20, resizeactive, 0 -100
+      bind = $mod SHIFT, code:21, resizeactive, 0 100
 
       # Scroll through existing workspaces
       bind = $mod, mouse_down, workspace, e+1

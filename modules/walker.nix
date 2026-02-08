@@ -6,49 +6,42 @@
   ];
 
   # Walker configuration
-  xdg.configFile."walker/config.json".text = builtins.toJSON {
+  xdg.configFile."walker/config.toml".text = ''
     # Appearance
-    placeholder = "Search...";
+    placeholder = "Search..."
 
     # UI Settings
-    ui = {
-      width = 600;
-      height = 400;
-      margin = 100;
+    [ui]
+    width = 600
+    height = 400
+    margin = 100
 
-      # Styling similar to screenshot
-      anchors = {
-        top = true;
-        left = false;
-        right = false;
-        bottom = false;
-      };
-    };
+    # Styling similar to screenshot
+    [ui.anchors]
+    top = true
+    left = false
+    right = false
+    bottom = false
 
     # Search settings
-    search = {
-      delay = 0;
-      placeholder = "Search...";
-    };
+    [search]
+    delay = 0
+    placeholder = "Search..."
 
     # List settings
-    list = {
-      height = 300;
-      max_entries = 10;
-    };
+    [list]
+    height = 300
+    max_entries = 10
 
     # Enable modules you want
-    modules = [
-      {
-        name = "applications";
-        prefix = "";
-      }
-      {
-        name = "runner";
-        prefix = "";
-      }
-    ];
-  };
+    [[modules]]
+    name = "applications"
+    prefix = ""
+
+    [[modules]]
+    name = "runner"
+    prefix = ""
+  '';
 
   # Walker CSS theme for dark appearance
   xdg.configFile."walker/style.css".text = ''
