@@ -36,7 +36,8 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
-      exec-once = "/run/current-system/sw/libexec/kf6/kwalletd6"
+      exec-once = /run/current-system/sw/libexec/plasma-nm-agent
+      exec-once = /run/current-system/sw/libexec/kf6/kwalletd6
       exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
 
 
