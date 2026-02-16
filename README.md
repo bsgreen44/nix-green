@@ -21,8 +21,12 @@ This setup works right of the box so all you have to do is:
 git clone https://github.com/bsgreen44/nix-green
 ```
 2. Update `hostname` and `username` in `~/nix-green/flake.nix` to match your system
-3. Rebuild your system using the command below and your good to go! 
+3. Rebuild your system using **ONE** of the commands below and your good to go! 
 ```
-sudo nixos-rebuild switch --flake --impure
+# For KDE desktop
+sudo nixos-rebuild switch --flake .#kde --impure
+
+# For Hyprland desktop
+sudo nixos-rebuild switch --flake .#hyprland --impure
 ``` 
 Feel free to customize this configuration to your liking!

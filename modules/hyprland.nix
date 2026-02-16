@@ -21,8 +21,8 @@
     extraConfig = ''
       $terminal = ghostty
       $mod = SUPER
-      #$menu = rofi -show drun -show-icons
-      $menu = walker
+      $menu = rofi -show drun -show-icons
+      #$menu = walker
       $browser = brave
 
       # Monitor configuration
@@ -36,8 +36,6 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
-      exec-once = /run/current-system/sw/libexec/plasma-nm-agent
-      exec-once = /run/current-system/sw/libexec/kf6/kwalletd6
       exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
 
 

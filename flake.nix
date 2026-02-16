@@ -19,64 +19,105 @@
       gazelle,
       ...
     }:
+    let
+      hostname = "nixos"; # change to your hostname
+      username = "green"; # change to your username
+    in
     {
-      # replace 'nixos' with your hostname here.
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+      nixosConfigurations = {
+        # KDE Plasma Desktop
+        kde = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit
+              ghostty
+              gazelle
+              hostname
+              username
+              ;
+          };
 
-        specialArgs = {
-          hostname = "nixos"; # change to your hostname
-          username = "green"; # change to your username
-          inherit ghostty gazelle;
+          modules = [
+            ./kde/configuration.nix
+            home-manager.nixosModules.home-manager
+            (
+              {
+                hostname,
+                username,
+                ghostty,
+                gazelle,
+                ...
+              }:
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  extraSpecialArgs = {
+                    inherit
+                      hostname
+                      username
+                      ghostty
+                      gazelle
+                      ;
+                  };
+                  users.${username} = import ./kde/home.nix;
+                  sharedModules = [
+                    catppuccin.homeModules.catppuccin
+                    gazelle.homeModules.gazelle
+                  ];
+                  backupFileExtension = "backup";
+                };
+              }
+            )
+          ];
         };
 
-        modules = [
-          ./configuration.nix
+        # Hyprland Desktop
+        hyprland = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit
+              ghostty
+              gazelle
+              hostname
+              username
+              ;
+          };
 
-          (
-            { hostname, username, ... }:
-            {
-              networking.hostName = hostname;
-              users.users.${username} = {
-                isNormalUser = true;
-                extraGroups = [
-                  "wheel"
-                  "networkmanager"
-                ];
-              };
-            }
-          )
-          home-manager.nixosModules.home-manager
-          (
-            {
-              hostname,
-              username,
-              ghostty,
-              gazelle,
-              ...
-            }:
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {
-                  inherit
-                    hostname
-                    username
-                    ghostty
-                    gazelle
-                    ;
+          modules = [
+            ./hyprland/configuration.nix
+            home-manager.nixosModules.home-manager
+            (
+              {
+                hostname,
+                username,
+                ghostty,
+                gazelle,
+                ...
+              }:
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  extraSpecialArgs = {
+                    inherit
+                      hostname
+                      username
+                      ghostty
+                      gazelle
+                      ;
+                  };
+                  users.${username} = import ./hyprland/home.nix;
+                  sharedModules = [
+                    catppuccin.homeModules.catppuccin
+                    gazelle.homeModules.gazelle
+                  ];
+                  backupFileExtension = "backup";
                 };
-                users.${username} = import ./home.nix;
-                sharedModules = [
-                  catppuccin.homeModules.catppuccin
-                  gazelle.homeModules.gazelle
-                ];
-                backupFileExtension = "backup";
-              };
-            }
-          )
-        ];
+              }
+            )
+          ];
+        };
       };
     };
 }
