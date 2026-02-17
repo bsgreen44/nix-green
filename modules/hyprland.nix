@@ -4,13 +4,12 @@
   # Hyprland packages
   home.packages = with pkgs; [
     brightnessctl
-    dunst
-    swaylock
-    grim
-    slurp
+    dunst     # notifications
+    grim      # screenshot
+    slurp     # screenshot
     wl-clipboard
-    networkmanager
-    swaybg
+    swaybg    # wallpaper config
+    nautilus  # file manager
   ];
 
   # Hyprland configuration
@@ -21,7 +20,7 @@
     extraConfig = ''
       $terminal = ghostty
       $mod = SUPER
-      $menu = rofi -show drun -show-icons
+      $menu = rofi -show drun -show-icons -display-drun ""
       #$menu = walker
       $browser = brave
 
@@ -112,7 +111,7 @@
       # Application launchers
       bind = $mod, Return, exec, $terminal
       bind = $mod SHIFT, B, exec, $browser
-      bind = $mod SHIFT, F, exec, dolphin
+      bind = $mod SHIFT, F, exec, nautilus
       bind = $mod SHIFT, O, exec, obsidian
       bind = $mod SHIFT, V, exec, code
       bind = $mod SHIFT, T, exec, $terminal -e btop
@@ -124,6 +123,7 @@
       bind = $mod, P, pseudo,
       bind = $mod, J, togglesplit,
       bind = $mod, F, fullscreen,
+      bind = $mod, L, exec, hyprlock
 
       # Move focus with arrow keys
       bind = $mod, left, movefocus, l
@@ -174,6 +174,14 @@
       # Special workspace (scratchpad)
       bind = $mod, S, togglespecialworkspace, magic
       bind = $mod SHIFT, S, movetoworkspace, special:magic
+
+      # Function keys
+      bind = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+
+      bind = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%-
+      bind = , XF86MonBrightnessUp, exec, brightnessctl set +10%
+      bind = , XF86MonBrightnessDown, exec, brightnessctl set 10%-
+      bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle
+      bind = , XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle
 
       # Resize active window
       bind = $mod, code:20, resizeactive, -100 0    # - key

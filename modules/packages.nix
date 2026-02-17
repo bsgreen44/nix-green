@@ -10,14 +10,13 @@
       fastfetch
       obsidian
       nextcloud-client
-      tailscale
       libreoffice
       gcc
       python315
       lazygit
       luarocks
       lua51Packages.lua
-      wiremix # (audio tui)
+      wiremix # audio tui
     ]
     ++ [
       gazelle.packages.${pkgs.system}.default # network tui

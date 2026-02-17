@@ -4,7 +4,7 @@
   # ghostty config
   programs.ghostty = {
     enable = true;
-    enableBashIntegration = true;
+    enableBashIntegration = false;
     package = ghostty.packages.${pkgs.system}.default;
     settings = {
       #background-blur-radius = 20;

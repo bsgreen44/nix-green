@@ -92,7 +92,7 @@
         };
 
         "element selected" = {
-          background-color = mkLiteral "@selected-col";
+          background-color = mkLiteral "@blue";
           text-color = mkLiteral "@blue";
         };
 
