@@ -181,7 +181,7 @@
       bind = , XF86MonBrightnessUp, exec, brightnessctl set +10%
       bind = , XF86MonBrightnessDown, exec, brightnessctl set 10%-
       bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle
-      bind = , XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle
+      bind = , XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle
 
       # Resize active window
       bind = $mod, code:20, resizeactive, -100 0    # - key

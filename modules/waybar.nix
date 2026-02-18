@@ -20,7 +20,10 @@
         ];
         modules-center = [ "clock" ];
         modules-right = [
+          "cpu"
+          "memory"
           "pulseaudio"
+          "bluetooth"
           "network"
           "battery"
           "tray"
@@ -51,7 +54,22 @@
         "clock" = {
           format = "{:%H:%M}";
           tooltip-format = "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>";
-          format-alt = "{:%Y-%m-%d}";
+          format-alt = "{:%H:%M %m-%d}";
+        };
+
+        "cpu" = {
+          format = "CPU: {usage}%";
+          on-click = "ghostty -e btop";
+        };
+
+        "memory" = {
+          format = "Mem: {used}GB";
+          on-click = "ghostty -e btop";
+        };
+
+        "bluetooth" = {
+          format = " {status}";
+          on-click = "ghostty -e bluetui";
         };
 
         "pulseaudio" = {
@@ -85,6 +103,7 @@
           format = "{capacity}% {icon}";
           format-charging = "{capacity}% ";
           format-plugged = "{capacity}% ";
+          on-click = "ghostty -e btop";
           format-icons = [
             ""
             ""
@@ -122,6 +141,7 @@
 
       #clock,
       #battery,
+      #bluetooth,
       #cpu,
       #memory,
       #disk,
@@ -145,18 +165,6 @@
       #clock {
           background-color: transparent;
           font-size: 15px;
-      }
-
-      #battery {
-          color: #9ece6a;
-      }
-
-      #pulseaudio {
-          color: #bb9af7;
-      }
-
-      #network {
-          color: #7dcfff;
       }
     '';
   };
