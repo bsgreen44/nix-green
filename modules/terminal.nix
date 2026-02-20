@@ -8,7 +8,7 @@
     package = ghostty.packages.${pkgs.system}.default;
     settings = {
       #background-blur-radius = 20;
-      theme = "dark:Catppuccin Frappe,light:Catppuccin Latte";
+      theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
       background-opacity = 0.9;
       window-theme = "dark";
       font-family = "JetBrainsMono Nerd Font";

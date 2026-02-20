@@ -11,16 +11,9 @@
     /etc/nixos/hardware-configuration.nix
   ];
 
-  # Bootloader.
-
-  # Used for UEFI
+  # UEFI Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
-  # Used for VM environment
-  #boot.loader.grub.enable = true;
-  #boot.loader.grub.device = "/dev/sda";
-  #boot.loader.grub.useOSProber = true;
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -59,10 +52,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
-
   # Enable QEMU Guest Agent
   services.qemuGuest.enable = true;
 
@@ -74,7 +63,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
         user = username;
       };
     };
@@ -88,7 +77,7 @@
 
   # Required services for Hyprland
   services.dbus.enable = true;
-
+  
   # XDG portal for screen sharing, file pickers, etc.
   xdg.portal = {
     enable = true;
@@ -101,11 +90,6 @@
     variant = "";
   };
 
-  # Enable RDP
-  services.xrdp.enable = true;
-  services.xrdp.defaultWindowManager = "startplasma-x11";
-  services.xrdp.openFirewall = true;
-
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -117,12 +101,6 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -156,6 +134,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     bluetui
+    hyprmon
   ];
 
    # Enable tailscale

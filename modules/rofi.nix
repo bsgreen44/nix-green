@@ -1,11 +1,28 @@
 { pkgs, config, ... }:
 
 {
+  xdg.desktopEntries = {
+    hyprmon = {
+      name = "HyprMon";
+      genericName = "Monitor Manager";
+      exec = "ghostty -e hyprmon";
+      terminal = false;
+      categories = [ "System" "Settings" ];
+      icon = "video-display";
+    };
+  };
+
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
-    # Matching the font defined in terminal.nix [8]
     font = "JetBrainsMono Nerd Font 12";
+    terminal = "${pkgs.ghostty}/bin/ghostty";
+  
+    extraConfig = {
+      # This ensures that when you select a TUI app in 'drun', 
+      # Rofi knows to wrap it in a terminal.
+      run-shell-command = "{terminal} -e {cmd}";
+  };
 
     theme =
       let

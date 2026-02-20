@@ -4,13 +4,32 @@
   # Hyprland packages
   home.packages = with pkgs; [
     brightnessctl
-    dunst     # notifications
-    grim      # screenshot
-    slurp     # screenshot
+    dunst        # notifications
+    grim         # screenshot
+    slurp        # screenshot
     wl-clipboard
-    swaybg    # wallpaper config
-    nautilus  # file manager
+    swaybg       # wallpaper config
+    xfce.thunar  # GUI file manager
   ];
+  
+  # clipboard manager
+  services.cliphist.enable = true;
+
+  # Set the GTK Theme
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+    
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+  };
 
   # Hyprland configuration
   wayland.windowManager.hyprland = {
@@ -21,7 +40,6 @@
       $terminal = ghostty
       $mod = SUPER
       $menu = rofi -show drun -show-icons -display-drun ""
-      #$menu = walker
       $browser = brave
 
       # Monitor configuration
@@ -35,6 +53,8 @@
       # Autostart
       exec-once = waybar
       exec-once = dunst
+      exec-once = wl-paste --type text --watch cliphist store 
+      exec-once = wl-paste --type image --watch cliphist store
       exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
 
 
@@ -111,19 +131,20 @@
       # Application launchers
       bind = $mod, Return, exec, $terminal
       bind = $mod SHIFT, B, exec, $browser
-      bind = $mod SHIFT, F, exec, nautilus
+      bind = $mod SHIFT, F, exec, thunar
       bind = $mod SHIFT, O, exec, obsidian
       bind = $mod SHIFT, V, exec, code
       bind = $mod SHIFT, T, exec, $terminal -e btop
       bind = $mod SHIFT, N, exec, $terminal -e nvim
       bind = $mod, Q, killactive,
-      bind = $mod SHIFT CTRL, RETURN, exit,
+      bind = $mod SHIFT, ESCAPE, exit,
       bind = $mod, T, togglefloating,
       bind = $mod, SPACE, exec, $menu
       bind = $mod, P, pseudo,
       bind = $mod, J, togglesplit,
       bind = $mod, F, fullscreen,
       bind = $mod, L, exec, hyprlock
+      bind = $mod CTRL, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
 
       # Move focus with arrow keys
       bind = $mod, left, movefocus, l

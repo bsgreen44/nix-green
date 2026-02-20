@@ -17,6 +17,9 @@
       luarocks
       lua51Packages.lua
       wiremix # audio tui
+      signal-desktop
+      opencode
+      yazi #TUI file manager
     ]
     ++ [
       gazelle.packages.${pkgs.system}.default # network tui
