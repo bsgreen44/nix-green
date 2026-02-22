@@ -9,9 +9,9 @@
         layer = "top";
         position = "top";
         height = 30;
-        margin-top = 6;
-        margin-left = 10;
-        margin-right = 10;
+        margin-top = 3;
+        margin-left = 7;
+        margin-right = 7;
         spacing = 4;
 
         modules-left = [

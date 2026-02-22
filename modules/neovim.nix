@@ -1,8 +1,14 @@
 { pkgs, ... }:
 
 {
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;  # Sets nvim as the system default editor
+    viAlias = true;
+    vimAlias = true;
+  };
+
   home.packages = with pkgs; [
-    neovim
 
     # LSP servers
     lua-language-server
@@ -29,7 +35,6 @@
     # Tools LazyVim expects
     ripgrep
     fd
-    lazygit
     tree-sitter
 
     # Build tools for telescope-fzf-native

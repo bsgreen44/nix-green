@@ -11,7 +11,6 @@
       obsidian
       nextcloud-client
       libreoffice
-      gcc
       python315
       lazygit
       luarocks

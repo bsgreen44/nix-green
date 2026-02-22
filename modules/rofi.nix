@@ -10,6 +10,15 @@
       categories = [ "System" "Settings" ];
       icon = "video-display";
     };
+    nvim = {
+      name = "Neovim";
+      genericName = "Text Editor";
+      exec = "ghostty -e nvim %F";
+      terminal = false;
+      categories = [ "Utility" "TextEditor" ];
+      mimeType = [ "text/plain" "text/markdown" ];
+      icon = "nvim";
+    };
   };
 
   programs.rofi = {
@@ -32,12 +41,10 @@
       {
         "*" = {
           bg-col = mkLiteral "#1e1e2e";
-          bg-col-light = mkLiteral "#1e1e2e";
-          border-col = mkLiteral "#1e1e2e";
-          selected-col = mkLiteral "#1e1e2e";
+          bg-col-light = mkLiteral "#8181cfff";
+          border-col = mkLiteral "#9d9df0ff";
           blue = mkLiteral "#89b4fa";
           fg-col = mkLiteral "#cdd6f4";
-          fg-col2 = mkLiteral "#f38ba8";
           grey = mkLiteral "#6c7086";
 
           background-color = mkLiteral "@bg-col";
@@ -67,18 +74,10 @@
           padding = mkLiteral "2px";
         };
 
-        "prompt" = {
-          background-color = mkLiteral "@blue";
-          padding = mkLiteral "6px";
-          text-color = mkLiteral "@bg-col";
-          border-radius = mkLiteral "3px";
-          margin = mkLiteral "20px 0px 0px 20px";
-        };
-
-        "textbox-prompt-colon" = {
-          expand = false;
-          str = ":";
-        };
+        #"textbox-prompt-colon" = {
+        #  expand = false;
+        #  str = ":";
+        #};
 
         "entry" = {
           padding = mkLiteral "6px";
@@ -113,36 +112,32 @@
           text-color = mkLiteral "@blue";
         };
 
-        "mode-switcher" = {
-          spacing = 0;
-        };
+        #"button" = {
+        #  padding = mkLiteral "10px";
+        #  background-color = mkLiteral "@bg-col-light";
+        #  text-color = mkLiteral "@grey";
+        #  vertical-align = mkLiteral "0.5";
+        #  horizontal-align = mkLiteral "0.5";
+        #};
 
-        "button" = {
-          padding = mkLiteral "10px";
-          background-color = mkLiteral "@bg-col-light";
-          text-color = mkLiteral "@grey";
-          vertical-align = mkLiteral "0.5";
-          horizontal-align = mkLiteral "0.5";
-        };
+        #"button selected" = {
+        #  background-color = mkLiteral "@bg-col";
+        #  text-color = mkLiteral "@blue";
+        #};
 
-        "button selected" = {
-          background-color = mkLiteral "@bg-col";
-          text-color = mkLiteral "@blue";
-        };
+        #"message" = {
+        #  background-color = mkLiteral "@bg-col-light";
+        #  margin = mkLiteral "2px";
+        #  padding = mkLiteral "2px";
+        #  border-radius = mkLiteral "5px";
+        #};
 
-        "message" = {
-          background-color = mkLiteral "@bg-col-light";
-          margin = mkLiteral "2px";
-          padding = mkLiteral "2px";
-          border-radius = mkLiteral "5px";
-        };
-
-        "textbox" = {
-          padding = mkLiteral "6px";
-          margin = mkLiteral "20px 0px 0px 20px";
-          text-color = mkLiteral "@blue";
-          background-color = mkLiteral "@bg-col-light";
-        };
+        #"textbox" = {
+        #  padding = mkLiteral "6px";
+        #  margin = mkLiteral "20px 0px 0px 20px";
+        #  text-color = mkLiteral "@blue";
+        #  background-color = mkLiteral "@bg-col-light";
+        #};
       };
   };
 }

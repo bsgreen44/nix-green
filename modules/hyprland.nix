@@ -9,6 +9,7 @@
     slurp        # screenshot
     wl-clipboard
     swaybg       # wallpaper config
+    swayimg      # Image viewer
     xfce.thunar  # GUI file manager
   ];
   
@@ -18,6 +19,10 @@
   # Set the GTK Theme
   gtk = {
     enable = true;
+    font = {
+      name  = "JetBrainsMono Nerd Font";
+      size = 10;
+    };
     theme = {
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
@@ -34,6 +39,14 @@
   # Hyprland configuration
   wayland.windowManager.hyprland = {
     enable = true;
+    settings = {
+      group = {
+        groupbar = {
+          font_family = "JetBrainsMono Nerd Font";
+          font_size = 10;
+        };
+      };
+    };
 
     # Use extraConfig for raw configuration instead of settings
     extraConfig = ''
@@ -71,8 +84,8 @@
 
       # General settings
       general {
-          gaps_in = 5
-          gaps_out = 10
+          gaps_in = 3
+          gaps_out = 7
           border_size = 2
           col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
           col.inactive_border = rgba(595959aa)
@@ -81,7 +94,7 @@
 
       # Decorations
       decoration {
-          rounding = 10
+          rounding = 8
           
           blur {
               enabled = yes
@@ -123,8 +136,10 @@
       }
 
       # Window rules
-      windowrulev2 = float,class:^(pavucontrol)$
-      windowrulev2 = float,class:^(nm-connection-editor)$
+      windowrulev2 = float,class:^(swayimg)$
+      windowrulev2 = center,class:^(swayimg)$
+      #windowrulev2 = float,class:^(com.mitchellh.ghostty)$,title:^(btop)$
+      #windowrulev2 = center,class:^(com.mitchellh.ghostty)$,title:^(btop)$
 
       # ---Keybindings
 
