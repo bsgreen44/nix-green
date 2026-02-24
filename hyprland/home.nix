@@ -15,7 +15,6 @@
     ../modules/hyprlock.nix
     ../modules/waybar.nix
     ../modules/rofi.nix
-    ../modules/walker.nix
   ];
 
   home.username = username;

@@ -74,11 +74,6 @@
           padding = mkLiteral "2px";
         };
 
-        #"textbox-prompt-colon" = {
-        #  expand = false;
-        #  str = ":";
-        #};
-
         "entry" = {
           padding = mkLiteral "6px";
           margin = mkLiteral "20px 0px 0px 10px";
@@ -111,33 +106,6 @@
           background-color = mkLiteral "@blue";
           text-color = mkLiteral "@blue";
         };
-
-        #"button" = {
-        #  padding = mkLiteral "10px";
-        #  background-color = mkLiteral "@bg-col-light";
-        #  text-color = mkLiteral "@grey";
-        #  vertical-align = mkLiteral "0.5";
-        #  horizontal-align = mkLiteral "0.5";
-        #};
-
-        #"button selected" = {
-        #  background-color = mkLiteral "@bg-col";
-        #  text-color = mkLiteral "@blue";
-        #};
-
-        #"message" = {
-        #  background-color = mkLiteral "@bg-col-light";
-        #  margin = mkLiteral "2px";
-        #  padding = mkLiteral "2px";
-        #  border-radius = mkLiteral "5px";
-        #};
-
-        #"textbox" = {
-        #  padding = mkLiteral "6px";
-        #  margin = mkLiteral "20px 0px 0px 20px";
-        #  text-color = mkLiteral "@blue";
-        #  background-color = mkLiteral "@bg-col-light";
-        #};
       };
   };
 }

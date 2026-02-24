@@ -136,10 +136,12 @@
       }
 
       # Window rules
-      windowrulev2 = float,class:^(swayimg)$
-      windowrulev2 = center,class:^(swayimg)$
-      #windowrulev2 = float,class:^(com.mitchellh.ghostty)$,title:^(btop)$
-      #windowrulev2 = center,class:^(com.mitchellh.ghostty)$,title:^(btop)$
+      windowrule = float,class:^(swayimg)$
+      windowrule = center,class:^(swayimg)$
+
+      ## does not work
+      windowrule = float, class:^(com.mitchellh.ghostty)$, title:^(btop)$
+      windowrule = center, class:^(com.mitchellh.ghostty)$, title:^(btop)$
 
       # ---Keybindings
 
@@ -151,6 +153,7 @@
       bind = $mod SHIFT, V, exec, code
       bind = $mod SHIFT, T, exec, $terminal -e btop
       bind = $mod SHIFT, N, exec, $terminal -e nvim
+      bind = $mod SHIFT, L, exec, $terminal -e lazygit
       bind = $mod, Q, killactive,
       bind = $mod SHIFT, ESCAPE, exit,
       bind = $mod, T, togglefloating,
@@ -218,6 +221,7 @@
       bind = , XF86MonBrightnessDown, exec, brightnessctl set 10%-
       bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle
       bind = , XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle
+      bind = , PRINT, exec, grim -g "$(slurp)" -t png | wl-copy
 
       # Resize active window
       bind = $mod, code:20, resizeactive, -100 0    # - key

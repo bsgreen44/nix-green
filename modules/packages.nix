@@ -18,6 +18,7 @@
       wiremix # audio tui
       signal-desktop
       opencode
+      vlc
       yazi #TUI file manager
     ]
     ++ [
