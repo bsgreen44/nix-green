@@ -1,12 +1,18 @@
 # Description
-<img width="1920" height="1080" alt="nix-green screenshot" src="https://github.com/user-attachments/assets/51656890-5eca-4a87-9974-e8d9ca5c4ba2" />
+This is my nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You cand choose between KDE Plasma desktop environment or Hyprland (tiling manager). This can be installed on most machines due to it's low resource usage. 
 
-
-This is my nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and pre configured with programs that are essential to me. You cand choose between the KDE Plasme desktop environment or Hyprland (tiling manager). This can be installed on most machines due to it's low resource usage.
+Feel free to customize this configuration to your liking!
 
 ## In Progress/Future updates
 - Hyprland
 - Add nix-darwin
+
+# Screenshots
+## Hyprland
+<img width="1911" height="1069" alt="20260223_09h57m09s_grim" src="https://github.com/user-attachments/assets/f9420bea-2ac9-4e58-9f76-5229f889da62" />
+
+## KDE Plasma
+<img width="1899" height="952" alt="20260223_21h46m35s_grim" src="https://github.com/user-attachments/assets/b0fe78c3-0a8e-49c7-9838-7af64049d5b4" />
 
 # DISCLAIMER:
 **WHILE CHANGES ARE TESTED BEFORE EACH COMMIT, THIS IS AN ONGOING PROJECT THAT CAN POSSIBLY BREAK YOUR SYSTEM. PLEASE INSTALL AT YOUR OWN RISK!**
@@ -21,7 +27,7 @@ This setup works right of the box so all you have to do is:
 git clone https://github.com/bsgreen44/nix-green
 ```
 2. Update `hostname` and `username` in `~/nix-green/flake.nix` to match your system
-3. Rebuild your system using **ONE** of the commands below and your good to go! 
+3. Rebuild your system using **ONE** of the commands below and you're good to go! 
 ```
 # For KDE desktop
 sudo nixos-rebuild switch --flake .#kde --impure
@@ -29,4 +35,3 @@ sudo nixos-rebuild switch --flake .#kde --impure
 # For Hyprland desktop
 sudo nixos-rebuild switch --flake .#hyprland --impure
 ``` 
-Feel free to customize this configuration to your liking!
