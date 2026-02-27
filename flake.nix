@@ -2,12 +2,13 @@
   description = "Main Flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     ghostty.url = "github:ghostty-org/ghostty";
-    catppuccin.url = "github:catppuccin/nix/release-25.11";
+    catppuccin.url = "github:catppuccin/nix";
     gazelle.url = "github:Zeus-Deus/gazelle-tui";
+    tsui.url = "github:neuralink/tsui";
   };
 
   outputs =
@@ -17,6 +18,7 @@
       catppuccin,
       ghostty,
       gazelle,
+      tsui,
       ...
     }:
     let
@@ -34,6 +36,7 @@
               gazelle
               hostname
               username
+              tsui
               ;
           };
 
@@ -46,6 +49,7 @@
                 username,
                 ghostty,
                 gazelle,
+                tsui,
                 ...
               }:
               {
@@ -58,6 +62,7 @@
                       username
                       ghostty
                       gazelle
+                      tsui
                       ;
                   };
                   users.${username} = import ./kde/home.nix;
@@ -81,6 +86,7 @@
               gazelle
               hostname
               username
+              tsui
               ;
           };
 
@@ -93,6 +99,7 @@
                 username,
                 ghostty,
                 gazelle,
+                tsui,
                 ...
               }:
               {
@@ -105,6 +112,7 @@
                       username
                       ghostty
                       gazelle
+                      tsui
                       ;
                   };
                   users.${username} = import ./hyprland/home.nix;

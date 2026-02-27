@@ -1,4 +1,4 @@
-{ pkgs, gazelle, ... }:
+{ pkgs, gazelle, tsui, ... }:
 
 {
   home.packages =
@@ -23,6 +23,14 @@
     ]
     ++ [
       gazelle.packages.${pkgs.system}.default # network tui
+      (pkgs.runCommand "tsui-wrapped" {
+        buildInputs = [ pkgs.makeWrapper ];
+      } ''
+        makeWrapper ${tsui.packages.${pkgs.system}.tsui}/bin/tsui $out/bin/tsui \
+          --prefix LD_LIBRARY_PATH : ${pkgs.lib.makeLibraryPath [
+            pkgs.libX11
+          ]}
+      '')
     ];
 
   # brave config
@@ -56,7 +64,7 @@
   programs.gazelle = {
     enable = true;
     settings = {
-      theme = "catppuccin-mocha"; # choose your theme
+      theme = "nord"; # choose your theme
     };
   };
 }
