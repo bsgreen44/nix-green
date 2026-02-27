@@ -63,7 +63,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd start-hyprland";
         user = username;
       };
     };
@@ -106,8 +106,12 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  # Enable zsh
+  programs.zsh.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
+    shell = pkgs.zsh;
     isNormalUser = true;
     description = username;
     extraGroups = [
@@ -125,6 +129,9 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # Allow unpatched dynamic binaries
+  programs.nix-ld.enable = true;
+
   # Font packages
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
@@ -139,6 +146,8 @@
 
    # Enable tailscale
   services.tailscale.enable = true;
+  # Enable tailscale exit node
+  services.tailscale.useRoutingFeatures = "client";
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;

@@ -10,7 +10,7 @@
     wl-clipboard
     swaybg       # wallpaper config
     swayimg      # Image viewer
-    xfce.thunar  # GUI file manager
+    thunar       # GUI file manager
   ];
   
   # clipboard manager
@@ -136,12 +136,12 @@
       }
 
       # Window rules
-      windowrule = float,class:^(swayimg)$
-      windowrule = center,class:^(swayimg)$
+      windowrule = match:class ^(swayimg)$, float on
+      windowrule = match:class ^(swayimg)$, center on
 
-      ## does not work
-      windowrule = float, class:^(com.mitchellh.ghostty)$, title:^(btop)$
-      windowrule = center, class:^(com.mitchellh.ghostty)$, title:^(btop)$
+      #### doesn't work
+      windowrule = match:class ^(com.mitchellh.ghostty)$, match:title ^(btop)$, float on
+      windowrule = match:class ^(com.mitchellh.ghostty)$, match:title ^(btop)$, center on
 
       # ---Keybindings
 
@@ -151,7 +151,8 @@
       bind = $mod SHIFT, F, exec, thunar
       bind = $mod SHIFT, O, exec, obsidian
       bind = $mod SHIFT, V, exec, code
-      bind = $mod SHIFT, T, exec, $terminal -e btop
+      bind = $mod SHIFT, M, exec, $terminal -e btop
+      bind = $mod SHIFT, T, exec, $terminal -e sudo tsui
       bind = $mod SHIFT, N, exec, $terminal -e nvim
       bind = $mod SHIFT, L, exec, $terminal -e lazygit
       bind = $mod, Q, killactive,
