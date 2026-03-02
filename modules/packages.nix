@@ -8,6 +8,7 @@
       wget
       git
       fastfetch
+      brave
       obsidian
       nextcloud-client
       libreoffice
@@ -17,27 +18,25 @@
       lua51Packages.lua
       wiremix # audio tui
       signal-desktop
+      localsend
       opencode
       vlc
       yazi #TUI file manager
     ]
     ++ [
-      gazelle.packages.${pkgs.system}.default # network tui
+      # NetworkManager tui
+      gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default 
+      
+      # Tailscale tui
       (pkgs.runCommand "tsui-wrapped" {
         buildInputs = [ pkgs.makeWrapper ];
       } ''
-        makeWrapper ${tsui.packages.${pkgs.system}.tsui}/bin/tsui $out/bin/tsui \
+        makeWrapper ${tsui.packages.${pkgs.stdenv.hostPlatform.system}.tsui}/bin/tsui $out/bin/tsui \
           --prefix LD_LIBRARY_PATH : ${pkgs.lib.makeLibraryPath [
             pkgs.libX11
           ]}
       '')
     ];
-
-  # brave config
-  programs.brave = {
-    enable = true;
-    package = pkgs.brave;
-  };
 
   # bat config
   programs.bat = {
@@ -58,6 +57,10 @@
   # VScode config
   programs.vscode = {
     enable = true;
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      catppuccin.catppuccin-vsc
+      jnoortheen.nix-ide
+    ];
   };
 
   # Gazelle config
