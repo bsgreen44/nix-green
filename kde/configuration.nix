@@ -160,8 +160,9 @@
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
-    22
-    3389
+    22    # SSH
+    3389  # RDP
+    53317 # local send
   ];
 
   system.stateVersion = "25.11"; # Did you read the comment?

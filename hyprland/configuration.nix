@@ -75,6 +75,9 @@
     xwayland.enable = true;
   };
 
+  # Enable GNOME Keyring and set to auto-unlock
+  security.pam.services.greetd.enableGnomeKeyring = true;
+
   # Required services for Hyprland
   services.dbus.enable = true;
   
@@ -137,11 +140,21 @@
     nerd-fonts.jetbrains-mono
   ];
 
+  # GUI file manager
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs; [
+      thunar-archive-plugin
+    ];
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     bluetui
     hyprmon
+    xarchiver
+    unzip
   ];
 
    # Enable tailscale
@@ -155,8 +168,9 @@
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
-    22
-    3389
+    22    # SSH
+    3389  # RDP
+    53317 # local send
   ];
 
   system.stateVersion = "25.11";

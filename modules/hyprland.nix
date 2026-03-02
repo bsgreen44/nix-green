@@ -7,14 +7,21 @@
     dunst        # notifications
     grim         # screenshot
     slurp        # screenshot
+    gnome-calculator
     wl-clipboard
     swaybg       # wallpaper config
     swayimg      # Image viewer
-    thunar       # GUI file manager
+    bibata-cursors
   ];
-  
+
   # clipboard manager
   services.cliphist.enable = true;
+
+  # Enable GNOME Keyring
+  services.gnome-keyring = {
+    enable = true;
+    components = [ "secrets" ];
+  };
 
   # Set the GTK Theme
   gtk = {
@@ -59,13 +66,16 @@
       monitor=,preferred,auto,1
 
       # Cursor configuration
+      env = XCURSOR_THEME,Bibata-Modern-Classic
+      env = XCURSOR_SIZE,20
       cursor {
-          no_hardware_cursors = true
+          no_hardware_cursors = false
       }
 
       # Autostart
       exec-once = waybar
       exec-once = dunst
+      exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
       exec-once = wl-paste --type text --watch cliphist store 
       exec-once = wl-paste --type image --watch cliphist store
       exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
@@ -139,9 +149,9 @@
       windowrule = match:class ^(swayimg)$, float on
       windowrule = match:class ^(swayimg)$, center on
 
-      #### doesn't work
-      windowrule = match:class ^(com.mitchellh.ghostty)$, match:title ^(btop)$, float on
-      windowrule = match:class ^(com.mitchellh.ghostty)$, match:title ^(btop)$, center on
+      windowrule = match:title ^(float)$, float on
+      windowrule = match:title ^(float)$, center on
+      windowrule = match:title ^(float)$, size 900 600
 
       # ---Keybindings
 
@@ -151,10 +161,11 @@
       bind = $mod SHIFT, F, exec, thunar
       bind = $mod SHIFT, O, exec, obsidian
       bind = $mod SHIFT, V, exec, code
-      bind = $mod SHIFT, M, exec, $terminal -e btop
-      bind = $mod SHIFT, T, exec, $terminal -e sudo tsui
+      bind = $mod SHIFT, M, exec, $terminal --title=float -e btop
+      bind = $mod SHIFT, T, exec, $terminal --title=float -e sudo tsui
       bind = $mod SHIFT, N, exec, $terminal -e nvim
       bind = $mod SHIFT, L, exec, $terminal -e lazygit
+      bind = $mod SHIFT, A, exec, $terminal -e opencode
       bind = $mod, Q, killactive,
       bind = $mod SHIFT, ESCAPE, exit,
       bind = $mod, T, togglefloating,

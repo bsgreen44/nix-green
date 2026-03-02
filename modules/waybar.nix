@@ -58,17 +58,17 @@
 
         "cpu" = {
           format = "CPU: {usage}%";
-          on-click = "ghostty -e btop";
+          on-click = "ghostty --title=float -e btop";
         };
 
         "memory" = {
           format = "Mem: {used}GB";
-          on-click = "ghostty -e btop";
+          on-click = "ghostty --title=float -e btop";
         };
 
         "bluetooth" = {
           format = " {status}";
-          on-click = "ghostty -e bluetui";
+          on-click = "ghostty --title=float -e bluetui";
         };
 
         "pulseaudio" = {
@@ -82,7 +82,7 @@
               ""
             ];
           };
-          on-click = "ghostty -e wiremix";
+          on-click = "ghostty --title=float -e wiremix";
         };
 
         "network" = {
@@ -91,7 +91,7 @@
           format-linked = "";
           format-disconnected = "⚠";
           tooltip-format = "{essid} ({signalStrength}%)";
-          on-click = "ghostty -e gazelle";
+          on-click = "ghostty --title=float -e gazelle";
         };
 
         "battery" = {
@@ -102,7 +102,7 @@
           format = "{capacity}% {icon}";
           format-charging = "{capacity}% ";
           format-plugged = "{capacity}% ";
-          on-click = "ghostty -e btop";
+          on-click = "ghostty --title=float -e btop";
           format-icons = [
             ""
             ""
