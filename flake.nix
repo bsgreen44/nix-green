@@ -9,6 +9,10 @@
     catppuccin.url = "github:catppuccin/nix";
     gazelle.url = "github:Zeus-Deus/gazelle-tui";
     tsui.url = "github:neuralink/tsui";
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -19,6 +23,7 @@
       ghostty,
       gazelle,
       tsui,
+      hyprland,
       ...
     }:
     let
@@ -87,6 +92,7 @@
               hostname
               username
               tsui
+              hyprland
               ;
           };
 
@@ -100,6 +106,7 @@
                 ghostty,
                 gazelle,
                 tsui,
+                hyprland,
                 ...
               }:
               {
@@ -113,6 +120,7 @@
                       ghostty
                       gazelle
                       tsui
+                      hyprland
                       ;
                   };
                   users.${username} = import ./hyprland/home.nix;

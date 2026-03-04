@@ -19,6 +19,14 @@
       mimeType = [ "text/plain" "text/markdown" ];
       icon = "nvim";
     };
+    tsui = {
+      name = "Tailscale";
+      genericName = "Tailscale TUI";
+      exec = "ghostty -e sudo tsui";
+      terminal = false;
+      categories = [ "System" "Network" ];
+      icon = "network-wireless-encrypted";
+    };
   };
 
   programs.rofi = {
@@ -86,7 +94,7 @@
         "listview" = {
           border = mkLiteral "0px 0px 0px";
           padding = mkLiteral "6px 0px 0px";
-          margin = mkLiteral "10px 0px 0px 20px";
+          margin = mkLiteral "10px 20px 0px 20px";
           columns = 1;
           lines = 5;
           background-color = mkLiteral "@bg-col";

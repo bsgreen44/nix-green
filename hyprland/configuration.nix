@@ -2,6 +2,7 @@
   pkgs,
   username,
   hostname,
+  hyprland,
   ...
 }:
 
@@ -72,7 +73,7 @@
   # Enable Hyprland
   programs.hyprland = {
     enable = true;
-    xwayland.enable = true;
+    package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
   };
 
   # Enable GNOME Keyring and set to auto-unlock
@@ -80,7 +81,8 @@
 
   # Required services for Hyprland
   services.dbus.enable = true;
-  
+  hardware.graphics.enable = true;
+
   # XDG portal for screen sharing, file pickers, etc.
   xdg.portal = {
     enable = true;
