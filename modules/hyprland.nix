@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, username, hyprland, ... }:
 
 {
   # Hyprland packages
@@ -12,6 +12,7 @@
     swaybg       # wallpaper config
     swayimg      # Image viewer
     bibata-cursors
+    rofi-power-menu
   ];
 
   # clipboard manager
@@ -46,6 +47,7 @@
   # Hyprland configuration
   wayland.windowManager.hyprland = {
     enable = true;
+    package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     settings = {
       group = {
         groupbar = {
@@ -61,6 +63,8 @@
       $mod = SUPER
       $menu = rofi -show drun -show-icons -display-drun ""
       $browser = brave
+      $powermenu = rofi -show power-menu -theme-str 'inputbar { enabled: false; }' -theme-str 'window {width: 200px;}' -theme-str 'window {height: 260px;}' -modi "power-menu:rofi-power-menu"
+
 
       # Monitor configuration
       monitor=,preferred,auto,1
@@ -94,12 +98,20 @@
 
       # General settings
       general {
+          #layout = dwindle
+          layout = scrolling
           gaps_in = 3
           gaps_out = 7
           border_size = 2
           col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
           col.inactive_border = rgba(595959aa)
-          layout = dwindle
+      }
+      # Hyprland scrolling
+      plugin {
+        scrolling {
+          column_width = 0.5
+          fullscreen_on_one_column = true
+        }
       }
 
       # Decorations
@@ -131,7 +143,7 @@
           animation = border, 1, 10, default
           animation = borderangle, 1, 8, default
           animation = fade, 1, 7, default
-          animation = workspaces, 1, 6, default
+          animation = workspaces, 1, 6, default, slidevert
       }
 
       # Layout
@@ -148,6 +160,12 @@
       # Window rules
       windowrule = match:class ^(swayimg)$, float on
       windowrule = match:class ^(swayimg)$, center on
+      windowrule = match:class ^(thunar)$, float on
+      windowrule = match:class ^(thunar)$, center on
+      windowrule = match:class ^(thunar)$, size 900 600
+      windowrule = match:class ^(org.gnome.Calculator)$, float on
+      windowrule = match:class ^(org.gnome.Calculator)$, center on
+      windowrule = match:class ^(org.gnome.Calculator)$, size 900 600
 
       windowrule = match:title ^(float)$, float on
       windowrule = match:title ^(float)$, center on
@@ -164,16 +182,17 @@
       bind = $mod SHIFT, M, exec, $terminal --title=float -e btop
       bind = $mod SHIFT, T, exec, $terminal --title=float -e sudo tsui
       bind = $mod SHIFT, N, exec, $terminal -e nvim
-      bind = $mod SHIFT, L, exec, $terminal -e lazygit
+      bind = $mod SHIFT, G, exec, $terminal -e lazygit
       bind = $mod SHIFT, A, exec, $terminal -e opencode
       bind = $mod, Q, killactive,
       bind = $mod SHIFT, ESCAPE, exit,
       bind = $mod, T, togglefloating,
       bind = $mod, SPACE, exec, $menu
       bind = $mod, P, pseudo,
-      bind = $mod, J, togglesplit,
+      bind = $mod, U, togglesplit,
       bind = $mod, F, fullscreen,
       bind = $mod, L, exec, hyprlock
+      bind = $mod, ESCAPE, exec, $powermenu
       bind = $mod CTRL, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
 
       # Move focus with arrow keys
@@ -181,12 +200,6 @@
       bind = $mod, right, movefocus, r
       bind = $mod, up, movefocus, u
       bind = $mod, down, movefocus, d
-
-      # Move focus with vim keys
-      bind = $mod, h, movefocus, l
-      bind = $mod, l, movefocus, r
-      bind = $mod, k, movefocus, u
-      bind = $mod, j, movefocus, d
 
       # Switch workspaces
       bind = $mod, 1, workspace, 1
@@ -211,6 +224,10 @@
       bind = $mod SHIFT, 8, movetoworkspace, 8
       bind = $mod SHIFT, 9, movetoworkspace, 9
       bind = $mod SHIFT, 0, movetoworkspace, 10
+
+      #Scrolling
+      bind = $mod, period, layoutmsg, focus r.
+      bind = $mod, comma, layoutmsg, focus l
 
       # Swap active window with the one next to it
       bind = $mod SHIFT, LEFT, swapwindow, l
