@@ -194,6 +194,7 @@
       bind = $mod, L, exec, hyprlock
       bind = $mod, ESCAPE, exec, $powermenu
       bind = $mod CTRL, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
+      bind = $mod SHIFT, S, exec, grim -g "$(slurp)" -t png | wl-copy
 
       # Move focus with arrow keys
       bind = $mod, left, movefocus, l
@@ -226,8 +227,10 @@
       bind = $mod SHIFT, 0, movetoworkspace, 10
 
       #Scrolling
-      bind = $mod, period, layoutmsg, focus r.
-      bind = $mod, comma, layoutmsg, focus l
+      bind = $mod, K, layoutmsg, focus r
+      bind = $mod, J, layoutmsg, focus l
+      bind = $mod, comma, layoutmsg, colresize -0.2
+      bind = $mod, period, layoutmsg, colresize +0.2
 
       # Swap active window with the one next to it
       bind = $mod SHIFT, LEFT, swapwindow, l
@@ -240,8 +243,8 @@
       bind = ALT SHIFT, TAB, cyclenext, prev
 
       # Special workspace (scratchpad)
-      bind = $mod, S, togglespecialworkspace, magic
-      bind = $mod SHIFT, S, movetoworkspace, special:magic
+      #bind = $mod, S, togglespecialworkspace, magic
+      #bind = $mod SHIFT, S, movetoworkspace, special:magic
 
       # Function keys
       bind = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+
@@ -261,6 +264,7 @@
       # Scroll through existing workspaces
       bind = $mod, mouse_down, workspace, e+1
       bind = $mod, mouse_up, workspace, e-1
+      bind = $mod, TAB, workspace, e+1
 
       # Move/resize windows with mod + LMB/RMB and dragging
       bindm = $mod, mouse:272, movewindow

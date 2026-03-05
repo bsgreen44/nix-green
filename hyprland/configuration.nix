@@ -147,13 +147,17 @@
     enable = true;
     plugins = with pkgs; [
       thunar-archive-plugin
+      thunar-volman
     ];
   };
+  services.gvfs.enable = true; # Mount, trash, and other functionalities
+  services.tumbler.enable = true; # Thumbnail support for images
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     bluetui
+    gnome-disk-utility
     hyprmon
     xarchiver
     unzip
