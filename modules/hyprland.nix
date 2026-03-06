@@ -158,14 +158,12 @@
       }
 
       # Window rules
+      windowrule = match:class ^(thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, float on
+      windowrule = match:class ^(thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, center on
+      windowrule = match:class ^(thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, size 900 600
+
       windowrule = match:class ^(swayimg)$, float on
       windowrule = match:class ^(swayimg)$, center on
-      windowrule = match:class ^(thunar)$, float on
-      windowrule = match:class ^(thunar)$, center on
-      windowrule = match:class ^(thunar)$, size 900 600
-      windowrule = match:class ^(org.gnome.Calculator)$, float on
-      windowrule = match:class ^(org.gnome.Calculator)$, center on
-      windowrule = match:class ^(org.gnome.Calculator)$, size 900 600
 
       windowrule = match:title ^(float)$, float on
       windowrule = match:title ^(float)$, center on
