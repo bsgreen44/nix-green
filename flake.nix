@@ -13,6 +13,7 @@
       url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pvetui.url = "github:devnullvoid/pvetui";
   };
 
   outputs =
@@ -24,6 +25,7 @@
       gazelle,
       tsui,
       hyprland,
+      pvetui,
       ...
     }:
     let
@@ -42,6 +44,7 @@
               hostname
               username
               tsui
+              pvetui
               ;
           };
 
@@ -55,6 +58,7 @@
                 ghostty,
                 gazelle,
                 tsui,
+                pvetui,
                 ...
               }:
               {
@@ -68,6 +72,7 @@
                       ghostty
                       gazelle
                       tsui
+                      pvetui
                       ;
                   };
                   users.${username} = import ./kde/home.nix;
@@ -93,6 +98,7 @@
               username
               tsui
               hyprland
+              pvetui
               ;
           };
 
@@ -107,6 +113,7 @@
                 gazelle,
                 tsui,
                 hyprland,
+                pvetui,
                 ...
               }:
               {
@@ -121,6 +128,7 @@
                       gazelle
                       tsui
                       hyprland
+                      pvetui
                       ;
                   };
                   users.${username} = import ./hyprland/home.nix;

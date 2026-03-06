@@ -1,4 +1,4 @@
-{ pkgs, gazelle, tsui, ... }:
+{ pkgs, gazelle, tsui, pvetui, ... }:
 
 {
   home.packages =
@@ -25,8 +25,11 @@
     ]
     ++ [
       # NetworkManager tui
-      gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default 
-      
+      gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+      # pvetui (Proxmox manager tui)
+      pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
+
       # Tailscale tui
       (pkgs.runCommand "tsui-wrapped" {
         buildInputs = [ pkgs.makeWrapper ];
