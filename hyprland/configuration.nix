@@ -59,6 +59,23 @@
   # Enable bluetooth
   hardware.bluetooth.enable = true;
 
+  # Automate garbage collect and optimise
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
+
+  nix.optimise = {
+    automatic = true;
+    dates = ["weekly"];  # list of systemd calendar strings
+  };
+
+  systemd.services.nix-optimise = {
+    after = [ "nix-gc.service" ];
+    wants = [ "nix-gc.service" ];  # runs even if GC fails
+  };
+
   # Enable greetd
   services.greetd = {
     enable = true;

@@ -187,7 +187,7 @@
       bind = $mod, T, togglefloating,
       bind = $mod, SPACE, exec, $menu
       bind = $mod, P, pseudo,
-      bind = $mod, U, togglesplit,
+      bind = $mod, U, layoutmsg, togglesplit,
       bind = $mod, F, fullscreen,
       bind = $mod, L, exec, hyprlock
       bind = $mod, ESCAPE, exec, $powermenu
@@ -227,6 +227,8 @@
       #Scrolling
       bind = $mod, K, layoutmsg, focus r
       bind = $mod, J, layoutmsg, focus l
+      bind = $mod SHIFT, K, layoutmsg, swapcol r
+      bind = $mod SHIFT, J, layoutmsg, swapcol l
       bind = $mod, comma, layoutmsg, colresize -0.2
       bind = $mod, period, layoutmsg, colresize +0.2
 
