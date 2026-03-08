@@ -178,7 +178,6 @@
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
     22    # SSH
-    3389  # RDP
     53317 # local send
   ];
 

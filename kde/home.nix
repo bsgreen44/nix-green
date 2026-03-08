@@ -1,7 +1,4 @@
-{
-  username,
-  ...
-}:
+{ username, ... }:
 {
   imports = [
     ../modules/packages.nix
@@ -9,6 +6,7 @@
     ../modules/shells.nix
     ../modules/starship.nix
     ../modules/neovim.nix
+    ../modules/kdethemes.nix
     ../modules/themes.nix
   ];
 

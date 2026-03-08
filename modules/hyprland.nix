@@ -1,4 +1,4 @@
-{ pkgs, username, hyprland, ... }:
+{ pkgs, wallpaper, hyprland, ... }:
 
 {
   # Hyprland packages
@@ -82,7 +82,7 @@
       exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
       exec-once = wl-paste --type text --watch cliphist store 
       exec-once = wl-paste --type image --watch cliphist store
-      exec = swaybg -i /home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png -m fill
+      exec = swaybg -i ${wallpaper} -m fill
 
 
       # Input configuration

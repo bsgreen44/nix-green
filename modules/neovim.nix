@@ -146,7 +146,7 @@
             lua_ls = {},
             nil_ls = {},
             pyright = {},
-            tsserver = {},
+            ts_ls = {},
             jsonls = {},
             yamlls = {},
             marksman = {},

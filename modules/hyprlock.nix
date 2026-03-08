@@ -1,4 +1,4 @@
-{ username, ... }:
+{ wallpaper, ... }:
 
 {
   programs.hyprlock = {
@@ -13,7 +13,7 @@
 
       background = [
         {
-          path = "/home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png";
+          path = "${wallpaper}";
           blur_passes = 3;
           blur_size = 8;
         }

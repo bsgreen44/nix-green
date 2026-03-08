@@ -1,8 +1,8 @@
+{ pkgs, username, ... }:
 {
-  username,
-  ...
-}:
-{
+  _module.args = {
+    wallpaper = "/home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png";
+  };
   imports = [
     ../modules/packages.nix
     ../modules/terminal.nix
