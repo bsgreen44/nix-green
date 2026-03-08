@@ -49,6 +49,7 @@
           };
 
           modules = [
+            ./configuration.nix
             ./kde/configuration.nix
             home-manager.nixosModules.home-manager
             (
@@ -103,6 +104,7 @@
           };
 
           modules = [
+            ./configuration.nix
             ./hyprland/configuration.nix
             home-manager.nixosModules.home-manager
             (
