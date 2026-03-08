@@ -112,7 +112,6 @@
 
         "element selected" = {
           background-color = mkLiteral "@blue";
-          text-color = mkLiteral "@blue";
         };
       };
   };

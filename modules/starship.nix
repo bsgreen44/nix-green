@@ -195,6 +195,7 @@
       };
 
       palettes = {
+        # Currently in use
         catppuccin_mocha = {
           rosewater = "#f5e0dc";
           flamingo = "#f2cdcd";
@@ -223,6 +224,7 @@
           mantle = "#181825";
           crust = "#11111b";
         };
+        # Can be removed if not used
         catppuccin_frappe = {
           rosewater = "#f2d5cf";
           flamingo = "#eebebe";
@@ -251,6 +253,7 @@
           mantle = "#292c3c";
           crust = "#232634";
         };
+        # Can be removed if not used
         catppuccin_latte = {
           rosewater = "#dc8a78";
           flamingo = "#dd7878";
@@ -279,6 +282,7 @@
           mantle = "#e6e9ef";
           crust = "#dce0e8";
         };
+        # Can be removed if not used
         catppuccin_macchiato = {
           rosewater = "#f4dbd6";
           flamingo = "#f0c6c6";

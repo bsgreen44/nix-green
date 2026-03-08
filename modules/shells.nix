@@ -2,7 +2,7 @@
 
 {
   home.shellAliases = {
-  cat = "bat";
+    cat = "bat";
   };
 
   # Uncomment to enable bash
