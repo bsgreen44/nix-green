@@ -60,6 +60,12 @@
   # VScode config
   programs.vscode = {
     enable = true;
+    userSettings = {
+      "telemetry.enableTelemetry" = false;
+      "telemetry.enableCrashReporter" = false;
+      update.mode = "none";
+      update.showReleaseNotes = false;
+    };
     profiles.default.extensions = with pkgs.vscode-extensions; [
       catppuccin.catppuccin-vsc
       jnoortheen.nix-ide
