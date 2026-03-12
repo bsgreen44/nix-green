@@ -4,8 +4,7 @@ This is my nix configuration I use for my systems. The main focus of the configu
 Feel free to customize this configuration to your liking!
 
 ## In Progress/Future updates
-- Hyprland
-- Add nix-darwin
+- Add nix-darwin support
 
 # Screenshots
 ## Hyprland
@@ -27,6 +26,12 @@ This setup works right of the box so all you have to do is:
 git clone https://github.com/bsgreen44/nix-green
 ```
 2. Update `hostname` and `username` in `~/nix-green/flake.nix` to match your system
+```
+    let
+      hostname = "nixos"; # change to your hostname
+      username = "green"; # change to your username
+    in
+```
 3. Rebuild your system using **ONE** of the commands below and you're good to go! 
 ```
 # For KDE desktop
