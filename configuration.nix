@@ -137,6 +137,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     bluetui
+    terminaltexteffects
   ];
 
   # Enable tailscale

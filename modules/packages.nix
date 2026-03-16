@@ -60,7 +60,7 @@
   # VScode config
   programs.vscode = {
     enable = true;
-    userSettings = {
+    profiles.default.userSettings = {
       "telemetry.enableTelemetry" = false;
       "telemetry.enableCrashReporter" = false;
       update.mode = "none";
