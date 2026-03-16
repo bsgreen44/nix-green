@@ -169,6 +169,8 @@
       windowrule = match:title ^(float)$, center on
       windowrule = match:title ^(float)$, size 900 600
 
+      windowrule = match:title ^(full)$, fullscreen on
+
       # ---Keybindings
 
       # Application launchers

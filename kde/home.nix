@@ -8,6 +8,7 @@
     ../modules/neovim.nix
     ../modules/kdethemes.nix
     ../modules/themes.nix
+    ../modules/screensaver.nix
   ];
 
   home.username = username;

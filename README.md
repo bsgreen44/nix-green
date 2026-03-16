@@ -18,10 +18,10 @@ Feel free to customize this configuration to your liking!
 
 # How to install
 **NOTE: `git` NEEDS TO BE INSTALLED ON YOUR SYSTEM.** 
-**THIS CAN BE DONE BY INSTALLING IT IN MANUALLY `/etc/nixos/configuration.nix` OR TEMPORARILY BY RUNNUNG `nix-shell -p git` IN YOUR TERMINAL.**
+**THIS CAN BE DONE BY INSTALLING IT IN MANUALLY `/etc/nixos/configuration.nix` OR TEMPORARILY IN AN INTERACPTIVE SHELL BY RUNNUNG `nix-shell -p git` IN YOUR TERMINAL.**
 
 This setup works right of the box so all you have to do is: 
-1. Clone the repo to your directory by opening the terminal, and running the following command:
+1. Clone the repo to your directory by opening the terminal, and running the following command (*if you are using `nix-shell` make sure it to `exit` the shell after running the command*):
 ```
 git clone https://github.com/bsgreen44/nix-green
 ```
