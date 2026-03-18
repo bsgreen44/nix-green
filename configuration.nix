@@ -54,8 +54,23 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-   # Enable bluetooth
+  # Enable bluetooth
   hardware.bluetooth.enable = true;
+
+  # Power profiles for laptops (disable for desktop setup)
+  services.tlp = {
+    enable = true;
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
+      #START_CHARGE_THRESH_BAT0 = 75;  # optional: battery health
+      #STOP_CHARGE_THRESH_BAT0 = 81;
+    };
+  };
+  # Enable for desktop setup
+  services.power-profiles-daemon.enable = false; # conflicts with TLP
 
   # Automate garbage collect and optimise
   nix.gc = {
