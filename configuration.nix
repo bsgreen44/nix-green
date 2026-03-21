@@ -57,7 +57,7 @@
   # Enable bluetooth
   hardware.bluetooth.enable = true;
 
-  # Power profiles for laptops (disable for desktop setup)
+  # tlp power management
   services.tlp = {
     enable = true;
     settings = {
@@ -69,8 +69,9 @@
       #STOP_CHARGE_THRESH_BAT0 = 81;
     };
   };
-  # Enable for desktop setup
-  services.power-profiles-daemon.enable = false; # conflicts with TLP
+
+  # Enable power profiles
+  services.power-profiles-daemon.enable = false; # set to false to avoid conflicts with TLP
 
   # Automate garbage collect and optimise
   nix.gc = {

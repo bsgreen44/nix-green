@@ -73,7 +73,7 @@
       env = XCURSOR_THEME,Bibata-Modern-Classic
       env = XCURSOR_SIZE,20
       cursor {
-          no_hardware_cursors = false
+        no_hardware_cursors = false
       }
 
       # Autostart
@@ -87,25 +87,25 @@
 
       # Input configuration
       input {
-          kb_layout = us
-          follow_mouse = 1
-          sensitivity = 0
-          
-          touchpad {
-              natural_scroll = no
-          }
+        kb_layout = us
+        follow_mouse = 1
+        sensitivity = 0
+        touchpad {
+          natural_scroll = no
+        }
       }
 
       # General settings
       general {
-          #layout = dwindle
-          layout = scrolling
-          gaps_in = 3
-          gaps_out = 7
-          border_size = 2
-          col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
-          col.inactive_border = rgba(595959aa)
+        #layout = dwindle
+        layout = scrolling
+        gaps_in = 3
+        gaps_out = 7
+        border_size = 2
+        col.active_border = rgba(cba6f7ed) rgba(89b4faed) 45deg
+        col.inactive_border = rgba(595959aa)
       }
+      
       # Hyprland scrolling
       plugin {
         scrolling {
@@ -116,45 +116,36 @@
 
       # Decorations
       decoration {
-          rounding = 8
-          
-          blur {
-              enabled = yes
-              size = 3
-              passes = 1
-          }
-          
-          shadow {
-              enabled = true
-              range = 4
-              render_power = 3
-              color = rgba(1a1a1aee)
-          }
+        rounding = 8
+        blur {
+          enabled = false
+        }
+        shadow {
+          enabled = false
+        }
       }
 
       # Animations
       animations {
-          enabled = yes
-          
-          bezier = myBezier, 0.05, 0.9, 0.1, 1.05
-          
-          animation = windows, 1, 7, myBezier
-          animation = windowsOut, 1, 7, default, popin 80%
-          animation = border, 1, 10, default
-          animation = borderangle, 1, 8, default
-          animation = fade, 1, 7, default
-          animation = workspaces, 1, 6, default, slidevert
+        enabled = yes
+        bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+        animation = windows, 1, 7, myBezier
+        animation = windowsOut, 1, 7, default, popin 80%
+        animation = border, 1, 10, default
+        animation = borderangle, 1, 8, default
+        animation = fade, 1, 7, default
+        animation = workspaces, 1, 6, default, slidevert
       }
 
       # Layout
       dwindle {
-          pseudotile = yes
-          preserve_split = yes
+        pseudotile = yes
+        preserve_split = yes
       }
 
       # Master layout (alternative)
       master {
-          new_status = master
+        new_status = master
       }
 
       # Window rules

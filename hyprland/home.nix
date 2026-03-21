@@ -1,7 +1,7 @@
 { pkgs, username, ... }:
 {
   _module.args = {
-    wallpaper = "/home/${username}/nix-green/wallpapers/nix-wallpaper-nineish-catppuccin-frappe-alt.png";
+    wallpaper = "/home/${username}/nix-green/wallpapers/linux-catppuccin.jpg";
   };
   imports = [
     ../modules/packages.nix
