@@ -122,20 +122,20 @@
       }
 
       window#waybar {
-          background-color: rgba(26, 27, 38, 0.85);
-          color: #c0caf5;
-          border-radius: 10px;
+          background-color: rgba(30, 30, 46, 0.90);
+          color: #cdd6f4;
+          border-radius: 12px;
       }
 
       #workspaces button {
           padding: 0 5px;
-          color: #c0caf5;
+          color: #cdd6f4;
           background: transparent;
       }
 
       #workspaces button.active {
-          color: #7aa2f7;
-          border-bottom: 2px solid #7aa2f7;
+          color: #cba6f7;
+          border-bottom: 2px solid #cba6f7;
       }
 
       #clock,
@@ -155,10 +155,10 @@
       #scratchpad,
       #mpd {
           padding: 0 10px;
-          background-color: rgba(65, 72, 104, 0.4);
-          border-radius: 6px;
+          background-color: rgba(49, 50, 68, 0.60);
+          border-radius: 8px;
           margin: 4px 2px;
-          color: #c0caf5;
+          color: #cba6f7;
       }
 
       #clock {
