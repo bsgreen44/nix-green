@@ -67,7 +67,9 @@
 
 
       # Monitor configuration
-      monitor=,preferred,auto,1
+      monitor = , preferred, auto, 1
+      #monitor = eDP-1, preferred, auto, 1.5 # used for 2k/4k laptop
+      #env = GDK_SCALE, 1.5 # used for 2k/4k laptop
 
       # Cursor configuration
       env = XCURSOR_THEME,Bibata-Modern-Classic
@@ -105,7 +107,10 @@
         col.active_border = rgba(cba6f7ed) rgba(89b4faed) 45deg
         col.inactive_border = rgba(595959aa)
       }
-      
+      workspace = 10, layout:dwindle
+      workspace = 9, layout:dwindle
+      workspace = 8, layout:dwindle
+
       # Hyprland scrolling
       plugin {
         scrolling {
@@ -149,9 +154,9 @@
       }
 
       # Window rules
-      windowrule = match:class ^(thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, float on
-      windowrule = match:class ^(thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, center on
-      windowrule = match:class ^(thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, size 900 600
+      windowrule = match:class ^(gnome-disks|thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, float on
+      windowrule = match:class ^(gnome-disks|thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, center on
+      windowrule = match:class ^(gnome-disks|thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, size 900 600
 
       windowrule = match:class ^(swayimg)$, float on
       windowrule = match:class ^(swayimg)$, center on
@@ -180,7 +185,7 @@
       bind = $mod, T, togglefloating,
       bind = $mod, SPACE, exec, $menu
       bind = $mod, P, pseudo,
-      bind = $mod, U, layoutmsg, togglesplit,
+      bind = $mod, U, layoutmsg, togglesplit
       bind = $mod, F, fullscreen,
       bind = $mod, L, exec, hyprlock
       bind = $mod, ESCAPE, exec, $powermenu

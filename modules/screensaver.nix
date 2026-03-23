@@ -37,8 +37,14 @@
       return w
 
   cols = int(os.environ.get("COLS", 80))
+  rows = int(os.environ.get("ROWS", 24))
+
   lines = open(os.path.expanduser("~/.local/share/logo.txt")).read().splitlines()
   max_w = max(wcswidth(l) for l in lines)
+
+  top_pad = (rows - len(lines)) // 2
+  print("\n" * top_pad, end="")
+  
   for l in lines:
       pad = (cols - max_w) // 2
       print(" " * pad + l)

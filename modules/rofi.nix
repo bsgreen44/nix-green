@@ -5,7 +5,7 @@
     hyprmon = {
       name = "HyprMon";
       genericName = "Monitor Manager";
-      exec = "ghostty -e hyprmon";
+      exec = "ghostty --title=float -e hyprmon";
       terminal = false;
       categories = [ "System" "Settings" ];
       icon = "video-display";
@@ -22,7 +22,7 @@
     tsui = {
       name = "Tailscale";
       genericName = "Tailscale TUI";
-      exec = "ghostty -e sudo tsui";
+      exec = "ghostty --title=float -e sudo tsui";
       terminal = false;
       categories = [ "System" "Network" ];
       icon = "network-wireless-encrypted";
