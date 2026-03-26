@@ -6,6 +6,41 @@ Feel free to customize this configuration to your liking!
 ## In Progress/Future updates
 - Add nix-darwin support
 
+# Folder Structure
+```
+nix-green
+├── configuration.nix
+├── flake.lock
+├── flake.nix
+├── hyprland
+│   ├── configuration.nix
+│   └── home.nix
+├── kde
+│   ├── configuration.nix
+│   └── home.nix
+├── modules
+│   ├── hypridle.nix
+│   ├── hyprland.nix
+│   ├── hyprlock.nix
+│   ├── kdethemes.nix
+│   ├── neovim.nix
+│   ├── packages.nix
+│   ├── rofi.nix
+│   ├── screensaver.nix
+│   ├── shells.nix
+│   ├── starship.nix
+│   ├── terminal.nix
+│   ├── themes.nix
+│   └── waybar.nix
+├── README.md
+└── wallpapers
+    ├── linux-catppuccin.jpg
+    ├── nix-wallpaper-nineish-catppuccin-frappe-alt.png
+    ├── nix-wallpaper-nineish-catppuccin-latte.png
+    ├── nix-wallpaper-nineish-catppuccin-macchiato.png
+    └── nix-wallpaper-nineish-catppuccin-mocha-alt.png
+```
+
 # Screenshots
 ## Hyprland
 <img width="1911" height="1069" alt="20260223_09h57m09s_grim" src="https://github.com/user-attachments/assets/f9420bea-2ac9-4e58-9f76-5229f889da62" />
@@ -40,3 +75,38 @@ sudo nixos-rebuild switch --flake .#kde --impure
 # For Hyprland desktop
 sudo nixos-rebuild switch --flake .#hyprland --impure
 ``` 
+
+# FAQ
+
+### How do I update the system and packages?
+In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then `sudo nixos-rebuild --flake .#changethis --impure` replacing `changethis` with `kde` or `hyprland`.
+
+## Hyprland
+
+### How do I change the wallpaper?
+In `~/nix-green/hyprland/home.nix` line 4, set it to the path of the desired wallpaper
+```
+  { pkgs, username, ... }:
+{
+  _module.args = {
+    wallpaper = "/home/${username}/nix-green/wallpapers/linux-catppuccin.jpg";
+  };
+```
+
+### How do I change the hyprland environment?
+hyprland ----> `hyprland.nix` `hyprlock.nix` and `hypridle.nix`
+
+waybar   ----> `waybar.nix`
+
+rofi     ----> `rofi.nix`
+
+After changes are made run `sudo nixos-rebuild --flake .#hyprland --impure`. 
+*NOTE: hyprland is managed by home manager. DO NOT modify files in `~/.config`. Any changes to the files will be overwritten after rebuild.*
+
+### How do I change the scaling and resolution?
+Use `hyprmon` to make any immediate changes. To make permanent changes that are persistent after reboots and rebuilds, update the monitor configuration section in `~/nix-green/modules/hyprland.nix`
+```
+# Monitor configuration
+monitor = , preferred, auto, 1
+monitor = eDP-2, 2560x1600@60.00Hz, auto, 1.25 # used for 2k/4k laptop
+```

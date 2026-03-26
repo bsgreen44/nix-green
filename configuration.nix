@@ -14,7 +14,11 @@
   # Bootloader.
 
   # Used for UEFI
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot = {
+    enable = true;
+    configurationLimit = 10; # limit generations to 10
+  };
+
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Use latest kernel.
@@ -154,6 +158,9 @@
   environment.systemPackages = with pkgs; [
     bluetui
     terminaltexteffects
+    tree
+    cbonsai
+    cmatrix
   ];
 
   # Enable tailscale
