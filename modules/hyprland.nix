@@ -191,6 +191,7 @@
       bind = $mod, ESCAPE, exec, $powermenu
       bind = $mod CTRL, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
       bind = $mod SHIFT, S, exec, grim -g "$(slurp)" -t png | wl-copy
+      bind = $mod SHIFT, H, exec, rofi -modi "keybinds:hypr-keybinds" -show keybinds -p " Keybinds"
 
       # Move focus with arrow keys
       bind = $mod, left, movefocus, l

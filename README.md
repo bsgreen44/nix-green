@@ -1,7 +1,5 @@
 # Description
-This is my nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You cand choose between KDE Plasma desktop environment or Hyprland (tiling manager). This can be installed on most machines due to it's low resource usage. 
-
-Feel free to customize this configuration to your liking!
+This is my nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You can choose between [KDE Plasma](https://kde.org/plasma-desktop/) or [Hyprland](https://hypr.land/). This can be installed on most machines due to it's low resource usage. Feel free to use this configuration as is or customize it to how you see fit!
 
 ## In Progress/Future updates
 - Add nix-darwin support
@@ -83,6 +81,9 @@ In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake
 
 ## Hyprland
 
+### Is there a keybind list?
+`SUPER + SHIFT + H` opens a searchable keybind list. Edit the keybinds in `hyprland.nix`. After changing the keybind, update the keybinds list in `rofi.nix`. See [hyprland wiki](https://wiki.hypr.land/Configuring/Binds/) on how to set binds.
+
 ### How do I change the wallpaper?
 In `~/nix-green/hyprland/home.nix` line 4, set it to the path of the desired wallpaper
 ```
@@ -94,19 +95,34 @@ In `~/nix-green/hyprland/home.nix` line 4, set it to the path of the desired wal
 ```
 
 ### How do I change the hyprland environment?
-hyprland ----> `hyprland.nix` `hyprlock.nix` and `hypridle.nix`
+hyprland    ----> `hyprland.nix` `hyprlock.nix` `hypridle.nix`
 
-waybar   ----> `waybar.nix`
+waybar      ----> `waybar.nix`
 
-rofi     ----> `rofi.nix`
+rofi (menu) ----> `rofi.nix`
 
 After changes are made run `sudo nixos-rebuild --flake .#hyprland --impure`. 
 *NOTE: hyprland is managed by home manager. DO NOT modify files in `~/.config`. Any changes to the files will be overwritten after rebuild.*
 
 ### How do I change the scaling and resolution?
-Use `hyprmon` to make any immediate changes. To make permanent changes that are persistent after reboots and rebuilds, update the monitor configuration section in `~/nix-green/modules/hyprland.nix`
+Use `hyprmon` to make any immediate changes. To make permanent changes that are persistent after reboots and rebuilds, update the monitor configuration section in `hyprland.nix`
 ```
 # Monitor configuration
 monitor = , preferred, auto, 1
 monitor = eDP-2, 2560x1600@60.00Hz, auto, 1.25 # used for 2k/4k laptop
+```
+
+### How do I change the screensaver?
+Edit `screensaver.nix` change the screensaver text/ASCII art. To turn off the screensaver, comment out the screensaver lines in `hypridle.nix` and comment in the lock screen.
+```
+{
+  # 3 minutes turn on screensaver.
+  # After 5 minutes lock the screen and turn display off. After 20 minutes suspend
+  timeout = 180;
+  on-timeout = ''sh -c "pgrep -x hyprlock > /dev/null......;
+{
+#{
+#  timeout = 180; # 3 minutes
+#  on-timeout = "loginctl lock-session"; # Lock screen
+#}
 ```

@@ -161,6 +161,7 @@
     tree
     cbonsai
     cmatrix
+    calcurse
   ];
 
   # Enable tailscale

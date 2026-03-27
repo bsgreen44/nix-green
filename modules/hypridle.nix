@@ -23,6 +23,10 @@
           timeout = 180;
           on-timeout = ''sh -c "pgrep -x hyprlock > /dev/null || ghostty --title=full --font-size=29 -e sh -c '( sleep 120 && loginctl lock-session && pkill -f ghostty.*title=full && sleep 2 && hyprctl dispatch dpms off ) & TIMER_PID=\$!; ( while true; do cols=\$(tput cols); rows=\$(tput lines); COLS=\$cols ROWS=\$rows python3 \$HOME/.local/share/center_logo.py | tte --canvas-width \$cols --canvas-height \$rows --random-effect; done ) & LOOP_PID=\$!; read -n 1 -s; kill \$LOOP_PID 2>/dev/null; kill \$TIMER_PID 2>/dev/null; pkill -f ghostty.*title=full'"'';        }
         {
+        #{
+        #  timeout = 180; # 3 minutes
+        #  on-timeout = "loginctl lock-session"; # Lock screen
+        #}
           timeout = 330; # 5.5 minutes
           on-timeout = "hyprctl dispatch dpms off"; # Screen off
           on-resume = "hyprctl dispatch dpms on"; # Screen on

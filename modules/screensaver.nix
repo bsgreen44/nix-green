@@ -40,13 +40,17 @@
   rows = int(os.environ.get("ROWS", 24))
 
   lines = open(os.path.expanduser("~/.local/share/logo.txt")).read().splitlines()
+  lines = [l for l in lines if l.strip()]  # Remove empty lines
   max_w = max(wcswidth(l) for l in lines)
 
-  top_pad = (rows - len(lines)) // 2
-  print("\n" * top_pad, end="")
+  top_pad = max(0, (rows - len(lines)) // 2)
+  bottom_pad = max(0, rows - len(lines) - top_pad)
+  left_pad = max(0, (cols - max_w) // 2)
   
+  print("\n" * top_pad, end="")
+
   for l in lines:
-      pad = (cols - max_w) // 2
-      print(" " * pad + l)
+      print(" " * left_pad + l)
+  print("\n" * bottom_pad, end="")
   '';
 }

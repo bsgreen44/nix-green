@@ -1,6 +1,57 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 
+let
+  keybindsScript = pkgs.writeShellScriptBin "hypr-keybinds" ''
+    cat <<'EOF'
+Super + Return               →  Terminal (ghostty)
+Super + Shift + B            →  Browser (brave)
+Super + Shift + F            →  File manager (thunar)
+Super + Shift + O            →  Obsidian
+Super + Shift + V            →  VS Code
+Super + Shift + N            →  Neovim
+Super + Shift + G            →  Lazygit
+Super + Shift + A            →  opencode
+Super + Shift + M            →  btop
+Super + Shift + T            →  tsui (sudo)
+Super + Space                →  App launcher
+Super + Q                    →  Close window
+Super + T                    →  Toggle floating
+Super + F                    →  Fullscreen
+Super + P                    →  Pseudotile
+Super + U                    →  Toggle split
+Super + Shift + Esc          →  Exit Hyprland
+Super + ←/→/↑/↓             →  Focus direction
+Super + Shift + ←/→/↑/↓     →  Swap window
+Alt + Tab                    →  Cycle windows
+Alt + Shift + Tab            →  Cycle windows (back)
+Super + K                    →  Focus column right
+Super + J                    →  Focus column left
+Super + Shift + K            →  Swap column right
+Super + Shift + J            →  Swap column left
+Super + ,                    →  Shrink column
+Super + .                    →  Grow column
+Super + 1–9                  →  Switch workspace
+Super + 0                    →  Switch workspace 10
+Super + Shift + 1–9          →  Move to workspace
+Super + Tab                  →  Next workspace
+Super + -                    →  Shrink window width
+Super + =                    →  Grow window width
+Super + Shift + -            →  Shrink window height
+Super + Shift + =            →  Grow window height
+Super + L                    →  Lock screen
+Super + Esc                  →  Power menu
+Super + Ctrl + V             →  Clipboard history
+Super + Shift + S            →  Screenshot to clipboard
+Print                        →  Screenshot to clipboard
+Vol Up/Down                  →  Volume ±5%
+Mute                         →  Toggle mute
+Brightness Up/Down           →  Brightness ±10%
+EOF
+  '';
+in
 {
+  home.packages = [ keybindsScript ];
+
   xdg.desktopEntries = {
     hyprmon = {
       name = "HyprMon";
