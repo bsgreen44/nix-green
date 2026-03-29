@@ -20,6 +20,7 @@
       signal-desktop
       localsend
       opencode
+      ollama
       vlc
       yazi #TUI file manager
     ]

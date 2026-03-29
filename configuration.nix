@@ -164,6 +164,27 @@
     calcurse
   ];
 
+  services.ollama = {
+    enable = true;
+    host = "127.0.0.1";
+    port = 11434;
+
+    # GPU acceleration — pick one:
+    # acceleration = null;   # CPU only (default)
+    # acceleration = "cuda"; # NVIDIA
+    # acceleration = "rocm"; # AMD
+  };
+
+  services.open-webui = {
+    enable = true;
+    port = 8080;
+    # Point to Ollama — use 127.0.0.1 since both run locally
+    environment = {
+      OLLAMA_BASE_URL = "http://127.0.0.1:11434";
+      WEBUI_AUTH = "False";
+    };
+  };
+
   # Enable tailscale
   services.tailscale.enable = true;
   # Enable tailscale exit node
