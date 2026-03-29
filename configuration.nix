@@ -169,10 +169,12 @@
     host = "127.0.0.1";
     port = 11434;
 
-    # GPU acceleration — pick one:
-    # acceleration = null;   # CPU only (default)
-    # acceleration = "cuda"; # NVIDIA
-    # acceleration = "rocm"; # AMD
+    # Pick the right package variant for your hardware:
+    # package = pkgs.ollama;        # default (auto-detects GPU)
+    # package = pkgs.ollama-cuda;   # NVIDIA
+    # package = pkgs.ollama-rocm;   # AMD
+    # package = pkgs.ollama-vulkan; # Vulkan (generic GPU)
+    # package = pkgs.ollama-cpu;    # force CPU only
   };
 
   services.open-webui = {
@@ -182,6 +184,32 @@
     environment = {
       OLLAMA_BASE_URL = "http://127.0.0.1:11434";
       WEBUI_AUTH = "False";
+
+      ENABLE_RAG_WEB_SEARCH              = "True";
+      RAG_WEB_SEARCH_ENGINE              = "searxng";
+      RAG_WEB_SEARCH_RESULT_COUNT        = "5";
+      RAG_WEB_SEARCH_CONCURRENT_REQUESTS = "10";
+      SEARXNG_QUERY_URL                  = "http://127.0.0.1:8888/search?q=<query>&format=json";
+    };
+  };
+
+    services.searx = {
+    enable = true;
+    package = pkgs.searxng;
+    redisCreateLocally = true;
+    settings = {
+      server = {
+        bind_address = "127.0.0.1";
+        port = 8888;
+        secret_key = "local-only";
+        limiter = false;
+        image_proxy = true;
+      };
+
+      search = {
+        safe_search = 0;
+        formats = [ "html" "json" ]; # json is REQUIRED for Open WebUI
+      };
     };
   };
 
