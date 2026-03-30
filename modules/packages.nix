@@ -98,7 +98,7 @@
           };
         };
       };
-      model = "ollama/qwen2.5-coder:3b";  # default model on startup
+      # model = "ollama/qwen2.5-coder:3b";  # default model on startup
       autoupdate = false;
     };
   };
