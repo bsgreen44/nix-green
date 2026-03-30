@@ -80,4 +80,26 @@
       theme = "nord"; # choose your theme
     };
   };
+
+  programs.opencode = {
+    enable = true;
+    settings = {
+      provider = {
+        ollama = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "Ollama";
+          options = {
+            baseURL = "http://127.0.0.1:11434/v1";
+          };
+          models = {
+            "qwen2.5-coder:3b" = {
+              name = "qwen2.5-coder:3b";
+            };
+          };
+        };
+      };
+      model = "ollama/qwen2.5-coder:3b";  # default model on startup
+      autoupdate = false;
+    };
+  };
 }

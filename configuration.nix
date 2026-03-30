@@ -162,6 +162,7 @@
     cbonsai
     cmatrix
     calcurse
+    wakeonlan
   ];
 
   services.ollama = {
@@ -170,7 +171,7 @@
     port = 11434;
 
     # Pick the right package variant for your hardware:
-    # package = pkgs.ollama;        # default (auto-detects GPU)
+    package = pkgs.ollama;        # default (auto-detects GPU)
     # package = pkgs.ollama-cuda;   # NVIDIA
     # package = pkgs.ollama-rocm;   # AMD
     # package = pkgs.ollama-vulkan; # Vulkan (generic GPU)
@@ -209,7 +210,14 @@
       search = {
         safe_search = 0;
         formats = [ "html" "json" ]; # json is REQUIRED for Open WebUI
+        timeout_limit = 3.0;    # drop engines that take longer than 3s
+        max_ban_time_on_fail = 5;
       };
+      engines = [
+        { name = "google"; engine = "google"; shortcut = "g"; }
+        { name = "brave"; engine = "brave"; shortcut = "br"; }
+        { name = "duckduckgo"; engine = "duckduckgo"; shortcut = "ddg"; }
+      ];
     };
   };
 
