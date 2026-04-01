@@ -15,6 +15,7 @@
     ../modules/hyprlock.nix
     ../modules/waybar.nix
     ../modules/rofi.nix
+    ../modules/mako.nix
     ../modules/screensaver.nix
   ];
 

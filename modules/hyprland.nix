@@ -4,7 +4,7 @@
   # Hyprland packages
   home.packages = with pkgs; [
     brightnessctl
-    dunst        # notifications
+    mako        # notifications
     grim         # screenshot
     slurp        # screenshot
     gnome-calculator
@@ -80,7 +80,7 @@
 
       # Autostart
       exec-once = waybar
-      exec-once = dunst
+      exec-once = pkill dunst; mako
       exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
       exec-once = wl-paste --type text --watch cliphist store 
       exec-once = wl-paste --type image --watch cliphist store
