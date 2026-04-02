@@ -12,9 +12,9 @@
       default-timeout = 5000;
       font = "JetBrainsMono Nerd Font 10";
 
-      background-color = "#1e1e2e";
-      text-color = "#cdd6f4";
-      border-color = "#313244";
+      background-color = "#eff1f5";
+      text-color = "#4c4f69";
+      border-color = "#8839ef";
       border-size = 2;
       border-radius = 8;
       padding = "8";
@@ -22,30 +22,30 @@
       width = 400;
 
       # Progress bar color
-      progress-color = "over #1e1e2e";
+      progress-color = "over #8839ef";
     };
 
     # Urgency levels and other overrides go in extraConfig as raw INI
     extraConfig = ''
       [urgency=low]
-      background-color=#1e1e2e
-      text-color=#a6e3a1
-      border-color=#a6e3a1
+      background-color=#ccd0da
+      text-color=#40a02b
+      border-color=#40a02b
 
       [urgency=normal]
-      background-color=#1e1e2e
-      text-color=#89b4fa
-      border-color=#89b4fa
+      background-color=#ccd0da
+      text-color=#1e66f5
+      border-color=#1e66f5
 
       [urgency=high]
-      background-color=#1e1e2e
-      text-color=#fab387
-      border-color=#fab387
+      background-color=#ccd0da
+      text-color=#df8e1d
+      border-color=#df8e1d
 
       [urgency=critical]
-      background-color=#1e1e2e
-      text-color=#f38ba8
-      border-color=#f38ba8
+      background-color=#ccd0da
+      text-color=#d20f39
+      border-color=#d20f39
     '';
   };
 }
