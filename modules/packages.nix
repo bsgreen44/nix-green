@@ -19,7 +19,7 @@
       wiremix # audio tui
       signal-desktop
       localsend
-      opencode
+      ollama
       vlc
       yazi #TUI file manager
     ]
@@ -77,6 +77,51 @@
     enable = true;
     settings = {
       theme = "nord"; # choose your theme
+    };
+  };
+
+  programs.clock-rs = {
+    enable = true;
+    settings = {
+      general = {
+        color = "green";
+        interval = 250;
+        blink = false;
+        bold = true;
+      };
+      position = {
+        horizontal = "center";
+        vertical = "center";
+      };
+      date = {
+        fmt = "%A, %B %d, %Y";
+        use_12h = true;
+        utc = false;
+        hide_seconds = false;
+      };
+    };
+  };
+
+  # Opencode config
+  programs.opencode = {
+    enable = true;
+    settings = {
+      provider = {
+        ollama = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "Ollama";
+          options = {
+            baseURL = "http://127.0.0.1:11434/v1";
+          };
+          models = {
+            "qwen2.5-coder:3b" = {
+              name = "qwen2.5-coder:3b";
+            };
+          };
+        };
+      };
+      # model = "ollama/qwen2.5-coder:3b";  # default model on startup
+      autoupdate = false;
     };
   };
 }

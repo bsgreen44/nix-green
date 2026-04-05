@@ -4,7 +4,8 @@
   # Hyprland packages
   home.packages = with pkgs; [
     brightnessctl
-    dunst        # notifications
+    libnotify    # Provides the notify-send command
+    mako         # notifications
     grim         # screenshot
     slurp        # screenshot
     gnome-calculator
@@ -39,6 +40,7 @@
     gtk4.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
+    gtk4.theme = null;
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
@@ -80,7 +82,7 @@
 
       # Autostart
       exec-once = waybar
-      exec-once = dunst
+      exec-once = pkill dunst; mako
       exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
       exec-once = wl-paste --type text --watch cliphist store 
       exec-once = wl-paste --type image --watch cliphist store
@@ -245,14 +247,18 @@
       #bind = $mod, S, togglespecialworkspace, magic
       #bind = $mod SHIFT, S, movetoworkspace, special:magic
 
-      # Function keys
-      bind = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+
-      bind = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%-
-      bind = , XF86MonBrightnessUp, exec, brightnessctl set +10%
-      bind = , XF86MonBrightnessDown, exec, brightnessctl set 10%-
-      bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle
-      bind = , XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle
+      # Print screen key
       bind = , PRINT, exec, grim -g "$(slurp)" -t png | wl-copy
+
+      # Volume
+      bind = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+ && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500
+      bind = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%- && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500
+      bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@)" -t 1500
+      bind = , XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle && notify-send -h string:x-canonical-private-synchronous:mic "Microphone" "$(wpctl get-volume @DEFAULT_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')" -t 1500
+
+      # Brightness
+      bind = , XF86MonBrightnessUp, exec, brightnessctl set +10% && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500
+      bind = , XF86MonBrightnessDown, exec, brightnessctl set 10%- && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500
 
       # Resize active window
       bind = $mod, code:20, resizeactive, -100 0    # - key

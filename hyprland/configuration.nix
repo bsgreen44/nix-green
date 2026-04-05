@@ -1,10 +1,4 @@
-{
-  pkgs,
-  username,
-  hostname,
-  hyprland,
-  ...
-}:
+{ pkgs, username, hyprland, ... }:
 
 {
 

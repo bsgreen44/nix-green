@@ -1,9 +1,4 @@
-{
-  pkgs,
-  username,
-  hostname,
-  ...
-}:
+{ pkgs, username, hostname, ... }:
 
 {
   imports = [
@@ -162,7 +157,64 @@
     cbonsai
     cmatrix
     calcurse
+    wakeonlan
   ];
+
+  services.ollama = {
+    enable = true;
+    host = "127.0.0.1";
+    port = 11434;
+
+    # Pick the right package variant for your hardware:
+    package = pkgs.ollama;        # default (auto-detects GPU)
+    # package = pkgs.ollama-cuda;   # NVIDIA
+    # package = pkgs.ollama-rocm;   # AMD
+    # package = pkgs.ollama-vulkan; # Vulkan (generic GPU)
+    # package = pkgs.ollama-cpu;    # force CPU only
+  };
+
+  services.open-webui = {
+    enable = true;
+    port = 8080;
+    # Point to Ollama — use 127.0.0.1 since both run locally
+    environment = {
+      OLLAMA_BASE_URL = "http://127.0.0.1:11434";
+      WEBUI_AUTH = "False";
+
+      ENABLE_RAG_WEB_SEARCH              = "True";
+      RAG_WEB_SEARCH_ENGINE              = "searxng";
+      RAG_WEB_SEARCH_RESULT_COUNT        = "5";
+      RAG_WEB_SEARCH_CONCURRENT_REQUESTS = "10";
+      SEARXNG_QUERY_URL                  = "http://127.0.0.1:8888/search?q=<query>&format=json";
+    };
+  };
+
+    services.searx = {
+    enable = true;
+    package = pkgs.searxng;
+    redisCreateLocally = true;
+    settings = {
+      server = {
+        bind_address = "127.0.0.1";
+        port = 8888;
+        secret_key = "local-only";
+        limiter = false;
+        image_proxy = true;
+      };
+
+      search = {
+        safe_search = 0;
+        formats = [ "html" "json" ]; # json is REQUIRED for Open WebUI
+        timeout_limit = 3.0;    # drop engines that take longer than 3s
+        max_ban_time_on_fail = 5;
+      };
+      engines = [
+        { name = "google"; engine = "google"; shortcut = "g"; }
+        { name = "brave"; engine = "brave"; shortcut = "br"; }
+        { name = "duckduckgo"; engine = "duckduckgo"; shortcut = "ddg"; }
+      ];
+    };
+  };
 
   # Enable tailscale
   services.tailscale.enable = true;
