@@ -20,8 +20,8 @@ Super + F                    →  Fullscreen
 Super + P                    →  Pseudotile
 Super + U                    →  Toggle split
 Super + Shift + Esc          →  Exit Hyprland
-Super + ←/→/↑/↓             →  Focus direction
-Super + Shift + ←/→/↑/↓     →  Swap window
+Super + ←/→/↑/↓              →  Focus direction
+Super + Shift + ←/→/↑/↓      →  Swap window
 Alt + Tab                    →  Cycle windows
 Alt + Shift + Tab            →  Cycle windows (back)
 Super + K                    →  Focus column right

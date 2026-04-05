@@ -24,28 +24,5 @@
       # Progress bar color
       progress-color = "over #8839ef";
     };
-
-    # Urgency levels and other overrides go in extraConfig as raw INI
-    extraConfig = ''
-      [urgency=low]
-      background-color=#ccd0da
-      text-color=#40a02b
-      border-color=#40a02b
-
-      [urgency=normal]
-      background-color=#ccd0da
-      text-color=#1e66f5
-      border-color=#1e66f5
-
-      [urgency=high]
-      background-color=#ccd0da
-      text-color=#df8e1d
-      border-color=#df8e1d
-
-      [urgency=critical]
-      background-color=#ccd0da
-      text-color=#d20f39
-      border-color=#d20f39
-    '';
   };
 }
