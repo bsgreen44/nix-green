@@ -16,6 +16,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     pvetui.url = "github:devnullvoid/pvetui";
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -28,6 +32,7 @@
       tsui,
       hyprland,
       pvetui,
+      nix-darwin,
       ...
     }:
     let
@@ -136,6 +141,61 @@
                       ;
                   };
                   users.${username} = import ./hyprland/home.nix;
+                  sharedModules = [
+                    catppuccin.homeModules.catppuccin
+                    gazelle.homeModules.gazelle
+                  ];
+                  backupFileExtension = "backup";
+                };
+              }
+            )
+          ];
+        };
+      };
+
+      darwinConfigurations = {
+        # macOS (nix-darwin)
+        nix-darwin = nix-darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = {
+            inherit
+              ghostty
+              gazelle
+              hostname
+              username
+              tsui
+              pvetui
+              ;
+          };
+
+          modules = [
+            ./nix-darwin/configuration.nix
+            home-manager.darwinModules.home-manager
+            (
+              {
+                hostname,
+                username,
+                ghostty,
+                gazelle,
+                tsui,
+                pvetui,
+                ...
+              }:
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  extraSpecialArgs = {
+                    inherit
+                      hostname
+                      username
+                      ghostty
+                      gazelle
+                      tsui
+                      pvetui
+                      ;
+                  };
+                  users.${username} = import ./nix-darwin/home.nix;
                   sharedModules = [
                     catppuccin.homeModules.catppuccin
                     gazelle.homeModules.gazelle

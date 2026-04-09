@@ -1,29 +1,34 @@
-{ pkgs, gazelle, tsui, pvetui, ... }:
+{ pkgs, lib, gazelle, tsui, pvetui, ... }:
 
 {
   home.packages =
     with pkgs;
     [
+      # Cross-platform CLI tools
       bat
       wget
       git
       fastfetch
-      brave
-      obsidian
-      nextcloud-client
-      libreoffice
       python315
       lazygit
       luarocks
       lua51Packages.lua
+      ollama
+      yazi # TUI file manager
+    ]
+    ++ lib.optionals stdenv.isLinux [
+      # Linux-only GUI apps
+      brave
+      obsidian
+      nextcloud-client
+      libreoffice
       wiremix # audio tui
       signal-desktop
       localsend
-      ollama
       vlc
-      yazi #TUI file manager
     ]
-    ++ [
+    ++ lib.optionals stdenv.isLinux [
+      # Linux-only flake packages
       # NetworkManager tui
       gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
 
