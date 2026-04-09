@@ -13,7 +13,6 @@
       lazygit
       luarocks
       lua51Packages.lua
-      ollama
       yazi # TUI file manager
     ]
     ++ lib.optionals stdenv.isLinux [

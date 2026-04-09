@@ -55,6 +55,20 @@
     cmatrix
   ];
 
+  # macOS GUI tools
+  homebrew = {
+    enable = true;
+    casks = [
+      "brave-browser"
+      "obsidian"
+      "nextcloud"
+      "libreoffice"
+      "signal"
+      "localsend"
+      "vlc"
+    ];
+  };
+
   # macOS system defaults
   system.defaults = {
     dock.autohide = true;
