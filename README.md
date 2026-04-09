@@ -21,6 +21,7 @@ nix-green
 │   ├── hyprland.nix
 │   ├── hyprlock.nix
 │   ├── kdethemes.nix
+|   ├── mako.nix
 │   ├── neovim.nix
 │   ├── packages.nix
 │   ├── rofi.nix
