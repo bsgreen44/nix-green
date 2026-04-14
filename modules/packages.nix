@@ -19,7 +19,6 @@
       wiremix # audio tui
       signal-desktop
       localsend
-      ollama
       vlc
       yazi #TUI file manager
     ]
