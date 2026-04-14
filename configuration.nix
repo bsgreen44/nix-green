@@ -160,6 +160,8 @@
     wakeonlan
   ];
 
+  # AI Services
+  /*
   services.ollama = {
     enable = true;
     host = "127.0.0.1";
@@ -215,6 +217,7 @@
       ];
     };
   };
+  */
 
   # Enable tailscale
   services.tailscale.enable = true;
