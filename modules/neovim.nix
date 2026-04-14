@@ -6,6 +6,8 @@
     defaultEditor = true;  # Sets nvim as the system default editor
     viAlias = true;
     vimAlias = true;
+    withRuby = true;
+    withPython3 = true;
   };
 
   home.packages = with pkgs; [
@@ -46,7 +48,6 @@
     chafa # Terminal image viewer
     ghostscript # gs command for PostScript/PDF processing
     tectonic # Modern LaTeX engine
-    nodePackages.mermaid-cli # mmdc for Mermaid diagrams
   ];
 
   # LazyVim configuration
