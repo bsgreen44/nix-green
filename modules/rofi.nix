@@ -12,7 +12,8 @@ Super + Shift + N            →  Neovim
 Super + Shift + G            →  Lazygit
 Super + Shift + A            →  opencode
 Super + Shift + M            →  btop
-Super + Shift + T            →  tsui (sudo)
+Super + Shift + T            →  Tailscale
+Super + Shift + SPACE        →  Hide Waybar
 Super + Space                →  App launcher
 Super + Q                    →  Close window
 Super + T                    →  Toggle floating
