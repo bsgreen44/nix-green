@@ -176,7 +176,7 @@
       bind = $mod SHIFT, B, exec, $browser
       bind = $mod SHIFT, F, exec, thunar
       bind = $mod SHIFT, O, exec, obsidian
-      bind = $mod SHIFT, V, exec, code
+      bind = $mod SHIFT, V, exec, codium
       bind = $mod SHIFT, M, exec, $terminal --title=float -e btop
       bind = $mod SHIFT, T, exec, $terminal --title=float -e sudo tsui
       bind = $mod SHIFT, N, exec, $terminal -e nvim

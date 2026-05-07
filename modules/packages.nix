@@ -56,15 +56,10 @@
     };
   };
 
-  # VScode config
+  # VSCodium config
   programs.vscode = {
     enable = true;
-    profiles.default.userSettings = {
-      "telemetry.enableTelemetry" = false;
-      "telemetry.enableCrashReporter" = false;
-      update.mode = "none";
-      update.showReleaseNotes = false;
-    };
+    package = pkgs.vscodium;
     profiles.default.extensions = with pkgs.vscode-extensions; [
       catppuccin.catppuccin-vsc
       jnoortheen.nix-ide
