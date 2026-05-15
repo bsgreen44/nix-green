@@ -9,6 +9,7 @@
       git
       fastfetch
       brave
+      claude-code
       obsidian
       nextcloud-client
       libreoffice
