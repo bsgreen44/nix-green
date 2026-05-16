@@ -28,7 +28,11 @@
       gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       # pvetui (Proxmox manager tui)
-      pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
+      #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+      (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+        vendorHash = "sha256-5dcnwOlai2OAC28GgO2IAi1W039+sut+9ThbntNadS0=";
+      }))
 
       # Tailscale tui
       (pkgs.runCommand "tsui-wrapped" {
@@ -58,7 +62,7 @@
   };
 
   # VSCodium config
-  programs.vscode = {
+  programs.vscodium = {
     enable = true;
     package = pkgs.vscodium;
     profiles.default.extensions = with pkgs.vscode-extensions; [

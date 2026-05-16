@@ -51,7 +51,7 @@
   ];
 
   # LazyVim configuration
-  home.file.".config/nvim/init.lua".text = ''
+  xdg.configFile."nvim/init.lua".text = ''
     -- Bootstrap lazy.nvim
     local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
     if not vim.loop.fs_stat(lazypath) then

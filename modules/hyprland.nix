@@ -50,6 +50,7 @@
   wayland.windowManager.hyprland = {
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    configType = "hyprlang";
     settings = {
       group = {
         groupbar = {
@@ -146,7 +147,6 @@
 
       # Layout
       dwindle {
-        pseudotile = yes
         preserve_split = yes
       }
 
