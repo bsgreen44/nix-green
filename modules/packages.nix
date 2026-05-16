@@ -9,6 +9,7 @@
       wget
       git
       fastfetch
+      claude-code
       python315
       lazygit
       luarocks
@@ -17,23 +18,16 @@
       yazi # TUI file manager
     ]
     ++ lib.optionals stdenv.isLinux [
-      # Linux-only GUI apps
-      brave
-      obsidian
-      nextcloud-client
-      libreoffice
-      wiremix # audio tui
-      signal-desktop
-      localsend
-      vlc
-    ]
-    ++ lib.optionals stdenv.isLinux [
       # Linux-only flake packages
       # NetworkManager tui
       gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       # pvetui (Proxmox manager tui)
-      pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
+      #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+      (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+        vendorHash = "sha256-5dcnwOlai2OAC28GgO2IAi1W039+sut+9ThbntNadS0=";
+      }))
 
       # Tailscale tui
       (pkgs.runCommand "tsui-wrapped" {
@@ -62,15 +56,10 @@
     };
   };
 
-  # VScode config
-  programs.vscode = {
+  # VSCodium config
+  programs.vscodium = {
     enable = true;
-    profiles.default.userSettings = {
-      "telemetry.enableTelemetry" = false;
-      "telemetry.enableCrashReporter" = false;
-      update.mode = "none";
-      update.showReleaseNotes = false;
-    };
+    package = pkgs.vscodium;
     profiles.default.extensions = with pkgs.vscode-extensions; [
       catppuccin.catppuccin-vsc
       jnoortheen.nix-ide
