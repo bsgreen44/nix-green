@@ -15,7 +15,10 @@
       url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    pvetui.url = "github:devnullvoid/pvetui";
+    pvetui = {
+      url = "github:devnullvoid/pvetui";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

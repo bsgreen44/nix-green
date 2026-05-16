@@ -9,6 +9,7 @@
       git
       fastfetch
       brave
+      claude-code
       obsidian
       nextcloud-client
       libreoffice
@@ -27,7 +28,11 @@
       gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       # pvetui (Proxmox manager tui)
-      pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
+      #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+      (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
+        vendorHash = "sha256-5dcnwOlai2OAC28GgO2IAi1W039+sut+9ThbntNadS0=";
+      }))
 
       # Tailscale tui
       (pkgs.runCommand "tsui-wrapped" {
@@ -56,15 +61,10 @@
     };
   };
 
-  # VScode config
-  programs.vscode = {
+  # VSCodium config
+  programs.vscodium = {
     enable = true;
-    profiles.default.userSettings = {
-      "telemetry.enableTelemetry" = false;
-      "telemetry.enableCrashReporter" = false;
-      update.mode = "none";
-      update.showReleaseNotes = false;
-    };
+    package = pkgs.vscodium;
     profiles.default.extensions = with pkgs.vscode-extensions; [
       catppuccin.catppuccin-vsc
       jnoortheen.nix-ide
