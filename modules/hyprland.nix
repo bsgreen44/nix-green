@@ -51,14 +51,6 @@
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     configType = "hyprlang";
-    settings = {
-      group = {
-        groupbar = {
-          font_family = "JetBrainsMono Nerd Font";
-          font_size = 10;
-        };
-      };
-    };
 
     # Use extraConfig for raw configuration instead of settings
     extraConfig = ''
@@ -97,6 +89,14 @@
         sensitivity = 0
         touchpad {
           natural_scroll = no
+        }
+      }
+
+      # Group bar
+      group {
+        groupbar {
+          font_family = JetBrainsMono Nerd Font
+          font_size = 10
         }
       }
 
