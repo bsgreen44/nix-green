@@ -76,8 +76,7 @@
       # Autostart
       exec-once = waybar
       exec-once = pkill dunst; mako
-      exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
-      exec-once = wl-paste --type text --watch cliphist store 
+      exec-once = wl-paste --type text --watch cliphist store
       exec-once = wl-paste --type image --watch cliphist store
       exec = swaybg -i ${wallpaper} -m fill
 
