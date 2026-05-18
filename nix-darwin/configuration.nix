@@ -58,6 +58,10 @@
   # macOS GUI tools
   homebrew = {
     enable = true;
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "uninstall";
+    };
     casks = [
       "brave-browser"
       "obsidian"
@@ -77,7 +81,7 @@
     NSGlobalDomain.AppleShowAllExtensions = true;
   };
 
-  # Enable SSH
+  # SSH hardening (sshd itself is started by toggling System Settings → General → Sharing → Remote Login)
   environment.etc."ssh/sshd_config.d/100-nix-darwin.conf".text = ''
     PasswordAuthentication no
   '';
