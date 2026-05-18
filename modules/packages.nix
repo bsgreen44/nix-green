@@ -14,10 +14,19 @@
       lazygit
       luarocks
       lua51Packages.lua
-      ollama
       yazi # TUI file manager
     ]
     ++ lib.optionals stdenv.isLinux [
+      # Linux-only GUI apps (macOS uses homebrew casks instead)
+      brave
+      obsidian
+      nextcloud-client
+      libreoffice
+      wiremix # audio tui
+      signal-desktop
+      localsend
+      vlc
+
       # Linux-only flake packages
       # NetworkManager tui
       gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -56,8 +65,8 @@
     };
   };
 
-  # VSCodium config
-  programs.vscodium = {
+  # VSCodium config (Linux-only — macOS installs via homebrew cask for /Applications integration)
+  programs.vscodium = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     package = pkgs.vscodium;
     profiles.default.extensions = with pkgs.vscode-extensions; [
@@ -66,8 +75,8 @@
     ];
   };
 
-  # Gazelle config
-  programs.gazelle = {
+  # Gazelle config (Linux-only — gazelle is a NetworkManager TUI)
+  programs.gazelle = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     settings = {
       theme = "nord"; # choose your theme

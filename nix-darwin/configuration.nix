@@ -66,6 +66,7 @@
       "signal"
       "localsend"
       "vlc"
+      "vscodium"
     ];
   };
 

@@ -1,4 +1,4 @@
-{ pkgs, ghostty, ... }:
+{ pkgs, lib, ghostty, ... }:
 
 {
   # ghostty config
@@ -13,8 +13,9 @@
       window-theme = "dark";
       font-family = "JetBrainsMono Nerd Font";
       font-size = 10;
-      gtk-tabs-location = "hidden";
       #window-decoration = false;
+    } // lib.optionalAttrs pkgs.stdenv.isLinux {
+      gtk-tabs-location = "hidden"; # GTK-only — Ghostty uses native UI on macOS
     };
   };
 }

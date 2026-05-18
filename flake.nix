@@ -18,6 +18,7 @@
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
     pvetui = {
       url = "github:devnullvoid/pvetui";
       inputs.nixpkgs.follows = "nixpkgs";
