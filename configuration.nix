@@ -19,6 +19,10 @@
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # Keep kernel messages off the tuigreet console (still in dmesg/journal).
+  boot.consoleLogLevel = 3;
+  boot.kernelParams = [ "quiet" "loglevel=3" "udev.log_level=3" ];
+
   networking.hostName = hostname; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 

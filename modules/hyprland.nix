@@ -51,14 +51,6 @@
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     configType = "hyprlang";
-    settings = {
-      group = {
-        groupbar = {
-          font_family = "JetBrainsMono Nerd Font";
-          font_size = 10;
-        };
-      };
-    };
 
     # Use extraConfig for raw configuration instead of settings
     extraConfig = ''
@@ -84,8 +76,7 @@
       # Autostart
       exec-once = waybar
       exec-once = pkill dunst; mako
-      exec-once = gnome-keyring-daemon --start --components=pkcs11,secrets,ssh
-      exec-once = wl-paste --type text --watch cliphist store 
+      exec-once = wl-paste --type text --watch cliphist store
       exec-once = wl-paste --type image --watch cliphist store
       exec = swaybg -i ${wallpaper} -m fill
 
@@ -97,6 +88,14 @@
         sensitivity = 0
         touchpad {
           natural_scroll = no
+        }
+      }
+
+      # Group bar
+      group {
+        groupbar {
+          font_family = JetBrainsMono Nerd Font
+          font_size = 10
         }
       }
 

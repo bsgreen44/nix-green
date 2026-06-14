@@ -31,7 +31,7 @@
       #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        vendorHash = "sha256-5dcnwOlai2OAC28GgO2IAi1W039+sut+9ThbntNadS0=";
+        vendorHash = "sha256-JOo/7/3J9LqefIYuRl9efSlSfzLvQ/B8Jpy2e5cdEio=";
       }))
 
       # Tailscale tui
@@ -66,6 +66,7 @@
     enable = true;
     package = pkgs.vscodium;
     profiles.default.extensions = with pkgs.vscode-extensions; [
+      anthropic.claude-code
       catppuccin.catppuccin-vsc
       jnoortheen.nix-ide
     ];
@@ -122,5 +123,10 @@
       # model = "ollama/qwen2.5-coder:3b";  # default model on startup
       autoupdate = false;
     };
+  };
+  # zen-browser
+  programs.zen-browser = {
+    enable = true;
+    #setAsDefaultBrowser = true;
   };
 }
