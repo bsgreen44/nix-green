@@ -23,6 +23,12 @@
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "25.11";
 
+  # zen-browser (Linux-only; macOS uses the homebrew cask)
+  programs.zen-browser = {
+    enable = true;
+    #setAsDefaultBrowser = true;
+  };
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }

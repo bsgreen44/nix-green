@@ -14,7 +14,6 @@
       lazygit
       luarocks
       lua51Packages.lua
-      yazi # TUI file manager
     ]
     ++ lib.optionals stdenv.isLinux [
       # Linux-only GUI apps (macOS uses homebrew casks instead)
@@ -22,10 +21,13 @@
       obsidian
       nextcloud-client
       libreoffice
-      wiremix # audio tui
       signal-desktop
       localsend
       vlc
+
+      # Linux-only TUIs (skipped on macOS)
+      yazi # TUI file manager
+      wiremix # audio tui
 
       # Linux-only flake packages
       # NetworkManager tui
@@ -35,7 +37,7 @@
       #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        vendorHash = "sha256-5dcnwOlai2OAC28GgO2IAi1W039+sut+9ThbntNadS0=";
+        vendorHash = "sha256-JOo/7/3J9LqefIYuRl9efSlSfzLvQ/B8Jpy2e5cdEio=";
       }))
 
       # Tailscale tui
@@ -70,6 +72,7 @@
     enable = true;
     package = pkgs.vscodium;
     profiles.default.extensions = with pkgs.vscode-extensions; [
+      anthropic.claude-code
       catppuccin.catppuccin-vsc
       jnoortheen.nix-ide
     ];

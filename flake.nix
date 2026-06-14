@@ -23,6 +23,13 @@
       url = "github:devnullvoid/pvetui";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
   };
 
   outputs =
@@ -36,6 +43,7 @@
       hyprland,
       pvetui,
       nix-darwin,
+      zen-browser,
       ...
     }:
     let
@@ -55,6 +63,7 @@
               username
               tsui
               pvetui
+              zen-browser
               ;
           };
 
@@ -70,6 +79,7 @@
                 gazelle,
                 tsui,
                 pvetui,
+                zen-browser,
                 ...
               }:
               {
@@ -84,12 +94,14 @@
                       gazelle
                       tsui
                       pvetui
+                      zen-browser
                       ;
                   };
                   users.${username} = import ./kde/home.nix;
                   sharedModules = [
                     catppuccin.homeModules.catppuccin
                     gazelle.homeModules.gazelle
+                    zen-browser.homeModules.beta
                   ];
                   backupFileExtension = "backup";
                 };
@@ -110,6 +122,7 @@
               tsui
               hyprland
               pvetui
+              zen-browser
               ;
           };
 
@@ -126,6 +139,7 @@
                 tsui,
                 hyprland,
                 pvetui,
+                zen-browser,
                 ...
               }:
               {
@@ -141,12 +155,14 @@
                       tsui
                       hyprland
                       pvetui
+                      zen-browser
                       ;
                   };
                   users.${username} = import ./hyprland/home.nix;
                   sharedModules = [
                     catppuccin.homeModules.catppuccin
                     gazelle.homeModules.gazelle
+                    zen-browser.homeModules.beta
                   ];
                   backupFileExtension = "backup";
                 };

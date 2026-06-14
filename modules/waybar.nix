@@ -51,9 +51,9 @@
         };
 
         "clock" = {
-          format = "{:%H:%M}";
+          format = "{:%H:%M %m-%d}";
           tooltip-format = "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>";
-          format-alt = "{:%H:%M %m-%d}";
+          format-alt = "{:%H:%M}";
         };
 
         "cpu" = {

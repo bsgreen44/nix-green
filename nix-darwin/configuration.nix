@@ -64,6 +64,7 @@
     };
     casks = [
       "brave-browser"
+      "zen-browser"
       "obsidian"
       "nextcloud"
       "libreoffice"
