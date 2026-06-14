@@ -80,6 +80,11 @@
     dock.autohide = true;
     finder.AppleShowAllExtensions = true;
     NSGlobalDomain.AppleShowAllExtensions = true;
+
+    # Catppuccin-ish appearance (macOS can't be fully re-skinned; this approximates it)
+    NSGlobalDomain.AppleInterfaceStyle = "Dark"; # force Dark mode
+    NSGlobalDomain.AppleAccentColor = 5; # Purple accent, closest to Catppuccin mauve/lavender
+    NSGlobalDomain.AppleHighlightColor = "0.796078 0.650980 0.968627 Purple"; # selection highlight in Mocha mauve (#cba6f7)
   };
 
   # SSH hardening (sshd itself is started by toggling System Settings → General → Sharing → Remote Login)

@@ -6,6 +6,7 @@
     ../modules/shells.nix
     ../modules/starship.nix
     ../modules/neovim.nix
+    ../modules/themes.nix
   ];
 
   home.username = username;
