@@ -65,11 +65,26 @@
   programs.vscodium = {
     enable = true;
     package = pkgs.vscodium;
-    profiles.default.extensions = with pkgs.vscode-extensions; [
-      anthropic.claude-code
-      catppuccin.catppuccin-vsc
-      jnoortheen.nix-ide
-    ];
+    profiles.default = {
+      extensions = with pkgs.vscode-extensions; [
+        anthropic.claude-code
+        jnoortheen.nix-ide
+      ];
+      userSettings = {
+        "claudeCode.preferredLocation" = "panel";
+        "[markdown]" = {
+          "editor.unicodeHighlight.ambiguousCharacters" = false;
+          "editor.unicodeHighlight.invisibleCharacters" = false;
+          "diffEditor.ignoreTrimWhitespace" = false;
+          "editor.wordWrap" = "on";
+          "editor.quickSuggestions" = {
+            comments = "off";
+            strings = "off";
+            other = "off";
+          };
+        };
+      };
+    };
   };
 
   # Gazelle config

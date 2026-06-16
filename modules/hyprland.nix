@@ -188,7 +188,7 @@
       bind = $mod, P, pseudo,
       bind = $mod, U, layoutmsg, togglesplit
       bind = $mod, F, fullscreen,
-      bind = $mod, L, exec, hyprlock
+      bind = $mod, L, exec, loginctl lock-session # routes through hypridle's guarded lock_cmd to avoid double hyprlock
       bind = $mod, ESCAPE, exec, $powermenu
       bind = $mod CTRL, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
       bind = $mod SHIFT, S, exec, grim -g "$(slurp)" -t png | wl-copy
