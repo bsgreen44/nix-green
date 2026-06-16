@@ -1,8 +1,20 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   catppuccin = {
     enable = true;
-    autoEnable = true;
+    flavor = "mocha"; # global flavor for all catppuccin-themed apps
+    autoEnable = false; # don't theme everything — many programs are themed by hand
+                        # (ghostty, mako, rofi, waybar, starship, neovim, hyprland, hyprlock)
+
+    # Programs not manually themed elsewhere:
+    bat.enable = true;
+    btop.enable = true;
+    opencode.enable = true;
+
+    # brave & vscodium are nix packages on Linux but homebrew casks on macOS,
+    # so only theme them through nix on Linux:
+    brave.enable = pkgs.stdenv.isLinux;
+    vscodium.profiles.default.enable = pkgs.stdenv.isLinux; # follows catppuccin.flavor
   };
 }

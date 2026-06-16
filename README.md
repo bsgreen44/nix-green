@@ -2,7 +2,6 @@
 This is my nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You can choose between [KDE Plasma](https://kde.org/plasma-desktop/) or [Hyprland](https://hypr.land/). This can be installed on most machines due to it's low resource usage. Feel free to use this configuration as is or customize it to how you see fit!
 
 ## In Progress/Future updates
-- Add nix-darwin support
 
 # Folder Structure
 ```
@@ -21,6 +20,7 @@ nix-green
 │   ├── hyprland.nix
 │   ├── hyprlock.nix
 │   ├── kdethemes.nix
+│   ├── mako.nix
 │   ├── neovim.nix
 │   ├── packages.nix
 │   ├── rofi.nix
@@ -30,6 +30,9 @@ nix-green
 │   ├── terminal.nix
 │   ├── themes.nix
 │   └── waybar.nix
+├── nix-darwin
+│   ├── configuration.nix
+│   └── home.nix
 ├── README.md
 └── wallpapers
     ├── linux-catppuccin.jpg
@@ -72,6 +75,9 @@ sudo nixos-rebuild switch --flake .#kde --impure
 
 # For Hyprland desktop
 sudo nixos-rebuild switch --flake .#hyprland --impure
+
+# For MacOS desktop
+sudo nixos-rebuild switch --flake .#nix-darwin --impure
 ``` 
 
 # FAQ
