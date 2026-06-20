@@ -3,8 +3,8 @@
 let
   monitorConfig =
     if hidpi then ''
-      monitor = eDP-1, preferred, auto, 1.5
-      env = GDK_SCALE, 1.5
+      monitor = , preferred, auto, 1.33
+      env = GDK_SCALE, 1.33
     '' else ''
       monitor = , preferred, auto, 1
     '';
