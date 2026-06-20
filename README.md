@@ -136,7 +136,7 @@ Edit `screensaver.nix` change the screensaver text/ASCII art. To turn off the sc
   # 3 minutes turn on screensaver.
   # After 5 minutes lock the screen and turn display off. After 20 minutes suspend
   timeout = 180;
-  on-timeout = ''sh -c "pgrep -x hyprlock > /dev/null......;
+  on-timeout = "screensaver --lock".;
 {
 #{
 #  timeout = 180; # 3 minutes
