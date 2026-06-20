@@ -104,13 +104,30 @@ rofi (menu) ----> `rofi.nix`
 After changes are made run `sudo nixos-rebuild --flake .#hyprland --impure`. 
 *NOTE: hyprland is managed by home manager. DO NOT modify files in `~/.config`. Any changes to the files will be overwritten after rebuild.*
 
+### Is there a way to manage hyprland NOT through nix?
+For quick, machine-local tweaks that you don't want tracked in the flake, uncomment the `source` line in the monitor section of `hyprland.nix` and create the file:
+```
+# source = ~/.config/hypr/local.conf
+```
+Hyprland sources that file (monitor layout, keybinds, etc.) if it exists, and treats a missing file as a harmless no-op. Edit it and run `hyprctl reload` to apply without a rebuild. Note this is mutable, untracked state that lives outside the flake, so it is not reproducible across machines.
+
 ### How do I change the scaling and resolution?
-Use `hyprmon` to make any immediate changes. To make permanent changes that are persistent after reboots and rebuilds, update the monitor configuration section in `hyprland.nix`
+
+There are 2 options:
+
+#### Use `hyprmon`
+Easiest and quickest. Not persistent across reboots and rebuilds.
+
+#### hidpi toggle in `~/nix-green/hyprland/home.nix`
+For hi-DPI (2k/4k) laptop panels there's a declarative `hidpi` flag instead of editing the monitor lines by hand. It's set per machine in `hyprland/home.nix`:
 ```
-# Monitor configuration
-monitor = , preferred, auto, 1
-monitor = eDP-2, 2560x1600@60.00Hz, auto, 1.25 # used for 2k/4k laptop
+_module.args = {
+  hidpi = false;   # set true on 2k/4k laptop panels
+};
 ```
+When `hidpi = true`, `hyprland.nix` emits the scaled monitor block (`monitor = eDP-1, preferred, auto, 1.5` and `env = GDK_SCALE, 1.5`) via the `monitorConfig` binding; when `false` it uses the default `monitor = , preferred, auto, 1`. Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`.
+
+Alternatively, you can manually update `monitorConfig` block in `hyprland.nix` to your exact preferences or add the monitor config to `~/.config/hypr/local.conf` to override the monitor settings. Just make sure to uncomment `# source = ~/.config/hypr/local.conf` in hyprland.nix.
 
 ### How do I change the screensaver?
 Edit `screensaver.nix` change the screensaver text/ASCII art. To turn off the screensaver, comment out the screensaver lines in `hypridle.nix` and comment in the lock screen.
