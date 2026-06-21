@@ -5,7 +5,12 @@
   programs.ghostty = {
     enable = true;
     enableBashIntegration = false;
-    package = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    # On Linux use the ghostty flake's package; on macOS ghostty has no Nix build
+    # (installed via the Homebrew cask instead), so null = manage config only.
+    package =
+      if pkgs.stdenv.isLinux
+      then ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+      else null;
     settings = {
       #background-blur-radius = 20;
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";

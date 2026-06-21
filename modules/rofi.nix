@@ -40,6 +40,7 @@ Super + =                    →  Grow window width
 Super + Shift + -            →  Shrink window height
 Super + Shift + =            →  Grow window height
 Super + L                    →  Lock screen
+Super + Shift + Z            →  Screensaver
 Super + Esc                  →  Power menu
 Super + Ctrl + V             →  Clipboard history
 Super + Shift + S            →  Screenshot to clipboard

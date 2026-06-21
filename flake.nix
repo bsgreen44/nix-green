@@ -175,7 +175,7 @@
       darwinConfigurations = {
         # macOS (nix-darwin)
         nix-darwin = nix-darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
+          system = "aarch64-darwin"; # use "x86_64-darwin" for Intel CPU
           specialArgs = {
             inherit
               ghostty

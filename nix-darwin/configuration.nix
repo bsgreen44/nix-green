@@ -25,6 +25,9 @@
     shell = pkgs.zsh;
   };
 
+  # User that homebrew and the user-scoped system.defaults apply to
+  system.primaryUser = username;
+
   # Font packages
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
@@ -63,6 +66,7 @@
       cleanup = "uninstall";
     };
     casks = [
+      "ghostty"
       "brave-browser"
       "zen-browser"
       "obsidian"
@@ -83,8 +87,13 @@
 
     # Catppuccin-ish appearance (macOS can't be fully re-skinned; this approximates it)
     NSGlobalDomain.AppleInterfaceStyle = "Dark"; # force Dark mode
-    NSGlobalDomain.AppleAccentColor = 5; # Purple accent, closest to Catppuccin mauve/lavender
-    NSGlobalDomain.AppleHighlightColor = "0.796078 0.650980 0.968627 Purple"; # selection highlight in Mocha mauve (#cba6f7)
+
+    # AppleAccentColor/AppleHighlightColor have no typed option in this nix-darwin rev,
+    # so write them out-of-band via CustomUserPreferences (passed straight to `defaults`).
+    CustomUserPreferences.NSGlobalDomain = {
+      AppleAccentColor = 5; # Purple accent, closest to Catppuccin mauve/lavender
+      AppleHighlightColor = "0.796078 0.650980 0.968627 Purple"; # selection highlight in Mocha mauve (#cba6f7)
+    };
   };
 
   # SSH hardening (sshd itself is started by toggling System Settings → General → Sharing → Remote Login)

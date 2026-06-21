@@ -1,5 +1,13 @@
-{ pkgs, wallpaper, hyprland, ... }:
+{ pkgs, lib, wallpaper, hyprland, hidpi ? false, ... }:
 
+let
+  monitorConfig =
+    if hidpi then ''
+      monitor = , preferred, auto, 1.33
+    '' else ''
+      monitor = , preferred, auto, 1
+    '';
+in
 {
   # Hyprland packages
   home.packages = with pkgs; [
@@ -62,9 +70,11 @@
 
 
       # Monitor configuration
-      monitor = , preferred, auto, 1
-      #monitor = eDP-1, preferred, auto, 1.5 # used for 2k/4k laptop
-      #env = GDK_SCALE, 1.5 # used for 2k/4k laptop
+      ${monitorConfig}
+      
+      # Optional per-machine overrides (monitor layout, keybinds, etc.).
+      # Sourcing a missing file is a harmless no-op on machines without it.
+      # source = ~/.config/hypr/local.conf
 
       # Cursor configuration
       env = XCURSOR_THEME,Bibata-Modern-Classic
@@ -189,6 +199,7 @@
       bind = $mod, U, layoutmsg, togglesplit
       bind = $mod, F, fullscreen,
       bind = $mod, L, exec, loginctl lock-session # routes through hypridle's guarded lock_cmd to avoid double hyprlock
+      bind = $mod SHIFT, Z, exec, screensaver # Z = "zzz", manual screensaver
       bind = $mod, ESCAPE, exec, $powermenu
       bind = $mod CTRL, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
       bind = $mod SHIFT, S, exec, grim -g "$(slurp)" -t png | wl-copy
