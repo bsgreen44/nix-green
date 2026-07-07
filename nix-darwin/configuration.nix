@@ -76,6 +76,11 @@
       "localsend"
       "vlc"
       "vscodium"
+      # Launcher; configured declaratively in ../modules/raycast.nix.
+      # NOTE: raycast is set to ⌘Space, which collides with Spotlight. Free it
+      # manually: System Settings → Keyboard → Keyboard Shortcuts → Spotlight →
+      # uncheck "Show Spotlight search" (fragile to automate from nix).
+      "raycast"
     ];
   };
 
