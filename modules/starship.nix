@@ -3,7 +3,7 @@
 let
   # Set to `true` for the Powerline / Catppuccin Mocha theme.
   # Set to `false` for a clean, minimal default-terminal theme.
-  usePowerlineTheme = true;
+  usePowerlineTheme = false;
 
   powerlineSettings = {
     format = lib.concatStrings [
