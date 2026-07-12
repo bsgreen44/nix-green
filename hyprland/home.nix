@@ -2,6 +2,7 @@
 {
   _module.args = {
     wallpaper = "/home/${username}/nix-green/wallpapers/linux-catppuccin.jpg";
+    hidpi = false;   # set true on 2k/4k laptop panels
   };
   imports = [
     ../modules/packages.nix
