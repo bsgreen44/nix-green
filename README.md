@@ -56,6 +56,11 @@ nix-green
 **NOTE: `git` NEEDS TO BE INSTALLED ON YOUR SYSTEM.** 
 **THIS CAN BE DONE BY INSTALLING IT IN MANUALLY `/etc/nixos/configuration.nix` OR TEMPORARILY IN AN INTERACPTIVE SHELL BY RUNNUNG `nix-shell -p git` IN YOUR TERMINAL.**
 
+**FOR MACOS it is recommended to install Nix using [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer)**
+```
+curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+```
+
 This setup works right of the box so all you have to do is: 
 1. Clone the repo to your directory by opening the terminal, and running the following command (*if you are using `nix-shell` make sure it to `exit` the shell after running the command*):
 ```
