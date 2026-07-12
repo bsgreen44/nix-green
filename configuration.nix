@@ -132,9 +132,11 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "adbusers"
     ];
     packages = with pkgs; [
       #  thunderbird
+      android-tools
     ];
   };
 
