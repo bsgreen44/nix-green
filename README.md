@@ -16,6 +16,8 @@ nix-green
 ├── kde
 │   ├── configuration.nix
 │   └── home.nix
+├── linux
+│   ├── home.nix
 ├── modules
 │   ├── hypridle.nix
 │   ├── hyprland.nix
@@ -65,8 +67,11 @@ git clone https://github.com/bsgreen44/nix-green
       username = "green"; # change to your username
     in
 ```
-3. Rebuild your system using **ONE** of the commands below and you're good to go! 
+3. While in the `nix-green` directory, rebuild your system using **ONE** of the commands below and you're good to go! 
 ```
+# Make sure you're in the correct directory
+cd ~/nix-green
+
 # For KDE desktop
 sudo nixos-rebuild switch --flake .#kde --impure
 
@@ -75,6 +80,26 @@ sudo nixos-rebuild switch --flake .#hyprland --impure
 ``` 
 
 # FAQ
+
+### Can I use this on a different Linux distro?
+Yes (mostly)! The `~/nix-green/modules` directory contains all of the Home Manager setup including packages, dotfiles and user preferences. What won't transfer over are system level settings and services specific to NixOS set in `configuration.nix` such as boot loader, kernel, openssh and tailscale. These are set on your linux distro.
+
+To install on any Linux distro:
+1. Install Nix Determinate 
+```
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+2. Clone the repo and run home-manager switch command
+```
+git clone https://github.com/bsgreen44/nix-green 
+cd ~/nix-green
+nix run home-manager/master -- switch --flake .#username
+```
+
+Any future updates use:
+```
+home-manager switch --flake ~/nix-green#username
+```
 
 ### How do I update the system and packages?
 In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then `sudo nixos-rebuild --flake .#changethis --impure` replacing `changethis` with `kde` or `hyprland`.

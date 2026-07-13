@@ -46,6 +46,28 @@
       username = "green"; # change to your username
     in
     {
+      # Standalone Home Manager for non-NixOS distros (CLI tools + dotfiles only).
+      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        extraSpecialArgs = {
+          inherit
+            username
+            hostname
+            ghostty
+            gazelle
+            tsui
+            pvetui
+            zen-browser
+            ;
+        };
+        modules = [
+          ./linux/home.nix
+          catppuccin.homeModules.catppuccin
+          gazelle.homeModules.gazelle
+          zen-browser.homeModules.beta
+        ];
+      };
+
       nixosConfigurations = {
         # KDE Plasma Desktop
         kde = nixpkgs.lib.nixosSystem {
