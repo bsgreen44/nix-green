@@ -19,6 +19,10 @@
       url = "github:devnullvoid/pvetui";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    herdr = {
+      url = "github:ogulcancelik/herdr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     zen-browser = {
     url = "github:0xc000022070/zen-browser-flake";
     inputs = {
@@ -38,6 +42,7 @@
       tsui,
       hyprland,
       pvetui,
+      herdr,
       zen-browser,
       ...
     }:
@@ -57,6 +62,7 @@
             gazelle
             tsui
             pvetui
+            herdr
             zen-browser
             ;
         };
@@ -80,6 +86,7 @@
               username
               tsui
               pvetui
+              herdr
               ;
           };
 
@@ -95,6 +102,7 @@
                 gazelle,
                 tsui,
                 pvetui,
+                herdr,
                 zen-browser,
                 ...
               }:
@@ -110,6 +118,7 @@
                       gazelle
                       tsui
                       pvetui
+                      herdr
                       zen-browser
                       ;
                   };
@@ -138,6 +147,7 @@
               tsui
               hyprland
               pvetui
+              herdr
               zen-browser
               ;
           };
@@ -155,6 +165,7 @@
                 tsui,
                 hyprland,
                 pvetui,
+                herdr,
                 zen-browser,
                 ...
               }:
@@ -171,6 +182,7 @@
                       tsui
                       hyprland
                       pvetui
+                      herdr
                       zen-browser
                       ;
                   };

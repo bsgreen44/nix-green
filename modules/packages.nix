@@ -1,4 +1,4 @@
-{ pkgs, gazelle, tsui, pvetui, ... }:
+{ pkgs, gazelle, tsui, pvetui, herdr, ... }:
 
 {
   home.packages =
@@ -26,6 +26,9 @@
     ++ [
       # NetworkManager tui
       gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+      # herdr (AI coding-agent multiplexer)
+      herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       # pvetui (Proxmox manager tui)
       #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default

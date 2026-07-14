@@ -10,6 +10,7 @@
     # Only programs not manually themed elsewhere:
     bat.enable = true;
     btop.enable = true;
+    kitty.enable = true;
     vscodium.profiles.default.enable = true; # themes VSCodium's colorTheme (follows catppuccin.flavor)
     brave.enable = true;
     opencode.enable = true;
