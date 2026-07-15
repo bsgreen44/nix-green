@@ -1,0 +1,15 @@
+[date]
+fmt = "%A, %B %d, %Y"
+hide_seconds = false
+use_12h = true
+utc = false
+
+[general]
+blink = false
+bold = true
+color = "green"
+interval = 250
+
+[position]
+horizontal = "center"
+vertical = "center"
