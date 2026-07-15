@@ -10,29 +10,34 @@ nix-green
 ├── flake.lock
 ├── flake.nix
 ├── hyprland
-│   ├── configuration.nix
-│   └── home.nix
+│   ├── configuration.nix
+│   └── home.nix
 ├── kde
-│   ├── configuration.nix
-│   └── home.nix
+│   ├── configuration.nix
+│   └── home.nix
+├── linux
+│   └── home.nix
 ├── modules
-│   ├── hypridle.nix
-│   ├── hyprland.nix
-│   ├── hyprlock.nix
-│   ├── kdethemes.nix
-│   ├── mako.nix
-│   ├── neovim.nix
-│   ├── packages.nix
-│   ├── rofi.nix
-│   ├── screensaver.nix
-│   ├── shells.nix
-│   ├── starship.nix
-│   ├── terminal.nix
-│   ├── themes.nix
-│   └── waybar.nix
+│   ├── aerospace.nix
+│   ├── hypridle.nix
+│   ├── hyprland.nix
+│   ├── hyprlock.nix
+│   ├── kdethemes.nix
+│   ├── mako.nix
+│   ├── neovim.nix
+│   ├── packages.nix
+│   ├── raycast.nix
+│   ├── rofi.nix
+│   ├── screensaver.nix
+│   ├── shells.nix
+│   ├── sketchybar.nix
+│   ├── starship.nix
+│   ├── terminal.nix
+│   ├── themes.nix
+│   └── waybar.nix
 ├── nix-darwin
-│   ├── configuration.nix
-│   └── home.nix
+│   ├── configuration.nix
+│   └── home.nix
 ├── README.md
 └── wallpapers
     ├── linux-catppuccin.jpg
@@ -82,10 +87,30 @@ sudo nixos-rebuild switch --flake .#kde --impure
 sudo nixos-rebuild switch --flake .#hyprland --impure
 
 # For MacOS desktop
-sudo nixos-rebuild switch --flake .#nix-darwin --impure
+sudo darwin-rebuild switch --flake .#nix-darwin
 ``` 
 
 # FAQ
+
+### Can I use this on a different Linux distro?
+Yes (mostly)! The `~/nix-green/modules` directory contains all of the Home Manager setup including packages, dotfiles and user preferences. What won't transfer over are system level settings and services specific to NixOS set in `configuration.nix` such as boot loader, kernel, openssh and tailscale. These are set on your linux distro.
+
+To install on any Linux distro:
+1. Install Nix Determinate 
+```
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+2. Clone the repo and run the home-manager switch command (replace `username` with the `username` you set in `flake.nix`)
+```
+git clone https://github.com/bsgreen44/nix-green 
+cd ~/nix-green
+nix run home-manager/master -- switch --flake .#username
+```
+
+Any future updates use:
+```
+home-manager switch --flake .#username
+```
 
 ### How do I update the system and packages?
 In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then `sudo nixos-rebuild --flake .#changethis --impure` replacing `changethis` with `kde` or `hyprland`.
