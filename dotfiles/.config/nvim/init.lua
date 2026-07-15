@@ -1,4 +1,5 @@
-vim.g.loaded_node_provider=0;vim.g.loaded_perl_provider=0;vim.g.ruby_host_prog='/nix/store/66vh4ikm9rvyi15fqiji892kpz5pmx13-neovim-ruby-env/bin/neovim-ruby-host';vim.g.python3_host_prog='/nix/store/c6xjrwfx6a2wz05by8ghx0y52b064f17-nvim-host-python3-3.14.6-env/bin/nvim-python3'
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
