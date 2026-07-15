@@ -5,7 +5,9 @@
   programs.ghostty = {
     enable = true;
     enableBashIntegration = false;
-    package = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    #package = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    package = null;
+    systemd.enable =false;
     settings = {
       #background-blur-radius = 20;
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";

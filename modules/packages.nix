@@ -10,9 +10,10 @@
       fastfetch
       brave
       claude-code
+      codex
       obsidian
       nextcloud-client
-      libreoffice
+      #libreoffice
       python315
       lazygit
       luarocks
