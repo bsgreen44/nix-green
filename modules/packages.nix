@@ -1,4 +1,4 @@
-{ pkgs, lib, gazelle, tsui, pvetui, ... }:
+{ pkgs, lib, gazelle, tsui, pvetui, herdr, ... }:
 
 {
   home.packages =
@@ -10,10 +10,14 @@
       git
       fastfetch
       claude-code
+      codex
       python315
       lazygit
       luarocks
       lua51Packages.lua
+
+      # herdr (AI coding-agent multiplexer) — cross-platform flake package
+      herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]
     ++ lib.optionals stdenv.isLinux [
       # Linux-only GUI apps (macOS uses homebrew casks instead)

@@ -23,6 +23,10 @@
       url = "github:devnullvoid/pvetui";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    herdr = {
+      url = "github:ogulcancelik/herdr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     zen-browser = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs = {
@@ -42,6 +46,7 @@
       tsui,
       hyprland,
       pvetui,
+      herdr,
       nix-darwin,
       zen-browser,
       ...
@@ -51,6 +56,29 @@
       username = "green"; # change to your username
     in
     {
+      # Standalone Home Manager for non-NixOS distros (CLI tools + dotfiles only).
+      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        extraSpecialArgs = {
+          inherit
+            username
+            hostname
+            ghostty
+            gazelle
+            tsui
+            pvetui
+            herdr
+            zen-browser
+            ;
+        };
+        modules = [
+          ./linux/home.nix
+          catppuccin.homeModules.catppuccin
+          gazelle.homeModules.gazelle
+          zen-browser.homeModules.beta
+        ];
+      };
+
       nixosConfigurations = {
         # KDE Plasma Desktop
         kde = nixpkgs.lib.nixosSystem {
@@ -63,6 +91,7 @@
               username
               tsui
               pvetui
+              herdr
               zen-browser
               ;
           };
@@ -79,6 +108,7 @@
                 gazelle,
                 tsui,
                 pvetui,
+                herdr,
                 zen-browser,
                 ...
               }:
@@ -94,6 +124,7 @@
                       gazelle
                       tsui
                       pvetui
+                      herdr
                       zen-browser
                       ;
                   };
@@ -122,6 +153,7 @@
               tsui
               hyprland
               pvetui
+              herdr
               zen-browser
               ;
           };
@@ -139,6 +171,7 @@
                 tsui,
                 hyprland,
                 pvetui,
+                herdr,
                 zen-browser,
                 ...
               }:
@@ -155,6 +188,7 @@
                       tsui
                       hyprland
                       pvetui
+                      herdr
                       zen-browser
                       ;
                   };
@@ -184,6 +218,7 @@
               username
               tsui
               pvetui
+              herdr
               ;
           };
 
@@ -198,6 +233,7 @@
                 gazelle,
                 tsui,
                 pvetui,
+                herdr,
                 ...
               }:
               {
@@ -212,6 +248,7 @@
                       gazelle
                       tsui
                       pvetui
+                      herdr
                       ;
                   };
                   users.${username} = import ./nix-darwin/home.nix;

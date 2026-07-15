@@ -10,6 +10,7 @@
     # Programs not manually themed elsewhere:
     bat.enable = true;
     btop.enable = true;
+    kitty.enable = true;
     opencode.enable = true;
 
     # brave & vscodium are nix packages on Linux but homebrew casks on macOS,
