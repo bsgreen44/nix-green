@@ -10,6 +10,7 @@
       fastfetch
       brave
       claude-code
+      codex
       obsidian
       nextcloud-client
       libreoffice

@@ -98,7 +98,7 @@ nix run home-manager/master -- switch --flake .#username
 
 Any future updates use:
 ```
-home-manager switch --flake ~/nix-green#username
+home-manager switch --flake .#username
 ```
 
 ### How do I update the system and packages?
