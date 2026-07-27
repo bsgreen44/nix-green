@@ -215,7 +215,7 @@ in
       hl.bind(mod .. " + SPACE",      hl.dsp.exec_cmd(menu))
       hl.bind(mod .. " + P",          hl.dsp.window.pseudo())
       hl.bind(mod .. " + U",          hl.dsp.layout("togglesplit"))
-      hl.bind(mod .. " + F",          hl.dsp.exec_cmd("hyprctl dispatch fullscreen"))
+      hl.bind(mod .. " + F",          hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
       -- routes through hypridle's guarded lock_cmd to avoid double hyprlock
       hl.bind(mod .. " + L",          hl.dsp.exec_cmd("loginctl lock-session"))
       -- Z = "zzz", manual screensaver
@@ -249,14 +249,14 @@ in
       hl.bind(mod .. " + period",    hl.dsp.layout("colresize +0.2"))
 
       -- Swap active window with the one next to it
-      hl.bind(mod .. " + SHIFT + LEFT",  hl.dsp.exec_cmd("hyprctl dispatch swapwindow l"))
-      hl.bind(mod .. " + SHIFT + RIGHT", hl.dsp.exec_cmd("hyprctl dispatch swapwindow r"))
-      hl.bind(mod .. " + SHIFT + UP",    hl.dsp.exec_cmd("hyprctl dispatch swapwindow u"))
-      hl.bind(mod .. " + SHIFT + DOWN",  hl.dsp.exec_cmd("hyprctl dispatch swapwindow d"))
+      hl.bind(mod .. " + SHIFT + LEFT",  hl.dsp.window.swap({ direction = "l" }))
+      hl.bind(mod .. " + SHIFT + RIGHT", hl.dsp.window.swap({ direction = "r" }))
+      hl.bind(mod .. " + SHIFT + UP",    hl.dsp.window.swap({ direction = "u" }))
+      hl.bind(mod .. " + SHIFT + DOWN",  hl.dsp.window.swap({ direction = "d" }))
 
       -- Cycle through windows in the active workspace
-      hl.bind("ALT + TAB",         hl.dsp.exec_cmd("hyprctl dispatch cyclenext"))
-      hl.bind("ALT + SHIFT + TAB", hl.dsp.exec_cmd("hyprctl dispatch cyclenext prev"))
+      hl.bind("ALT + TAB",         hl.dsp.window.cycle_next({ next = true }))
+      hl.bind("ALT + SHIFT + TAB", hl.dsp.window.cycle_next({ next = false }))
 
       -- Special workspace (scratchpad)
       -- hl.bind(mod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
@@ -276,10 +276,10 @@ in
       hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd([[brightnessctl set 10%- && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500]]))
 
       -- Resize active window ("code:20" = - key, "code:21" = = key)
-      hl.bind(mod .. " + code:20",         hl.dsp.exec_cmd("hyprctl dispatch resizeactive -100 0"))
-      hl.bind(mod .. " + code:21",         hl.dsp.exec_cmd("hyprctl dispatch resizeactive 100 0"))
-      hl.bind(mod .. " + SHIFT + code:20", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 -100"))
-      hl.bind(mod .. " + SHIFT + code:21", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 100"))
+      hl.bind(mod .. " + code:20",         hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
+      hl.bind(mod .. " + code:21",         hl.dsp.window.resize({ x = 100, y = 0, relative = true }))
+      hl.bind(mod .. " + SHIFT + code:20", hl.dsp.window.resize({ x = 0, y = -100, relative = true }))
+      hl.bind(mod .. " + SHIFT + code:21", hl.dsp.window.resize({ x = 0, y = 100, relative = true }))
 
       -- Scroll through existing workspaces
       hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
