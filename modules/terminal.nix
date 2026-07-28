@@ -9,11 +9,11 @@
     package = null;
     systemd.enable =false;
     settings = {
-      #background-blur-radius = 20;
+      background-blur = true;
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
       background-opacity = 0.9;
       window-theme = "dark";
-      font-family = "JetBrainsMono Nerd Font";
+      font-family = "JetBrains Mono";
       font-size = 10;
       gtk-tabs-location = "hidden";
       #window-decoration = false;
@@ -25,7 +25,7 @@
     enable = true;
     shellIntegration.enableBashIntegration = false; # matches ghostty enableBashIntegration = false
     font = {
-      name = "JetBrainsMono Nerd Font";
+      name = "JetBrains Mono";
       size = 10;
     };
     settings = {
