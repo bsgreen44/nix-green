@@ -1,0 +1,6 @@
+background-opacity = 0.900000
+font-family = JetBrainsMono Nerd Font
+font-size = 10
+gtk-tabs-location = hidden
+theme = dark:Catppuccin Mocha,light:Catppuccin Latte
+window-theme = dark

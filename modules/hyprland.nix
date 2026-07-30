@@ -3,10 +3,10 @@
 let
   monitorConfig =
     if hidpi then ''
-      monitor = , preferred, auto, 1.33
-      env = GDK_SCALE, 1.33
+      hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1.33 })
+      hl.env("GDK_SCALE", "1.33")
     '' else ''
-      monitor = , preferred, auto, 1
+      hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
     '';
 in
 {
@@ -59,233 +59,236 @@ in
   wayland.windowManager.hyprland = {
     enable = true;
     package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-    configType = "hyprlang";
+    configType = "lua";
 
-    # Use extraConfig for raw configuration instead of settings
+    # Use extraConfig for raw Lua configuration (hl.* API) instead of the settings
+    # attrset. Since Hyprland 0.55 hyprlang is deprecated in favor of Lua, so this
+    # is emitted to ~/.config/hypr/hyprland.lua. See https://hypr.land/news/26_lua/
     extraConfig = ''
-      $terminal = ghostty
-      $mod = SUPER
-      $menu = rofi -show drun -show-icons -display-drun ""
-      $browser = brave
-      $powermenu = rofi -show power-menu -theme-str 'inputbar { enabled: false; }' -theme-str 'window {width: 225px;}' -theme-str 'window {height: 260px;}' -modi "power-menu:rofi-power-menu"
+      local terminal  = "ghostty"
+      local mod       = "SUPER"
+      local menu      = [[rofi -show drun -show-icons -display-drun ""]]
+      local browser   = "brave"
+      local powermenu = [[rofi -show power-menu -theme-str 'inputbar { enabled: false; }' -theme-str 'window {width: 225px;}' -theme-str 'window {height: 260px;}' -modi "power-menu:rofi-power-menu"]]
 
 
-      # Monitor configuration
+      -- Monitor configuration
       ${monitorConfig}
-      
-      # Optional per-machine overrides (monitor layout, keybinds, etc.).
-      # Sourcing a missing file is a harmless no-op on machines without it.
-      # source = ~/.config/hypr/local.conf
 
-      # Cursor configuration
-      env = XCURSOR_THEME,Bibata-Modern-Classic
-      env = XCURSOR_SIZE,20
-      cursor {
-        no_hardware_cursors = false
-      }
+      -- Optional per-machine overrides (monitor layout, keybinds, etc.).
+      -- With Lua the local override file is Lua too; dofile a missing file is a
+      -- harmless no-op thanks to pcall.
+      -- pcall(dofile, os.getenv("HOME") .. "/.config/hypr/local.lua")
 
-      # Autostart
-      exec-once = waybar
-      exec-once = pkill dunst; mako
-      exec-once = wl-paste --type text --watch cliphist store
-      exec-once = wl-paste --type image --watch cliphist store
-      exec = swaybg -i ${wallpaper} -m fill
+      -- Cursor configuration
+      hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
+      hl.env("XCURSOR_SIZE", "20")
+      hl.config({ cursor = { no_hardware_cursors = false } })
 
+      -- Autostart
+      hl.on("hyprland.start", function()
+        hl.exec_cmd("waybar")
+        hl.exec_cmd("pkill dunst; mako")
+        hl.exec_cmd("wl-paste --type text --watch cliphist store")
+        hl.exec_cmd("wl-paste --type image --watch cliphist store")
+        hl.exec_cmd("swaybg -i ${wallpaper} -m fill")
+      end)
 
-      # Input configuration
-      input {
-        kb_layout = us
-        follow_mouse = 1
-        sensitivity = 0
-        touchpad {
-          natural_scroll = no
-        }
-      }
+      -- Input configuration
+      hl.config({
+        input = {
+          kb_layout = "us",
+          follow_mouse = 1,
+          sensitivity = 0,
+          touchpad = {
+            natural_scroll = false,
+          },
+        },
+      })
 
-      # Group bar
-      group {
-        groupbar {
-          font_family = JetBrainsMono Nerd Font
-          font_size = 10
-        }
-      }
+      -- Group bar
+      hl.config({
+        group = {
+          groupbar = {
+            font_family = "JetBrainsMono Nerd Font",
+            font_size = 10,
+          },
+        },
+      })
 
-      # General settings
-      general {
-        #layout = dwindle
-        layout = scrolling
-        gaps_in = 3
-        gaps_out = 7
-        border_size = 2
-        col.active_border = rgba(cba6f7ed) rgba(89b4faed) 45deg
-        col.inactive_border = rgba(595959aa)
-      }
-      workspace = 10, layout:dwindle
-      workspace = 9, layout:dwindle
-      workspace = 8, layout:dwindle
+      -- General settings (dwindle is also available as layout = "dwindle")
+      hl.config({
+        general = {
+          layout = "scrolling",
+          gaps_in = 3,
+          gaps_out = 7,
+          border_size = 2,
+          col = {
+            active_border = { colors = { "rgba(cba6f7ed)", "rgba(89b4faed)" }, angle = 45 },
+            inactive_border = "rgba(595959aa)",
+          },
+        },
+      })
+      hl.workspace_rule({ workspace = 10, layout = "dwindle" })
+      hl.workspace_rule({ workspace = 9, layout = "dwindle" })
+      hl.workspace_rule({ workspace = 8, layout = "dwindle" })
 
-      # Hyprland scrolling
-      plugin {
-        scrolling {
-          column_width = 0.5
-          fullscreen_on_one_column = true
-        }
-      }
+      -- Hyprland scrolling (a core layout in Lua, no longer under plugin)
+      hl.config({
+        scrolling = {
+          column_width = 0.5,
+          fullscreen_on_one_column = true,
+        },
+      })
 
-      # Decorations
-      decoration {
-        rounding = 8
-        blur {
-          enabled = false
-        }
-        shadow {
-          enabled = false
-        }
-      }
+      -- Decorations
+      hl.config({
+        decoration = {
+          rounding = 8,
+          blur = { enabled = false },
+          shadow = { enabled = false },
+        },
+      })
 
-      # Animations
-      animations {
-        enabled = yes
-        bezier = myBezier, 0.05, 0.9, 0.1, 1.05
-        animation = windows, 1, 7, myBezier
-        animation = windowsOut, 1, 7, default, popin 80%
-        animation = border, 1, 10, default
-        animation = borderangle, 1, 8, default
-        animation = fade, 1, 7, default
-        animation = workspaces, 1, 6, default, slidevert
-      }
+      -- Animations
+      hl.config({ animations = { enabled = true } })
+      hl.curve("myBezier", { type = "bezier", points = { {0.05, 0.9}, {0.1, 1.05} } })
+      hl.animation({ leaf = "windows",     enabled = true, speed = 7,  bezier = "myBezier" })
+      hl.animation({ leaf = "windowsOut",  enabled = true, speed = 7,  bezier = "default", style = "popin 80%" })
+      hl.animation({ leaf = "border",      enabled = true, speed = 10, bezier = "default" })
+      hl.animation({ leaf = "borderangle", enabled = true, speed = 8,  bezier = "default" })
+      hl.animation({ leaf = "fade",        enabled = true, speed = 7,  bezier = "default" })
+      hl.animation({ leaf = "workspaces",  enabled = true, speed = 6,  bezier = "default", style = "slidevert" })
 
-      # Layout
-      dwindle {
-        preserve_split = yes
-      }
+      -- Layout
+      hl.config({ dwindle = { preserve_split = true } })
 
-      # Master layout (alternative)
-      master {
-        new_status = master
-      }
+      -- Master layout (alternative)
+      hl.config({ master = { new_status = "master" } })
 
-      # Window rules
-      windowrule = match:class ^(gnome-disks|thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, float on
-      windowrule = match:class ^(gnome-disks|thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, center on
-      windowrule = match:class ^(gnome-disks|thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$, size 900 600
+      -- Window rules
+      hl.window_rule({
+        name = "float-utilities",
+        match = { class = "^(gnome-disks|thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$" },
+        float = true,
+        center = true,
+        size = "900 600",
+      })
 
-      windowrule = match:class ^(swayimg)$, float on
-      windowrule = match:class ^(swayimg)$, center on
+      hl.window_rule({
+        name = "float-swayimg",
+        match = { class = "^(swayimg)$" },
+        float = true,
+        center = true,
+      })
 
-      windowrule = match:title ^(float)$, float on
-      windowrule = match:title ^(float)$, center on
-      windowrule = match:title ^(float)$, size 900 600
+      hl.window_rule({
+        name = "float-title",
+        match = { title = "^(float)$" },
+        float = true,
+        center = true,
+        size = "900 600",
+      })
 
-      windowrule = match:title ^(full)$, fullscreen on
+      hl.window_rule({
+        name = "fullscreen-title",
+        match = { title = "^(full)$" },
+        fullscreen = true,
+      })
 
-      # ---Keybindings
+      -- ---Keybindings
 
-      # Application launchers
-      bind = $mod, Return, exec, $terminal
-      bind = $mod SHIFT, B, exec, $browser
-      bind = $mod SHIFT, F, exec, thunar
-      bind = $mod SHIFT, O, exec, obsidian
-      bind = $mod SHIFT, V, exec, codium
-      bind = $mod SHIFT, M, exec, $terminal --title=float -e btop
-      bind = $mod SHIFT, T, exec, $terminal --title=float -e sudo tsui
-      bind = $mod SHIFT, N, exec, $terminal -e nvim
-      bind = $mod SHIFT, G, exec, $terminal -e lazygit
-      bind = $mod SHIFT, A, exec, $terminal -e opencode
-      bind = $mod, Q, killactive,
-      bind = $mod SHIFT, ESCAPE, exit,
-      bind = $mod, T, togglefloating,
-      bind = $mod, SPACE, exec, $menu
-      bind = $mod, P, pseudo,
-      bind = $mod, U, layoutmsg, togglesplit
-      bind = $mod, F, fullscreen,
-      bind = $mod, L, exec, loginctl lock-session # routes through hypridle's guarded lock_cmd to avoid double hyprlock
-      bind = $mod SHIFT, Z, exec, screensaver # Z = "zzz", manual screensaver
-      bind = $mod, ESCAPE, exec, $powermenu
-      bind = $mod CTRL, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
-      bind = $mod SHIFT, S, exec, grim -g "$(slurp)" -t png | wl-copy
-      bind = $mod SHIFT, H, exec, rofi -modi "keybinds:hypr-keybinds" -show keybinds -p " Keybinds"
-      bind = $mod SHIFT, SPACE, exec, pkill waybar || waybar
+      -- Application launchers
+      hl.bind(mod .. " + Return",     hl.dsp.exec_cmd(terminal))
+      hl.bind(mod .. " + SHIFT + B",  hl.dsp.exec_cmd(browser))
+      hl.bind(mod .. " + SHIFT + F",  hl.dsp.exec_cmd("thunar"))
+      hl.bind(mod .. " + SHIFT + O",  hl.dsp.exec_cmd("obsidian"))
+      hl.bind(mod .. " + SHIFT + V",  hl.dsp.exec_cmd("codium"))
+      hl.bind(mod .. " + SHIFT + M",  hl.dsp.exec_cmd(terminal .. " --title=float -e btop"))
+      hl.bind(mod .. " + SHIFT + T",  hl.dsp.exec_cmd(terminal .. " --title=float -e sudo tsui"))
+      hl.bind(mod .. " + SHIFT + N",  hl.dsp.exec_cmd(terminal .. " -e nvim"))
+      hl.bind(mod .. " + SHIFT + G",  hl.dsp.exec_cmd(terminal .. " -e lazygit"))
+      hl.bind(mod .. " + SHIFT + A",  hl.dsp.exec_cmd(terminal .. " -e opencode"))
+      hl.bind(mod .. " + Q",          hl.dsp.window.close())
+      hl.bind(mod .. " + SHIFT + ESCAPE", hl.dsp.exit())
+      hl.bind(mod .. " + T",          hl.dsp.window.float({ action = "toggle" }))
+      hl.bind(mod .. " + SPACE",      hl.dsp.exec_cmd(menu))
+      hl.bind(mod .. " + P",          hl.dsp.window.pseudo())
+      hl.bind(mod .. " + U",          hl.dsp.layout("togglesplit"))
+      hl.bind(mod .. " + F",          hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
+      -- routes through hypridle's guarded lock_cmd to avoid double hyprlock
+      hl.bind(mod .. " + L",          hl.dsp.exec_cmd("loginctl lock-session"))
+      -- Z = "zzz", manual screensaver
+      hl.bind(mod .. " + SHIFT + Z",  hl.dsp.exec_cmd("screensaver"))
+      hl.bind(mod .. " + ESCAPE",     hl.dsp.exec_cmd(powermenu))
+      hl.bind(mod .. " + CTRL + V",   hl.dsp.exec_cmd([[cliphist list | rofi -dmenu | cliphist decode | wl-copy]]))
+      hl.bind(mod .. " + SHIFT + S",  hl.dsp.exec_cmd([[grim -g "$(slurp)" -t png | wl-copy]]))
+      hl.bind(mod .. " + SHIFT + H",  hl.dsp.exec_cmd([[rofi -modi "keybinds:hypr-keybinds" -show keybinds -p " Keybinds"]]))
+      hl.bind(mod .. " + SHIFT + SPACE", hl.dsp.exec_cmd([[pkill waybar || waybar]]))
 
-      # Move focus with arrow keys
-      bind = $mod, left, movefocus, l
-      bind = $mod, right, movefocus, r
-      bind = $mod, up, movefocus, u
-      bind = $mod, down, movefocus, d
+      -- Move focus with arrow keys
+      hl.bind(mod .. " + left",  hl.dsp.focus({ direction = "left" }))
+      hl.bind(mod .. " + right", hl.dsp.focus({ direction = "right" }))
+      hl.bind(mod .. " + up",    hl.dsp.focus({ direction = "up" }))
+      hl.bind(mod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
-      # Switch workspaces
-      bind = $mod, 1, workspace, 1
-      bind = $mod, 2, workspace, 2
-      bind = $mod, 3, workspace, 3
-      bind = $mod, 4, workspace, 4
-      bind = $mod, 5, workspace, 5
-      bind = $mod, 6, workspace, 6
-      bind = $mod, 7, workspace, 7
-      bind = $mod, 8, workspace, 8
-      bind = $mod, 9, workspace, 9
-      bind = $mod, 0, workspace, 10
+      -- Switch workspaces (mod + [0-9]) and move active window (mod + SHIFT + [0-9]).
+      -- 10 maps to key 0.
+      for i = 1, 10 do
+        local key = i % 10
+        hl.bind(mod .. " + " .. key,         hl.dsp.focus({ workspace = i }))
+        hl.bind(mod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+      end
 
-      # Move active window to workspace
-      bind = $mod SHIFT, 1, movetoworkspace, 1
-      bind = $mod SHIFT, 2, movetoworkspace, 2
-      bind = $mod SHIFT, 3, movetoworkspace, 3
-      bind = $mod SHIFT, 4, movetoworkspace, 4
-      bind = $mod SHIFT, 5, movetoworkspace, 5
-      bind = $mod SHIFT, 6, movetoworkspace, 6
-      bind = $mod SHIFT, 7, movetoworkspace, 7
-      bind = $mod SHIFT, 8, movetoworkspace, 8
-      bind = $mod SHIFT, 9, movetoworkspace, 9
-      bind = $mod SHIFT, 0, movetoworkspace, 10
+      -- Scrolling
+      hl.bind(mod .. " + K",         hl.dsp.layout("focus r"))
+      hl.bind(mod .. " + J",         hl.dsp.layout("focus l"))
+      hl.bind(mod .. " + SHIFT + K", hl.dsp.layout("swapcol r"))
+      hl.bind(mod .. " + SHIFT + J", hl.dsp.layout("swapcol l"))
+      hl.bind(mod .. " + comma",     hl.dsp.layout("colresize -0.2"))
+      hl.bind(mod .. " + period",    hl.dsp.layout("colresize +0.2"))
 
-      #Scrolling
-      bind = $mod, K, layoutmsg, focus r
-      bind = $mod, J, layoutmsg, focus l
-      bind = $mod SHIFT, K, layoutmsg, swapcol r
-      bind = $mod SHIFT, J, layoutmsg, swapcol l
-      bind = $mod, comma, layoutmsg, colresize -0.2
-      bind = $mod, period, layoutmsg, colresize +0.2
+      -- Swap active window with the one next to it
+      hl.bind(mod .. " + SHIFT + LEFT",  hl.dsp.window.swap({ direction = "l" }))
+      hl.bind(mod .. " + SHIFT + RIGHT", hl.dsp.window.swap({ direction = "r" }))
+      hl.bind(mod .. " + SHIFT + UP",    hl.dsp.window.swap({ direction = "u" }))
+      hl.bind(mod .. " + SHIFT + DOWN",  hl.dsp.window.swap({ direction = "d" }))
 
-      # Swap active window with the one next to it
-      bind = $mod SHIFT, LEFT, swapwindow, l
-      bind = $mod SHIFT, RIGHT, swapwindow, r
-      bind = $mod SHIFT, UP, swapwindow, u
-      bind = $mod SHIFT, DOWN, swapwindow, d
+      -- Cycle through windows in the active workspace
+      hl.bind("ALT + TAB",         hl.dsp.window.cycle_next({ next = true }))
+      hl.bind("ALT + SHIFT + TAB", hl.dsp.window.cycle_next({ next = false }))
 
-      # Cycle through windows in active worksapce
-      bind = ALT, TAB, cyclenext
-      bind = ALT SHIFT, TAB, cyclenext, prev
+      -- Special workspace (scratchpad)
+      -- hl.bind(mod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
+      -- hl.bind(mod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
-      # Special workspace (scratchpad)
-      #bind = $mod, S, togglespecialworkspace, magic
-      #bind = $mod SHIFT, S, movetoworkspace, special:magic
+      -- Print screen key
+      hl.bind("PRINT", hl.dsp.exec_cmd([[grim -g "$(slurp)" -t png | wl-copy]]))
 
-      # Print screen key
-      bind = , PRINT, exec, grim -g "$(slurp)" -t png | wl-copy
+      -- Volume
+      hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd([[wpctl set-volume @DEFAULT_SINK@ 5%+ && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500]]))
+      hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd([[wpctl set-volume @DEFAULT_SINK@ 5%- && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500]]))
+      hl.bind("XF86AudioMute", hl.dsp.exec_cmd([[wpctl set-mute @DEFAULT_SINK@ toggle && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@)" -t 1500]]))
+      hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd([[wpctl set-mute @DEFAULT_SOURCE@ toggle && notify-send -h string:x-canonical-private-synchronous:mic "Microphone" "$(wpctl get-volume @DEFAULT_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')" -t 1500]]))
 
-      # Volume
-      bind = , XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+ && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500
-      bind = , XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%- && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500
-      bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@)" -t 1500
-      bind = , XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_SOURCE@ toggle && notify-send -h string:x-canonical-private-synchronous:mic "Microphone" "$(wpctl get-volume @DEFAULT_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')" -t 1500
+      -- Brightness
+      hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd([[brightnessctl set +10% && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500]]))
+      hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd([[brightnessctl set 10%- && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500]]))
 
-      # Brightness
-      bind = , XF86MonBrightnessUp, exec, brightnessctl set +10% && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500
-      bind = , XF86MonBrightnessDown, exec, brightnessctl set 10%- && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500
+      -- Resize active window ("code:20" = - key, "code:21" = = key)
+      hl.bind(mod .. " + code:20",         hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
+      hl.bind(mod .. " + code:21",         hl.dsp.window.resize({ x = 100, y = 0, relative = true }))
+      hl.bind(mod .. " + SHIFT + code:20", hl.dsp.window.resize({ x = 0, y = -100, relative = true }))
+      hl.bind(mod .. " + SHIFT + code:21", hl.dsp.window.resize({ x = 0, y = 100, relative = true }))
 
-      # Resize active window
-      bind = $mod, code:20, resizeactive, -100 0    # - key
-      bind = $mod, code:21, resizeactive, 100 0     # = key
-      bind = $mod SHIFT, code:20, resizeactive, 0 -100
-      bind = $mod SHIFT, code:21, resizeactive, 0 100
+      -- Scroll through existing workspaces
+      hl.bind(mod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+      hl.bind(mod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+      hl.bind(mod .. " + TAB",        hl.dsp.focus({ workspace = "e+1" }))
 
-      # Scroll through existing workspaces
-      bind = $mod, mouse_down, workspace, e+1
-      bind = $mod, mouse_up, workspace, e-1
-      bind = $mod, TAB, workspace, e+1
-
-      # Move/resize windows with mod + LMB/RMB and dragging
-      bindm = $mod, mouse:272, movewindow
-      bindm = $mod, mouse:273, resizewindow
+      -- Move/resize windows with mod + LMB/RMB and dragging
+      hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
+      hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
     '';
   };
 }
