@@ -26,11 +26,13 @@ hl.env("XCURSOR_SIZE", "20")
 hl.config({ cursor = { no_hardware_cursors = false } })
 
 -- Autostart
+-- Don't start the cliphist watchers here: services.cliphist already runs
+-- them as user units, and doing both stores every copy twice.
 hl.on("hyprland.start", function()
   hl.exec_cmd("waybar")
   hl.exec_cmd("pkill dunst; mako")
-  hl.exec_cmd("wl-paste --type text --watch cliphist store")
-  hl.exec_cmd("wl-paste --type image --watch cliphist store")
+  -- Without an agent, polkit prompts fail silently (gnome-disks, nm)
+  hl.exec_cmd("hyprpolkitagent")
   hl.exec_cmd("swaybg -i " .. os.getenv("HOME") .. "/nix-green/wallpapers/linux-catppuccin.jpg -m fill")
 end)
 
@@ -145,7 +147,7 @@ hl.bind(mod .. " + SHIFT + F",  hl.dsp.exec_cmd("thunar"))
 hl.bind(mod .. " + SHIFT + O",  hl.dsp.exec_cmd("obsidian"))
 hl.bind(mod .. " + SHIFT + V",  hl.dsp.exec_cmd("codium"))
 hl.bind(mod .. " + SHIFT + M",  hl.dsp.exec_cmd(terminal .. " --title=float -e btop"))
-hl.bind(mod .. " + SHIFT + T",  hl.dsp.exec_cmd(terminal .. " --title=float -e sudo tsui"))
+hl.bind(mod .. " + SHIFT + T",  hl.dsp.exec_cmd(terminal .. " --title=float -e tsui"))
 hl.bind(mod .. " + SHIFT + N",  hl.dsp.exec_cmd(terminal .. " -e nvim"))
 hl.bind(mod .. " + SHIFT + G",  hl.dsp.exec_cmd(terminal .. " -e lazygit"))
 hl.bind(mod .. " + SHIFT + A",  hl.dsp.exec_cmd(terminal .. " -e opencode"))
