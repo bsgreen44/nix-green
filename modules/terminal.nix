@@ -20,12 +20,12 @@
     };
   };
 
-  # kitty config — mirrors the ghostty settings above
+  # kitty config - mirrors the ghostty settings above
   programs.kitty = {
     enable = true;
     shellIntegration.enableBashIntegration = false; # matches ghostty enableBashIntegration = false
     font = {
-      name = "JetBrains Mono";
+      name = "JetBrainsMono Nerd Font Mono";
       size = 10;
     };
     settings = {

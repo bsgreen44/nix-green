@@ -6,9 +6,10 @@
 
     settings = {
       general = {
-        no_fade_in = false;
-        grace = 0;
-        disable_loading_bar = true;
+        # no_fade_in / grace / disable_loading_bar were removed upstream and are
+        # rejected by 0.9.6. Show the lock surface without waiting for the
+        # background to load, else the desktop stays visible for seconds.
+        immediate_render = true;
       };
 
       background = [

@@ -75,7 +75,9 @@ in
     tsui = {
       name = "Tailscale";
       genericName = "Tailscale TUI";
-      exec = "ghostty --title=float -e sudo tsui";
+      # No sudo: tailscale's operator setting grants this user write access, and
+      # sudo's secure_path can't see ~/.nix-profile/bin on non-NixOS distros.
+      exec = "ghostty --title=float -e tsui";
       terminal = false;
       categories = [ "System" "Network" ];
       icon = "network-wireless-encrypted";

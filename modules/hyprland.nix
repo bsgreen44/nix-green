@@ -1,3 +1,6 @@
+# `hyprland` is the flake input on NixOS, null where the distro installs the
+# compositor. Must be supplied either way - the module system resolves declared
+# args eagerly, so a `? null` default here would never apply.
 { pkgs, lib, wallpaper, hyprland, hidpi ? false, ... }:
 
 let
@@ -23,6 +26,7 @@ in
     swayimg      # Image viewer
     bibata-cursors
     rofi-power-menu
+    hyprpolkitagent  # polkit authentication agent, started from the autostart block
   ];
 
   # clipboard manager
@@ -56,9 +60,10 @@ in
   };
 
   # Hyprland configuration
+  # package/portalPackage are set after the config block; both null when the
+  # flake input is absent, so Nix writes hyprland.lua and defers to $PATH.
   wayland.windowManager.hyprland = {
     enable = true;
-    package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     configType = "lua";
 
     # Use extraConfig for raw Lua configuration (hl.* API) instead of the settings
@@ -86,11 +91,13 @@ in
       hl.config({ cursor = { no_hardware_cursors = false } })
 
       -- Autostart
+      -- Don't start the cliphist watchers here: services.cliphist already runs
+      -- them as user units, and doing both stores every copy twice.
       hl.on("hyprland.start", function()
         hl.exec_cmd("waybar")
         hl.exec_cmd("pkill dunst; mako")
-        hl.exec_cmd("wl-paste --type text --watch cliphist store")
-        hl.exec_cmd("wl-paste --type image --watch cliphist store")
+        -- Without an agent, polkit prompts fail silently (gnome-disks, nm)
+        hl.exec_cmd("${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent")
         hl.exec_cmd("swaybg -i ${wallpaper} -m fill")
       end)
 
@@ -205,7 +212,7 @@ in
       hl.bind(mod .. " + SHIFT + O",  hl.dsp.exec_cmd("obsidian"))
       hl.bind(mod .. " + SHIFT + V",  hl.dsp.exec_cmd("codium"))
       hl.bind(mod .. " + SHIFT + M",  hl.dsp.exec_cmd(terminal .. " --title=float -e btop"))
-      hl.bind(mod .. " + SHIFT + T",  hl.dsp.exec_cmd(terminal .. " --title=float -e sudo tsui"))
+      hl.bind(mod .. " + SHIFT + T",  hl.dsp.exec_cmd(terminal .. " --title=float -e tsui"))
       hl.bind(mod .. " + SHIFT + N",  hl.dsp.exec_cmd(terminal .. " -e nvim"))
       hl.bind(mod .. " + SHIFT + G",  hl.dsp.exec_cmd(terminal .. " -e lazygit"))
       hl.bind(mod .. " + SHIFT + A",  hl.dsp.exec_cmd(terminal .. " -e opencode"))
@@ -290,5 +297,15 @@ in
       hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
       hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
     '';
-  };
+  }
+  // (
+    if hyprland != null then {
+      # NixOS: build from the flake input, leave portalPackage at its default.
+      package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    } else {
+      # Non-NixOS: compositor and portal come from the distro.
+      package = null;
+      portalPackage = null;
+    }
+  );
 }

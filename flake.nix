@@ -28,8 +28,8 @@
     inputs = {
       nixpkgs.follows = "nixpkgs";
       home-manager.follows = "home-manager";
+      };
     };
-  };
   };
 
   outputs =
@@ -51,28 +51,39 @@
       username = "green"; # change to your username
     in
     {
-      # Standalone Home Manager for non-NixOS distros (CLI tools + dotfiles only).
-      homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages."x86_64-linux";
-        extraSpecialArgs = {
-          inherit
-            username
-            hostname
-            ghostty
-            gazelle
-            tsui
-            pvetui
-            herdr
-            zen-browser
-            ;
+      # Standalone Home Manager for non-NixOS distros.
+      #   .#green           - CLI tools + dotfiles only
+      #   .#green-hyprland  - the above plus the Hyprland desktop, for distros
+      #                       where the compositor is installed by the distro's
+      #                       own package manager rather than built by Nix.
+      homeConfigurations =
+        let
+          standalone = entry: home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages."x86_64-linux";
+            extraSpecialArgs = {
+              inherit
+                username
+                hostname
+                ghostty
+                gazelle
+                tsui
+                pvetui
+                herdr
+                zen-browser
+                ;
+            };
+            modules = [
+              entry
+              catppuccin.homeModules.catppuccin
+              gazelle.homeModules.gazelle
+              zen-browser.homeModules.beta
+            ];
+          };
+        in
+        {
+          ${username} = standalone ./linux/home.nix;
+          "${username}-hyprland" = standalone ./linux/hyprland.nix;
         };
-        modules = [
-          ./linux/home.nix
-          catppuccin.homeModules.catppuccin
-          gazelle.homeModules.gazelle
-          zen-browser.homeModules.beta
-        ];
-      };
 
       nixosConfigurations = {
         # KDE Plasma Desktop
