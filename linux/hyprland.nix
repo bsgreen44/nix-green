@@ -17,7 +17,7 @@
   ];
 
   _module.args = {
-    wallpaper = "/home/${username}/nix-green/wallpapers/linux-catppuccin.jpg";
+    wallpaper = "/home/${username}/nix-green/wallpapers/catppuccin_mocha_japanese_wallpaper_8k.png";
     hidpi = false;   # set true on 2k/4k laptop panels
 
     # No flake input: hyprland.nix then nulls package/portalPackage, so the

@@ -33,7 +33,7 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("pkill dunst; mako")
   -- Without an agent, polkit prompts fail silently (gnome-disks, nm)
   hl.exec_cmd("hyprpolkitagent")
-  hl.exec_cmd("swaybg -i " .. os.getenv("HOME") .. "/nix-green/wallpapers/linux-catppuccin.jpg -m fill")
+  hl.exec_cmd("swaybg -i " .. os.getenv("HOME") .. "/nix-green/wallpapers/catppuccin_mocha_japanese_wallpaper_8k.png -m fill")
 end)
 
 -- Input configuration
