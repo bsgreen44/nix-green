@@ -1,0 +1,72 @@
+* {
+    /* The "Mono" variant scales every icon to a single cell and centres
+       it in that cell; the plain variant leaves wide icons overhanging
+       to the right, which knocks glyph-only modules off centre. */
+    font-family: "JetBrainsMono Nerd Font Mono";
+    font-size: 12px;
+    font-weight: bold;
+}
+
+window#waybar {
+    background-color: transparent;
+    color: #cdd6f4;
+}
+
+/* Island panels behind each module group. The last value is the
+   transparency knob: 0.0 is invisible, 1.0 is fully opaque. */
+.modules-left,
+.modules-center,
+.modules-right {
+    background-color: rgba(30, 30, 46, 0.0);
+    border-radius: 9px;
+    padding: 0 4px;
+}
+
+#workspaces button {
+    padding: 0 6px;
+    margin: 2px;
+    color: #cdd6f4;
+    background: transparent;
+    border-radius: 7px;
+}
+
+#workspaces button.active {
+    color: #313244;
+    background-color: rgb(203, 166, 247);
+}
+
+#clock,
+#battery,
+#bluetooth,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#mode,
+#idle_inhibitor,
+#scratchpad,
+#mpd {
+    padding: 0 8px;
+    background-color: rgb(203, 166, 247);
+    border-radius: 7px;
+    margin: 2px;
+    color: #313244;
+}
+
+/* The tray box is excluded from the pill rule above: with no status
+   icons running it would render as a stray coloured nub. */
+#tray {
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+/* The clock keeps the shared pill fill and text colour; it only
+   opts out of the common font size. */
+#clock {
+    font-size: 13px;
+}
