@@ -1,0 +1,66 @@
+format = "$username$directory$git_branch$git_status$c$rust$golang$nodejs$php$java$kotlin$haskell$python$conda$cmd_duration$line_break$character"
+
+[c]
+format = "via [$symbol($version )]($style)"
+
+[character]
+disabled = false
+error_symbol = "[❯](bold red)"
+success_symbol = "[❯](bold green)"
+vimcmd_symbol = "[❮](bold green)"
+
+[cmd_duration]
+disabled = false
+format = "took [$duration]($style) "
+min_time_to_notify = 45000
+show_milliseconds = true
+show_notifications = true
+
+[conda]
+format = "[$symbol$environment ]($style)"
+ignore_base = false
+
+[directory]
+format = "[$path]($style)[$read_only]($read_only_style) "
+truncation_length = 3
+truncation_symbol = "…/"
+
+[git_branch]
+format = "on [$symbol$branch]($style) "
+
+[git_status]
+format = "([$all_status$ahead_behind]($style) )"
+
+[golang]
+format = "via [$symbol($version )]($style)"
+
+[haskell]
+format = "via [$symbol($version )]($style)"
+
+[java]
+format = "via [$symbol($version )]($style)"
+
+[kotlin]
+format = "via [$symbol($version )]($style)"
+
+[line_break]
+disabled = true
+
+[nodejs]
+format = "via [$symbol($version )]($style)"
+
+[php]
+format = "via [$symbol($version )]($style)"
+
+[python]
+format = 'via [$symbol($version )(\($virtualenv\) )]($style)'
+
+[rust]
+format = "via [$symbol($version )]($style)"
+
+[time]
+disabled = true
+
+[username]
+format = "[$user]($style) "
+show_always = false

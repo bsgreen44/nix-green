@@ -8,6 +8,19 @@ This is my nix configuration I use for my systems. The main focus of the configu
 ```
 nix-green
 ├── configuration.nix
+├── dotfiles
+│   └── .config
+│       ├── VSCodium
+│       ├── bat
+│       ├── btop
+│       ├── clock-rs
+│       ├── gazelle
+│       ├── ghostty
+│       ├── hypr
+│       ├── kitty
+│       ├── nvim
+│       ├── opencode
+│       └── starship.toml
 ├── flake.lock
 ├── flake.nix
 ├── hyprland
@@ -16,12 +29,15 @@ nix-green
 ├── kde
 │   ├── configuration.nix
 │   └── home.nix
+├── linux
+│   ├── home.nix
+│   └── hyprland.nix
 ├── modules
 │   ├── hypridle.nix
 │   ├── hyprland.nix
 │   ├── hyprlock.nix
 │   ├── kdethemes.nix
-|   ├── mako.nix
+│   ├── mako.nix
 │   ├── neovim.nix
 │   ├── packages.nix
 │   ├── rofi.nix
@@ -66,8 +82,11 @@ git clone https://github.com/bsgreen44/nix-green
       username = "green"; # change to your username
     in
 ```
-3. Rebuild your system using **ONE** of the commands below and you're good to go! 
+3. While in the `nix-green` directory, rebuild your system using **ONE** of the commands below and you're good to go! 
 ```
+# Make sure you're in the correct directory
+cd ~/nix-green
+
 # For KDE desktop
 sudo nixos-rebuild switch --flake .#kde --impure
 
@@ -77,8 +96,42 @@ sudo nixos-rebuild switch --flake .#hyprland --impure
 
 # FAQ
 
+### Can I use this on a different Linux distro?
+Yes (mostly)! The `~/nix-green/modules` directory contains all of the Home Manager setup including packages, dotfiles and user preferences. What won't transfer over are system level settings and services specific to NixOS set in `configuration.nix` such as boot loader, kernel, openssh and tailscale. These are set on your linux distro.
+
+To install on any Linux distro:
+1. Install Nix Determinate 
+```
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+2. Clone the repo and run home-manager switch command
+```
+git clone https://github.com/bsgreen44/nix-green 
+cd ~/nix-green
+nix run home-manager/master -- switch --flake .#username
+```
+
+Any future updates use:
+```
+home-manager switch --flake .#username
+```
+
+### Can I run the Hyprland desktop on a different Linux distro?
+Yes. There are two Home Manager configurations: `.#username` installs CLI tools and dotfiles only, and `.#username-hyprland` adds the Hyprland desktop on top of it. Nix writes the config, your distro supplies the compositor.
+
+1. Install `hyprland`, `xdg-desktop-portal-hyprland` and `hyprlock` with your distro's package manager. Some distros ship these in a third-party repository rather than the default ones.
+2. Switch to the desktop configuration
+```
+home-manager switch --flake .#username-hyprland
+```
+3. Log out and pick Hyprland from your login screen's session list.
+
+Distro-specific settings, such as the wallpaper path, live in `~/nix-green/linux/hyprland.nix`.
+
 ### How do I update the system and packages?
 In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then `sudo nixos-rebuild --flake .#changethis --impure` replacing `changethis` with `kde` or `hyprland`.
+
+On other distros, run `nix flake update` followed by `home-manager switch --flake .#username`, or `.#username-hyprland` if you installed the desktop.
 
 ## Hyprland
 
@@ -86,14 +139,17 @@ In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake
 `SUPER + SHIFT + H` opens a searchable keybind list. Edit the keybinds in `hyprland.nix`. After changing the keybind, update the keybinds list in `rofi.nix`. See [hyprland wiki](https://wiki.hypr.land/Configuring/Binds/) on how to set binds.
 
 ### How do I change the wallpaper?
-In `~/nix-green/hyprland/home.nix` line 4, set it to the path of the desired wallpaper
+Set `wallpaper` in the `_module.args` block to the path of the desired wallpaper. On NixOS this is in `~/nix-green/hyprland/home.nix`; on other distros it's `~/nix-green/linux/hyprland.nix`.
 ```
-  { pkgs, username, ... }:
-{
   _module.args = {
     wallpaper = "/home/${username}/nix-green/wallpapers/linux-catppuccin.jpg";
   };
 ```
+*NOTE: rebuilding alone will not change what is on screen.* swaybg only starts from the `hyprland.start` block in `hyprland.nix`, so log out and back in, or restart it:
+```
+pkill swaybg && swaybg -i ~/nix-green/wallpapers/<image> -m fill &
+```
+If you're wallpaper is not in `~/nix-green/wallpapers/` make sure to update this to the desired path. The wallpaper doubles as the hyprlock background. `-m fill` crops to cover, so size the image for your widest monitor.
 
 ### How do I change the hyprland environment?
 hyprland    ----> `hyprland.nix` `hyprlock.nix` `hypridle.nix`
@@ -102,7 +158,7 @@ waybar      ----> `waybar.nix`
 
 rofi (menu) ----> `rofi.nix`
 
-After changes are made run `sudo nixos-rebuild --flake .#hyprland --impure`. 
+After changes are made run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
 *NOTE: hyprland is managed by home manager. DO NOT modify files in `~/.config`. Any changes to the files will be overwritten after rebuild.*
 
 ### Is there a way to manage hyprland NOT through nix?
@@ -119,14 +175,14 @@ There are 2 options:
 #### Use `hyprmon`
 Easiest and quickest. Not persistent across reboots and rebuilds.
 
-#### hidpi toggle in `~/nix-green/hyprland/home.nix`
-For hi-DPI (2k/4k) laptop panels there's a declarative `hidpi` flag instead of editing the monitor lines by hand. It's set per machine in `hyprland/home.nix`:
+#### hidpi toggle
+For hi-DPI (2k/4k) laptop panels there's a declarative `hidpi` flag instead of editing the monitor lines by hand. It's set per machine in the `_module.args` block, alongside the wallpaper path - `~/nix-green/hyprland/home.nix` on NixOS, `~/nix-green/linux/hyprland.nix` on other distros:
 ```
 _module.args = {
   hidpi = false;   # set true on 2k/4k laptop panels
 };
 ```
-When `hidpi = true`, `hyprland.nix` emits the scaled monitor block (`monitor = eDP-1, preferred, auto, 1.5` and `env = GDK_SCALE, 1.5`) via the `monitorConfig` binding; when `false` it uses the default `monitor = , preferred, auto, 1`. Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`.
+When `hidpi = true`, `hyprland.nix` emits the scaled monitor block (`monitor = eDP-1, preferred, auto, 1.5` and `env = GDK_SCALE, 1.5`) via the `monitorConfig` binding; when `false` it uses the default `monitor = , preferred, auto, 1`. Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
 
 Alternatively, you can manually update `monitorConfig` block in `hyprland.nix` to your exact preferences or add the monitor config to `~/.config/hypr/local.conf` to override the monitor settings. Just make sure to uncomment `# source = ~/.config/hypr/local.conf` in hyprland.nix.
 

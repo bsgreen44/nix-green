@@ -19,13 +19,17 @@
       url = "github:devnullvoid/pvetui";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    herdr = {
+      url = "github:ogulcancelik/herdr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     zen-browser = {
     url = "github:0xc000022070/zen-browser-flake";
     inputs = {
       nixpkgs.follows = "nixpkgs";
       home-manager.follows = "home-manager";
+      };
     };
-  };
   };
 
   outputs =
@@ -38,6 +42,7 @@
       tsui,
       hyprland,
       pvetui,
+      herdr,
       zen-browser,
       ...
     }:
@@ -46,6 +51,40 @@
       username = "green"; # change to your username
     in
     {
+      # Standalone Home Manager for non-NixOS distros.
+      #   .#green           - CLI tools + dotfiles only
+      #   .#green-hyprland  - the above plus the Hyprland desktop, for distros
+      #                       where the compositor is installed by the distro's
+      #                       own package manager rather than built by Nix.
+      homeConfigurations =
+        let
+          standalone = entry: home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages."x86_64-linux";
+            extraSpecialArgs = {
+              inherit
+                username
+                hostname
+                ghostty
+                gazelle
+                tsui
+                pvetui
+                herdr
+                zen-browser
+                ;
+            };
+            modules = [
+              entry
+              catppuccin.homeModules.catppuccin
+              gazelle.homeModules.gazelle
+              zen-browser.homeModules.beta
+            ];
+          };
+        in
+        {
+          ${username} = standalone ./linux/home.nix;
+          "${username}-hyprland" = standalone ./linux/hyprland.nix;
+        };
+
       nixosConfigurations = {
         # KDE Plasma Desktop
         kde = nixpkgs.lib.nixosSystem {
@@ -58,6 +97,7 @@
               username
               tsui
               pvetui
+              herdr
               ;
           };
 
@@ -73,6 +113,7 @@
                 gazelle,
                 tsui,
                 pvetui,
+                herdr,
                 zen-browser,
                 ...
               }:
@@ -88,6 +129,7 @@
                       gazelle
                       tsui
                       pvetui
+                      herdr
                       zen-browser
                       ;
                   };
@@ -116,6 +158,7 @@
               tsui
               hyprland
               pvetui
+              herdr
               zen-browser
               ;
           };
@@ -133,6 +176,7 @@
                 tsui,
                 hyprland,
                 pvetui,
+                herdr,
                 zen-browser,
                 ...
               }:
@@ -149,6 +193,7 @@
                       tsui
                       hyprland
                       pvetui
+                      herdr
                       zen-browser
                       ;
                   };

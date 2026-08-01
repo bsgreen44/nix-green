@@ -1,4 +1,4 @@
-{ pkgs, gazelle, tsui, pvetui, ... }:
+{ pkgs, gazelle, tsui, pvetui, herdr, ... }:
 
 {
   home.packages =
@@ -10,9 +10,10 @@
       fastfetch
       brave
       claude-code
+      codex
       obsidian
       nextcloud-client
-      libreoffice
+      #libreoffice
       python315
       lazygit
       luarocks
@@ -27,11 +28,14 @@
       # NetworkManager tui
       gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
 
+      # herdr (AI coding-agent multiplexer)
+      herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
+
       # pvetui (Proxmox manager tui)
       #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        vendorHash = "sha256-JOo/7/3J9LqefIYuRl9efSlSfzLvQ/B8Jpy2e5cdEio=";
+        vendorHash = "sha256-7Tuh9T3uTlNxdSlSL7gQIYXpfpNbCkQrRWj/FoU8fbU=";
       }))
 
       # Tailscale tui

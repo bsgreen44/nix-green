@@ -230,6 +230,8 @@
   services.tailscale.enable = true;
   # Enable tailscale exit node
   services.tailscale.useRoutingFeatures = "client";
+  # Let the user change tailscale state without sudo, so tsui works unprivileged.
+  services.tailscale.extraSetFlags = [ "--operator=${username}" ];
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
