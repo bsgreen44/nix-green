@@ -1,0 +1,9 @@
+configuration {
+font: "JetBrainsMono Nerd Font 12";
+location: 0;
+run-shell-command: "{terminal} -e {cmd}";
+terminal: "ghostty";
+xoffset: 0;
+yoffset: 0;
+}
+@theme "custom"

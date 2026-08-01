@@ -87,7 +87,15 @@ hl.config({
 hl.config({
   decoration = {
     rounding = 8,
-    blur = { enabled = false },
+    -- Hyprland does the blurring for any transparent window (ghostty's own
+    -- background-blur is KDE-only on Linux and is a no-op here).
+    blur = {
+      enabled = true,
+      size = 8,
+      passes = 3,
+      new_optimizations = true,
+      ignore_opacity = true,
+    },
     shadow = { enabled = false },
   },
 })
@@ -167,6 +175,9 @@ hl.bind(mod .. " + CTRL + V",   hl.dsp.exec_cmd([[cliphist list | rofi -dmenu | 
 hl.bind(mod .. " + SHIFT + S",  hl.dsp.exec_cmd([[grim -g "$(slurp)" -t png | wl-copy]]))
 hl.bind(mod .. " + SHIFT + H",  hl.dsp.exec_cmd([[rofi -modi "keybinds:hypr-keybinds" -show keybinds -p " Keybinds"]]))
 hl.bind(mod .. " + SHIFT + SPACE", hl.dsp.exec_cmd([[pkill waybar || waybar]]))
+-- Notifications: N dismisses the top one, CTRL+N clears the whole stack.
+hl.bind(mod .. " + N",         hl.dsp.exec_cmd("makoctl dismiss"))
+hl.bind(mod .. " + CTRL + N",  hl.dsp.exec_cmd("makoctl dismiss --all"))
 
 -- Move focus with arrow keys
 hl.bind(mod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -231,3 +242,5 @@ hl.bind(mod .. " + TAB",        hl.dsp.focus({ workspace = "e+1" }))
 -- Move/resize windows with mod + LMB/RMB and dragging
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+
+hl.config({ misc = { allow_session_lock_restore = true } })

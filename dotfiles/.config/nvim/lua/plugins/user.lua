@@ -5,9 +5,6 @@ return {
   { "mason-org/mason-lspconfig.nvim", enabled = false },
   { "jay-babu/mason-nvim-dap.nvim", enabled = false },
 
-  -- Disable telescope-fzf-native to avoid build issues
-  { "nvim-telescope/telescope-fzf-native.nvim", enabled = false },
-
   -- Configure LSP servers to use Nix-installed binaries
   {
     "neovim/nvim-lspconfig",
@@ -17,7 +14,7 @@ return {
         nil_ls = {},
         pyright = {},
         ts_ls = {},
-        jsonls = {},
+        -- jsonls is configured by the lazyvim lang.json extra
         yamlls = {},
         marksman = {},
         -- Add more LSP servers as needed
