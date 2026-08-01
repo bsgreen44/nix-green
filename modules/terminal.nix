@@ -5,13 +5,13 @@
   programs.ghostty = {
     enable = true;
     enableBashIntegration = false;
-    #package = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    package = null;
+    package = ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    #package = null;
     systemd.enable =false;
     settings = {
       background-blur = true;
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
-      background-opacity = 0.9;
+      background-opacity = 0.75;
       window-theme = "dark";
       font-family = "JetBrains Mono";
       font-size = 10;
