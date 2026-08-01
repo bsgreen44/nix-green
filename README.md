@@ -9,18 +9,6 @@ This is my nix configuration I use for my systems. The main focus of the configu
 nix-green
 ├── configuration.nix
 ├── dotfiles
-│   └── .config
-│       ├── VSCodium
-│       ├── bat
-│       ├── btop
-│       ├── clock-rs
-│       ├── gazelle
-│       ├── ghostty
-│       ├── hypr
-│       ├── kitty
-│       ├── nvim
-│       ├── opencode
-│       └── starship.toml
 ├── flake.lock
 ├── flake.nix
 ├── hyprland
@@ -49,11 +37,6 @@ nix-green
 │   └── waybar.nix
 ├── README.md
 └── wallpapers
-    ├── linux-catppuccin.jpg
-    ├── nix-wallpaper-nineish-catppuccin-frappe-alt.png
-    ├── nix-wallpaper-nineish-catppuccin-latte.png
-    ├── nix-wallpaper-nineish-catppuccin-macchiato.png
-    └── nix-wallpaper-nineish-catppuccin-mocha-alt.png
 ```
 
 # Screenshots
