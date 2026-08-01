@@ -29,6 +29,7 @@
   home.packages = with pkgs; [
     terminaltexteffects  # `tte`, used by screensaver.nix
     hyprland-qtutils     # hyprland-dialog etc; distro build doesn't ship it
+    hyprmon              # monitor manager; rofi.nix has a desktop entry for it
   ];
 
   # Let a new lock client replace a dead one; without it a crashed hyprlock
