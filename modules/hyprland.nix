@@ -22,7 +22,7 @@ in
     slurp        # screenshot
     gnome-calculator
     wl-clipboard
-    swaybg       # wallpaper config
+    swaybg       # wallpaper; the unit below uses the store path, this is for manual use
     swayimg      # Image viewer
     bibata-cursors
     rofi-power-menu
@@ -31,6 +31,24 @@ in
 
   # clipboard manager
   services.cliphist.enable = true;
+
+  # Wallpaper. A unit and not an autostart exec_cmd, which fires once at login
+  # and leaves the background bare if swaybg ever dies.
+  systemd.user.services.swaybg = {
+    Unit = {
+      Description = "swaybg wallpaper daemon";
+      ConditionEnvironment = "WAYLAND_DISPLAY";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${wallpaper} -m fill";
+      Restart = "always";
+      # Short; systemd's start limit still fails the unit on an unreadable image.
+      RestartSec = 1;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 
   # Enable GNOME Keyring
   services.gnome-keyring = {
@@ -91,14 +109,13 @@ in
       hl.config({ cursor = { no_hardware_cursors = false } })
 
       -- Autostart
-      -- Don't start the cliphist watchers here: services.cliphist already runs
-      -- them as user units, and doing both stores every copy twice.
+      -- cliphist and swaybg are omitted here: both run as user units already, and
+      -- starting them twice double-stores every copy / stacks a second wallpaper.
       hl.on("hyprland.start", function()
         hl.exec_cmd("waybar")
         hl.exec_cmd("pkill dunst; mako")
         -- Without an agent, polkit prompts fail silently (gnome-disks, nm)
         hl.exec_cmd("${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent")
-        hl.exec_cmd("swaybg -i ${wallpaper} -m fill")
       end)
 
       -- Input configuration
