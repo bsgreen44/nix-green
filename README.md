@@ -128,11 +128,11 @@ Set `wallpaper` in the `_module.args` block to the path of the desired wallpaper
     wallpaper = "/home/${username}/nix-green/wallpapers/linux-catppuccin.jpg";
   };
 ```
-*NOTE: rebuilding alone will not change what is on screen.* swaybg only starts from the `hyprland.start` block in `hyprland.nix`, so log out and back in, or restart it:
+Rebuilding is enough when the path changes: swaybg runs as the `swaybg` user service, and `home-manager switch` restarts it. Only editing an image in place under the same filename needs a manual restart:
 ```
-pkill swaybg && swaybg -i ~/nix-green/wallpapers/<image> -m fill &
+systemctl --user restart swaybg
 ```
-If you're wallpaper is not in `~/nix-green/wallpapers/` make sure to update this to the desired path. The wallpaper doubles as the hyprlock background. `-m fill` crops to cover, so size the image for your widest monitor.
+If your wallpaper is not in `~/nix-green/wallpapers/` make sure to update this to the desired path. The wallpaper doubles as the hyprlock background. `-m fill` crops to cover, so size the image for your widest monitor.
 
 ### How do I change the hyprland environment?
 hyprland    ----> `hyprland.nix` `hyprlock.nix` `hypridle.nix`
