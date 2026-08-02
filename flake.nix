@@ -98,6 +98,7 @@
               tsui
               pvetui
               herdr
+              zen-browser
               ;
           };
 
