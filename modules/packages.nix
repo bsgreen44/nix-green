@@ -15,6 +15,11 @@
       nextcloud-client
       #libreoffice
       python315
+      wakeonlan
+      bluetui
+      calcurse
+      cmatrix
+      cbonsai
       lazygit
       luarocks
       lua51Packages.lua

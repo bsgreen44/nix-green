@@ -3,7 +3,7 @@
 ## Layers the desktop modules on top of ./home.nix, so `.#green` stays CLI-only
 ## and `.#green-hyprland` is that plus the desktop. Install the compositor with
 ## the distro's package manager first; Nix only writes the config.
-{ pkgs, lib, username, ... }:
+{ pkgs, username, ... }:
 {
   imports = [
     ./home.nix
@@ -44,8 +44,4 @@
   # /etc/shadow, and the Nix copy isn't setuid here, so the nixpkgs build can
   # never authenticate. Config is still generated - same pattern as ghostty.
   programs.hyprlock.package = null;
-
-  # No PAM hook here to unlock it (NixOS gets one via greetd), so it would start
-  # locked and prompt. Let pam_gnome_keyring start and unlock the distro's copy.
-  services.gnome-keyring.enable = lib.mkForce false;
 }
