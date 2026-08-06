@@ -40,11 +40,10 @@ nix-green
 ```
 
 # Screenshots
-## Hyprland
-<img width="1911" height="1069" alt="20260223_09h57m09s_grim" src="https://github.com/user-attachments/assets/f9420bea-2ac9-4e58-9f76-5229f889da62" />
+<img width="1907" height="1057" alt="20260806_12h02m12s_grim" src="https://github.com/user-attachments/assets/add3248f-c40f-4357-92cc-ebc1b4818b88" />
 
-## KDE Plasma
-<img width="1899" height="952" alt="20260223_21h46m35s_grim" src="https://github.com/user-attachments/assets/b0fe78c3-0a8e-49c7-9838-7af64049d5b4" />
+<img width="1903" height="1072" alt="20260806_12h15m35s_grim" src="https://github.com/user-attachments/assets/32c1df3d-f85a-4bae-b175-6b38e2938a73" />
+
 
 # DISCLAIMER:
 **WHILE CHANGES ARE TESTED BEFORE EACH COMMIT, THIS IS AN ONGOING PROJECT THAT CAN POSSIBLY BREAK YOUR SYSTEM. PLEASE INSTALL AT YOUR OWN RISK!**
