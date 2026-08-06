@@ -13,7 +13,7 @@
       codex
       obsidian
       nextcloud-client
-      #libreoffice
+      libreoffice
       python315
       wakeonlan
       bluetui
