@@ -1,5 +1,5 @@
 # Description
-This is my nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You can choose between [KDE Plasma](https://kde.org/plasma-desktop/) or [Hyprland](https://hypr.land/). This can be installed on most machines due to it's low resource usage. Feel free to use this configuration as is or customize it to how you see fit!
+This is my nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You can choose between [KDE Plasma](https://kde.org/plasma-desktop/) or [Hyprland](https://hypr.land/) on Linux, or run it on macOS through [nix-darwin](https://github.com/LnL7/nix-darwin). This can be installed on most machines due to it's low resource usage. Feel free to use this configuration as is or customize it to how you see fit!
 
 ## In Progress/Future updates
 
@@ -7,52 +7,48 @@ This is my nix configuration I use for my systems. The main focus of the configu
 ```
 nix-green
 ├── configuration.nix
+├── dotfiles
 ├── flake.lock
 ├── flake.nix
 ├── hyprland
-│   ├── configuration.nix
-│   └── home.nix
+│   ├── configuration.nix
+│   └── home.nix
 ├── kde
-│   ├── configuration.nix
-│   └── home.nix
+│   ├── configuration.nix
+│   └── home.nix
 ├── linux
-│   └── home.nix
+│   ├── home.nix
+│   └── hyprland.nix
 ├── modules
-│   ├── aerospace.nix
-│   ├── hypridle.nix
-│   ├── hyprland.nix
-│   ├── hyprlock.nix
-│   ├── kdethemes.nix
-│   ├── mako.nix
-│   ├── neovim.nix
-│   ├── packages.nix
-│   ├── raycast.nix
-│   ├── rofi.nix
-│   ├── screensaver.nix
-│   ├── shells.nix
-│   ├── sketchybar.nix
-│   ├── starship.nix
-│   ├── terminal.nix
-│   ├── themes.nix
-│   └── waybar.nix
+│   ├── aerospace.nix
+│   ├── hypridle.nix
+│   ├── hyprland.nix
+│   ├── hyprlock.nix
+│   ├── kdethemes.nix
+│   ├── mako.nix
+│   ├── neovim.nix
+│   ├── packages.nix
+│   ├── raycast.nix
+│   ├── rofi.nix
+│   ├── screensaver.nix
+│   ├── shells.nix
+│   ├── sketchybar.nix
+│   ├── starship.nix
+│   ├── terminal.nix
+│   ├── themes.nix
+│   └── waybar.nix
 ├── nix-darwin
-│   ├── configuration.nix
-│   └── home.nix
+│   ├── configuration.nix
+│   └── home.nix
 ├── README.md
 └── wallpapers
-    ├── linux-catppuccin.jpg
-    ├── nix-wallpaper-nineish-catppuccin-frappe-alt.png
-    ├── nix-wallpaper-nineish-catppuccin-latte.png
-    ├── nix-wallpaper-nineish-catppuccin-macchiato.png
-    └── nix-wallpaper-nineish-catppuccin-mocha-alt.png
 ```
 
 # Screenshots
-## Hyprland
-<img width="1911" height="1069" alt="20260223_09h57m09s_grim" src="https://github.com/user-attachments/assets/f9420bea-2ac9-4e58-9f76-5229f889da62" />
+<img width="1907" height="1057" alt="20260806_12h02m12s_grim" src="https://github.com/user-attachments/assets/add3248f-c40f-4357-92cc-ebc1b4818b88" />
 
-## KDE Plasma
-<img width="1899" height="952" alt="20260223_21h46m35s_grim" src="https://github.com/user-attachments/assets/b0fe78c3-0a8e-49c7-9838-7af64049d5b4" />
+<img width="1903" height="1072" alt="20260806_12h15m35s_grim" src="https://github.com/user-attachments/assets/32c1df3d-f85a-4bae-b175-6b38e2938a73" />
+
 
 # DISCLAIMER:
 **WHILE CHANGES ARE TESTED BEFORE EACH COMMIT, THIS IS AN ONGOING PROJECT THAT CAN POSSIBLY BREAK YOUR SYSTEM. PLEASE INSTALL AT YOUR OWN RISK!**
@@ -78,15 +74,18 @@ git clone https://github.com/bsgreen44/nix-green
       username = "green"; # change to your username
     in
 ```
-3. Rebuild your system using **ONE** of the commands below and you're good to go! 
+3. While in the `nix-green` directory, rebuild your system using **ONE** of the commands below and you're good to go! 
 ```
+# Make sure you're in the correct directory
+cd ~/nix-green
+
 # For KDE desktop
 sudo nixos-rebuild switch --flake .#kde --impure
 
 # For Hyprland desktop
 sudo nixos-rebuild switch --flake .#hyprland --impure
 
-# For MacOS desktop
+# For macOS desktop
 sudo darwin-rebuild switch --flake .#nix-darwin
 ``` 
 
@@ -100,7 +99,7 @@ To install on any Linux distro:
 ```
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
-2. Clone the repo and run the home-manager switch command (replace `username` with the `username` you set in `flake.nix`)
+2. Clone the repo and run home-manager switch command
 ```
 git clone https://github.com/bsgreen44/nix-green 
 cd ~/nix-green
@@ -112,8 +111,22 @@ Any future updates use:
 home-manager switch --flake .#username
 ```
 
+### Can I run the Hyprland desktop on a different Linux distro?
+Yes. There are two Home Manager configurations: `.#username` installs CLI tools and dotfiles only, and `.#username-hyprland` adds the Hyprland desktop on top of it. Nix writes the config, your distro supplies the compositor.
+
+1. Install `hyprland`, `xdg-desktop-portal-hyprland` and `hyprlock` with your distro's package manager. Some distros ship these in a third-party repository rather than the default ones.
+2. Switch to the desktop configuration
+```
+home-manager switch --flake .#username-hyprland
+```
+3. Log out and pick Hyprland from your login screen's session list.
+
+Distro-specific settings, such as the wallpaper path, live in `~/nix-green/linux/hyprland.nix`.
+
 ### How do I update the system and packages?
 In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then `sudo nixos-rebuild --flake .#changethis --impure` replacing `changethis` with `kde` or `hyprland`.
+
+On other distros, run `nix flake update` followed by `home-manager switch --flake .#username`, or `.#username-hyprland` if you installed the desktop.
 
 ## Hyprland
 
@@ -121,14 +134,17 @@ In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake
 `SUPER + SHIFT + H` opens a searchable keybind list. Edit the keybinds in `hyprland.nix`. After changing the keybind, update the keybinds list in `rofi.nix`. See [hyprland wiki](https://wiki.hypr.land/Configuring/Binds/) on how to set binds.
 
 ### How do I change the wallpaper?
-In `~/nix-green/hyprland/home.nix` line 4, set it to the path of the desired wallpaper
+Set `wallpaper` in the `_module.args` block to the path of the desired wallpaper. On NixOS this is in `~/nix-green/hyprland/home.nix`; on other distros it's `~/nix-green/linux/hyprland.nix`.
 ```
-  { pkgs, username, ... }:
-{
   _module.args = {
     wallpaper = "/home/${username}/nix-green/wallpapers/linux-catppuccin.jpg";
   };
 ```
+Rebuilding is enough when the path changes: swaybg runs as the `swaybg` user service, and `home-manager switch` restarts it. Only editing an image in place under the same filename needs a manual restart:
+```
+systemctl --user restart swaybg
+```
+If your wallpaper is not in `~/nix-green/wallpapers/` make sure to update this to the desired path. The wallpaper doubles as the hyprlock background. `-m fill` crops to cover, so size the image for your widest monitor.
 
 ### How do I change the hyprland environment?
 hyprland    ----> `hyprland.nix` `hyprlock.nix` `hypridle.nix`
@@ -137,7 +153,7 @@ waybar      ----> `waybar.nix`
 
 rofi (menu) ----> `rofi.nix`
 
-After changes are made run `sudo nixos-rebuild --flake .#hyprland --impure`. 
+After changes are made run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
 *NOTE: hyprland is managed by home manager. DO NOT modify files in `~/.config`. Any changes to the files will be overwritten after rebuild.*
 
 ### Is there a way to manage hyprland NOT through nix?
@@ -154,14 +170,14 @@ There are 2 options:
 #### Use `hyprmon`
 Easiest and quickest. Not persistent across reboots and rebuilds.
 
-#### hidpi toggle in `~/nix-green/hyprland/home.nix`
-For hi-DPI (2k/4k) laptop panels there's a declarative `hidpi` flag instead of editing the monitor lines by hand. It's set per machine in `hyprland/home.nix`:
+#### hidpi toggle
+For hi-DPI (2k/4k) laptop panels there's a declarative `hidpi` flag instead of editing the monitor lines by hand. It's set per machine in the `_module.args` block, alongside the wallpaper path - `~/nix-green/hyprland/home.nix` on NixOS, `~/nix-green/linux/hyprland.nix` on other distros:
 ```
 _module.args = {
   hidpi = false;   # set true on 2k/4k laptop panels
 };
 ```
-When `hidpi = true`, `hyprland.nix` emits the scaled monitor block (`monitor = eDP-1, preferred, auto, 1.5` and `env = GDK_SCALE, 1.5`) via the `monitorConfig` binding; when `false` it uses the default `monitor = , preferred, auto, 1`. Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`.
+When `hidpi = true`, `hyprland.nix` emits the scaled monitor block (`monitor = eDP-1, preferred, auto, 1.5` and `env = GDK_SCALE, 1.5`) via the `monitorConfig` binding; when `false` it uses the default `monitor = , preferred, auto, 1`. Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
 
 Alternatively, you can manually update `monitorConfig` block in `hyprland.nix` to your exact preferences or add the monitor config to `~/.config/hypr/local.conf` to override the monitor settings. Just make sure to uncomment `# source = ~/.config/hypr/local.conf` in hyprland.nix.
 
@@ -172,7 +188,7 @@ Edit `screensaver.nix` change the screensaver text/ASCII art. To turn off the sc
   # 3 minutes turn on screensaver.
   # After 5 minutes lock the screen and turn display off. After 20 minutes suspend
   timeout = 180;
-  on-timeout = ''sh -c "pgrep -x hyprlock > /dev/null......;
+  on-timeout = "screensaver --lock".;
 {
 #{
 #  timeout = 180; # 3 minutes

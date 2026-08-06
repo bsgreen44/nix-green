@@ -11,25 +11,26 @@
       if pkgs.stdenv.isLinux
       then ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
       else null;
+    systemd.enable = false;
     settings = {
-      #background-blur-radius = 20;
+      background-blur = true;
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
-      background-opacity = 0.9;
+      background-opacity = 0.75;
       window-theme = "dark";
-      font-family = "JetBrainsMono Nerd Font";
+      font-family = "JetBrains Mono";
       font-size = 10;
       #window-decoration = false;
     } // lib.optionalAttrs pkgs.stdenv.isLinux {
-      gtk-tabs-location = "hidden"; # GTK-only — Ghostty uses native UI on macOS
+      gtk-tabs-location = "hidden"; # GTK-only - Ghostty uses native UI on macOS
     };
   };
 
-  # kitty config — mirrors the ghostty settings above
+  # kitty config - mirrors the ghostty settings above
   programs.kitty = {
     enable = true;
     shellIntegration.enableBashIntegration = false; # matches ghostty enableBashIntegration = false
     font = {
-      name = "JetBrainsMono Nerd Font";
+      name = "JetBrainsMono Nerd Font Mono";
       size = 10;
     };
     settings = {

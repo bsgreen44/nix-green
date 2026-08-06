@@ -12,11 +12,15 @@
       claude-code
       codex
       python315
+      wakeonlan
+      calcurse
+      cmatrix
+      cbonsai
       lazygit
       luarocks
       lua51Packages.lua
 
-      # herdr (AI coding-agent multiplexer) — cross-platform flake package
+      # herdr (AI coding-agent multiplexer) - cross-platform flake package
       herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]
     ++ lib.optionals stdenv.isLinux [
@@ -32,6 +36,7 @@
       # Linux-only TUIs (skipped on macOS)
       yazi # TUI file manager
       wiremix # audio tui
+      bluetui # bluez front-end
 
       # Linux-only flake packages
       # NetworkManager tui
@@ -41,7 +46,7 @@
       #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        vendorHash = "sha256-JOo/7/3J9LqefIYuRl9efSlSfzLvQ/B8Jpy2e5cdEio=";
+        vendorHash = "sha256-7Tuh9T3uTlNxdSlSL7gQIYXpfpNbCkQrRWj/FoU8fbU=";
       }))
 
       # Tailscale tui
@@ -71,7 +76,7 @@
     };
   };
 
-  # VSCodium config (Linux-only — macOS installs via homebrew cask for /Applications integration)
+  # VSCodium config (Linux-only - macOS installs via homebrew cask for /Applications integration)
   programs.vscodium = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     package = pkgs.vscodium;
@@ -97,7 +102,7 @@
     };
   };
 
-  # Gazelle config (Linux-only — gazelle is a NetworkManager TUI)
+  # Gazelle config (Linux-only - gazelle is a NetworkManager TUI)
   programs.gazelle = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
     settings = {
@@ -149,4 +154,10 @@
       autoupdate = false;
     };
   };
+
+  # NOTE: zen-browser is declared in the Linux entry points (linux/home.nix,
+  # kde/home.nix, hyprland/home.nix) rather than here. nix-darwin/home.nix
+  # imports this file, and the darwin path deliberately omits
+  # zen-browser.homeModules.beta - lib.mkIf would not suppress the resulting
+  # "option does not exist" error. macOS gets the homebrew cask instead.
 }

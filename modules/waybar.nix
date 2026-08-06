@@ -8,8 +8,8 @@
       mainBar = {
         layer = "top";
         position = "top";
-        height = 30;
-        margin-top = 3;
+        height = 22;
+        margin-top = 7;
         margin-left = 7;
         margin-right = 7;
         spacing = 4;
@@ -57,17 +57,23 @@
         };
 
         "cpu" = {
-          format = "CPU: {usage}%";
+          format = "󰻠 {usage}%";
           on-click = "ghostty --title=float -e btop";
         };
 
         "memory" = {
-          format = "Mem: {used}GB";
+          format = "󰍛 {used}GB";
           on-click = "ghostty --title=float -e btop";
         };
 
         "bluetooth" = {
-          format = " {status}";
+          format = "󰂯";
+          format-on = "󰂯";
+          format-connected = "󰂱";
+          format-off = "󰂲";
+          format-disabled = "󰂲";
+          tooltip-format = "{status}";
+          tooltip-format-connected = "{device_alias}";
           on-click = "ghostty --title=float -e bluetui";
         };
 
@@ -86,10 +92,10 @@
         };
 
         "network" = {
-          format-wifi = "";
+          format-wifi = "󰖩";
           format-ethernet = "󰀂";
-          format-linked = "";
-          format-disconnected = "⚠";
+          format-linked = "󰖩";
+          format-disconnected = "󰖪";
           tooltip-format = "{essid} ({signalStrength}%)";
           on-click = "ghostty --title=float -e gazelle";
         };
@@ -116,26 +122,40 @@
 
     style = ''
       * {
-          font-family: "JetBrainsMono Nerd Font";
-          font-size: 13px;
+          /* The "Mono" variant scales every icon to a single cell and centres
+             it in that cell; the plain variant leaves wide icons overhanging
+             to the right, which knocks glyph-only modules off centre. */
+          font-family: "JetBrainsMono Nerd Font Mono";
+          font-size: 12px;
           font-weight: bold;
       }
 
       window#waybar {
-          background-color: rgba(30, 30, 46, 0.90);
+          background-color: transparent;
           color: #cdd6f4;
-          border-radius: 12px;
+      }
+
+      /* Island panels behind each module group. The last value is the
+         transparency knob: 0.0 is invisible, 1.0 is fully opaque. */
+      .modules-left,
+      .modules-center,
+      .modules-right {
+          background-color: rgba(30, 30, 46, 0.0);
+          border-radius: 9px;
+          padding: 0 4px;
       }
 
       #workspaces button {
-          padding: 0 5px;
+          padding: 0 6px;
+          margin: 2px;
           color: #cdd6f4;
           background: transparent;
+          border-radius: 7px;
       }
 
       #workspaces button.active {
-          color: #cba6f7;
-          border-bottom: 2px solid #cba6f7;
+          color: #313244;
+          background-color: rgb(203, 166, 247);
       }
 
       #clock,
@@ -149,21 +169,29 @@
       #network,
       #pulseaudio,
       #wireplumber,
-      #tray,
       #mode,
       #idle_inhibitor,
       #scratchpad,
       #mpd {
-          padding: 0 10px;
-          background-color: rgba(49, 50, 68, 0.60);
-          border-radius: 8px;
-          margin: 4px 2px;
-          color: #cba6f7;
+          padding: 0 8px;
+          background-color: rgb(203, 166, 247);
+          border-radius: 7px;
+          margin: 2px;
+          color: #313244;
       }
 
-      #clock {
+      /* The tray box is excluded from the pill rule above: with no status
+         icons running it would render as a stray coloured nub. */
+      #tray {
           background-color: transparent;
-          font-size: 15px;
+          padding: 0;
+          margin: 0;
+      }
+
+      /* The clock keeps the shared pill fill and text colour; it only
+         opts out of the common font size. */
+      #clock {
+          font-size: 13px;
       }
     '';
   };

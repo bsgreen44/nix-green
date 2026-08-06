@@ -3,11 +3,11 @@
 {
   catppuccin = {
     enable = true;
-    flavor = "mocha"; # global flavor for all catppuccin-themed apps
-    autoEnable = false; # don't theme everything — many programs are themed by hand
+    flavor = "mocha"; # global flavor for all catppuccin-themed apps (e.g. VSCodium)
+    autoEnable = false; # do NOT theme everything - many programs are themed by hand
                         # (ghostty, mako, rofi, waybar, starship, neovim, hyprland, hyprlock)
 
-    # Programs not manually themed elsewhere:
+    # Only programs not manually themed elsewhere:
     bat.enable = true;
     btop.enable = true;
     kitty.enable = true;

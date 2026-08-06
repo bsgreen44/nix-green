@@ -4,25 +4,25 @@ let
   keybindsScript = pkgs.writeShellScriptBin "hypr-keybinds" ''
     cat <<'EOF'
 Super + Return               →  Terminal (ghostty)
+Super + Space                →  App launcher (rofi)
 Super + Shift + B            →  Browser (brave)
 Super + Shift + F            →  File manager (thunar)
 Super + Shift + O            →  Obsidian
-Super + Shift + V            →  VS Code
+Super + Shift + V            →  VSCodium
 Super + Shift + N            →  Neovim
 Super + Shift + G            →  Lazygit
 Super + Shift + A            →  opencode
 Super + Shift + M            →  btop
-Super + Shift + T            →  Tailscale
-Super + Shift + SPACE        →  Hide Waybar
-Super + Space                →  App launcher
+Super + Shift + T            →  Tailscale (tsui)
 Super + Q                    →  Close window
 Super + T                    →  Toggle floating
 Super + F                    →  Fullscreen
 Super + P                    →  Pseudotile
 Super + U                    →  Toggle split
-Super + Shift + Esc          →  Exit Hyprland
 Super + ←/→/↑/↓              →  Focus direction
 Super + Shift + ←/→/↑/↓      →  Swap window
+Super + LMB drag             →  Move window
+Super + RMB drag             →  Resize window
 Alt + Tab                    →  Cycle windows
 Alt + Shift + Tab            →  Cycle windows (back)
 Super + K                    →  Focus column right
@@ -31,22 +31,30 @@ Super + Shift + K            →  Swap column right
 Super + Shift + J            →  Swap column left
 Super + ,                    →  Shrink column
 Super + .                    →  Grow column
-Super + 1–9                  →  Switch workspace
-Super + 0                    →  Switch workspace 10
-Super + Shift + 1–9          →  Move to workspace
-Super + Tab                  →  Next workspace
 Super + -                    →  Shrink window width
 Super + =                    →  Grow window width
 Super + Shift + -            →  Shrink window height
 Super + Shift + =            →  Grow window height
+Super + 1–9                  →  Switch workspace
+Super + 0                    →  Switch workspace 10
+Super + Shift + 1–9          →  Move to workspace
+Super + Shift + 0            →  Move to workspace 10
+Super + Tab                  →  Next workspace
+Super + Scroll               →  Cycle workspaces
 Super + L                    →  Lock screen
 Super + Shift + Z            →  Screensaver
 Super + Esc                  →  Power menu
+Super + Shift + Esc          →  Exit Hyprland
+Super + Shift + Space        →  Toggle Waybar
+Super + Shift + H            →  Show this keybind list
 Super + Ctrl + V             →  Clipboard history
 Super + Shift + S            →  Screenshot to clipboard
 Print                        →  Screenshot to clipboard
+Super + N                    →  Dismiss notification
+Super + Ctrl + N             →  Dismiss all notifications
 Vol Up/Down                  →  Volume ±5%
 Mute                         →  Toggle mute
+Mic Mute                     →  Toggle microphone mute
 Brightness Up/Down           →  Brightness ±10%
 EOF
   '';
@@ -75,7 +83,9 @@ in
     tsui = {
       name = "Tailscale";
       genericName = "Tailscale TUI";
-      exec = "ghostty --title=float -e sudo tsui";
+      # No sudo: tailscale's operator setting grants this user write access, and
+      # sudo's secure_path can't see ~/.nix-profile/bin on non-NixOS distros.
+      exec = "ghostty --title=float -e tsui";
       terminal = false;
       categories = [ "System" "Network" ];
       icon = "network-wireless-encrypted";

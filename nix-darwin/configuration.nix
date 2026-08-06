@@ -50,12 +50,12 @@
   # Enable Tailscale
   services.tailscale.enable = true;
 
-  # System packages (macOS-compatible CLI tools)
+  # System packages (macOS-compatible CLI tools).
+  # cbonsai/cmatrix live in ../modules/packages.nix now - they are cross-platform
+  # and come in through Home Manager on both Linux and macOS.
   environment.systemPackages = with pkgs; [
     tree
     terminaltexteffects
-    cbonsai
-    cmatrix
   ];
 
   # macOS GUI tools

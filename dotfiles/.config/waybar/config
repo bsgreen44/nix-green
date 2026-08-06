@@ -1,0 +1,107 @@
+[
+  {
+    "battery": {
+      "format": "{capacity}% {icon}",
+      "format-charging": "{capacity}% ",
+      "format-icons": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      "format-plugged": "{capacity}% ",
+      "on-click": "ghostty --title=float -e btop",
+      "states": {
+        "critical": 15,
+        "warning": 30
+      }
+    },
+    "bluetooth": {
+      "format": "󰂯",
+      "format-connected": "󰂱",
+      "format-disabled": "󰂲",
+      "format-off": "󰂲",
+      "format-on": "󰂯",
+      "on-click": "ghostty --title=float -e bluetui",
+      "tooltip-format": "{status}",
+      "tooltip-format-connected": "{device_alias}"
+    },
+    "clock": {
+      "format": "{:%H:%M %m-%d}",
+      "format-alt": "{:%H:%M}",
+      "tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>"
+    },
+    "cpu": {
+      "format": "󰻠 {usage}%",
+      "on-click": "ghostty --title=float -e btop"
+    },
+    "height": 22,
+    "hyprland/window": {
+      "max-length": 40
+    },
+    "hyprland/workspaces": {
+      "all-outputs": true,
+      "disable-scroll": true,
+      "format": "{icon}",
+      "format-icons": {
+        "1": "1",
+        "10": "10",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6": "6",
+        "7": "7",
+        "8": "8",
+        "9": "9"
+      }
+    },
+    "layer": "top",
+    "margin-left": 7,
+    "margin-right": 7,
+    "margin-top": 7,
+    "memory": {
+      "format": "󰍛 {used}GB",
+      "on-click": "ghostty --title=float -e btop"
+    },
+    "modules-center": [
+      "clock"
+    ],
+    "modules-left": [
+      "hyprland/workspaces"
+    ],
+    "modules-right": [
+      "tray",
+      "cpu",
+      "memory",
+      "pulseaudio",
+      "bluetooth",
+      "network",
+      "battery"
+    ],
+    "network": {
+      "format-disconnected": "󰖪",
+      "format-ethernet": "󰀂",
+      "format-linked": "󰖩",
+      "format-wifi": "󰖩",
+      "on-click": "ghostty --title=float -e gazelle",
+      "tooltip-format": "{essid} ({signalStrength}%)"
+    },
+    "position": "top",
+    "pulseaudio": {
+      "format": "{volume}% {icon}",
+      "format-bluetooth": "{volume}% {icon}",
+      "format-icons": {
+        "default": [
+          "",
+          ""
+        ],
+        "headphone": ""
+      },
+      "format-muted": "",
+      "on-click": "ghostty --title=float -e wiremix"
+    },
+    "spacing": 4
+  }
+]
