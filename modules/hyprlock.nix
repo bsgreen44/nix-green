@@ -1,4 +1,4 @@
-{ wallpaper, ... }:
+{ wallpaper, palette, ... }:
 
 {
   programs.hyprlock = {
@@ -27,11 +27,12 @@
           monitor = "";
           dots_center = true;
           fade_on_empty = false;
-          font_color = "rgb(202, 211, 245)"; # Catppuccin Text
-          inner_color = "rgb(30, 30, 46)"; # Catppuccin Base
-          outer_color = "rgb(203, 166, 247)"; # Catppuccin Mauve
+          font_color = "rgb(${palette.text})";
+          inner_color = "rgb(${palette.base})";
+          outer_color = "rgb(${palette.mauve})";
           outline_thickness = 5;
-          placeholder_text = "<span foreground=\"##cad3f5\">Password...</span>";
+          # hyprlang treats a bare `#` as a comment, so the colour is doubled.
+          placeholder_text = "<span foreground=\"##${palette.text}\">Password...</span>";
           shadow_passes = 2;
         }
       ];
@@ -40,7 +41,7 @@
         # Time
         {
           text = "cmd[update:1000] echo \"$(date +'%H:%M')\"";
-          color = "rgb(202, 211, 245)";
+          color = "rgb(${palette.text})";
           font_size = 64;
           font_family = "JetBrainsMono Nerd Font";
           position = "0, 100";
@@ -50,7 +51,7 @@
         # Date
         {
           text = "cmd[update:1000] echo \"$(date +'%A, %B %d')\"";
-          color = "rgb(202, 211, 245)";
+          color = "rgb(${palette.text})";
           font_size = 22;
           font_family = "JetBrainsMono Nerd Font";
           position = "0, 30";

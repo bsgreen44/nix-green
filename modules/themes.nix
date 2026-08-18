@@ -1,6 +1,9 @@
 { ... }:
 
 {
+  # Supplies the `palette` module argument to the hand-themed programs below.
+  imports = [ ./palette.nix ];
+
   catppuccin = {
     enable = true;
     flavor = "mocha"; # global flavor for all catppuccin-themed apps (e.g. VSCodium)

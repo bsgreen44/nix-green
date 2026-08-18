@@ -37,6 +37,10 @@
   services.dbus.enable = true;
   hardware.graphics.enable = true;
 
+  # swayosd (replaced mako notifications for brightness and volume control)
+  services.udev.packages = [ pkgs.swayosd ];
+  users.users.${username}.extraGroups = [ "video" ];
+
   # GUI file manager
   programs.thunar = {
     enable = true;

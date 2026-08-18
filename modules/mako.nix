@@ -1,4 +1,4 @@
-{ ... }:
+{ palette, ... }:
 
 {
   services.mako = {
@@ -21,11 +21,11 @@
       history = true;
       max-history = 25;
 
-      # Catppuccin Mocha, semi-transparent background (#RRGGBBAA — cc ≈ 80% opaque).
-      background-color = "#1e1e2ecc"; # base
-      text-color = "#cdd6f4"; # text
-      border-color = "#cba6f7"; # mauve
-      progress-color = "over #313244cc"; # surface0
+      # Catppuccin Mocha, semi-transparent background (#RRGGBBAA - cc ≈ 80% opaque).
+      background-color = "#${palette.base}cc";
+      text-color = "#${palette.text}";
+      border-color = "#${palette.mauve}";
+      progress-color = "over #${palette.surface0}cc";
       border-size = 2;
       border-radius = 8;
       padding = "8";
@@ -34,14 +34,14 @@
 
       # Criteria (rendered as [section] blocks, applied on top of the above).
       "urgency=low" = {
-        border-color = "#89b4fa"; # blue
-        text-color = "#a6adc8"; # subtext0
+        border-color = "#${palette.blue}";
+        text-color = "#${palette.subtext0}";
         default-timeout = 3000;
       };
 
       "urgency=critical" = {
-        border-color = "#f38ba8"; # red
-        background-color = "#1e1e2ee6"; # more opaque so it stays readable
+        border-color = "#${palette.red}";
+        background-color = "#${palette.base}e6"; # more opaque so it stays readable
         # Critical still lingers noticeably longer, but it does go away on its own.
         default-timeout = 20000;
       };
@@ -49,7 +49,7 @@
       # The "(N more)" placeholder shown once max-visible is reached.
       "hidden" = {
         format = "<i>(%h more)</i>";
-        text-color = "#a6adc8"; # subtext0
+        text-color = "#${palette.subtext0}";
       };
     };
   };

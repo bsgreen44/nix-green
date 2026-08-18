@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, palette, ... }:
 
 let
   keybindsScript = pkgs.writeShellScriptBin "hypr-keybinds" ''
@@ -111,12 +111,11 @@ in
       in
       {
         "*" = {
-          bg-col = mkLiteral "#1e1e2e";
-          bg-col-light = mkLiteral "#8181cfff";
-          border-col = mkLiteral "#9d9df0ff";
-          blue = mkLiteral "#89b4fa";
-          fg-col = mkLiteral "#cdd6f4";
-          grey = mkLiteral "#6c7086";
+          bg-col = mkLiteral "#${palette.base}";
+          border-col = mkLiteral "#${palette.mauve}";
+          blue = mkLiteral "#${palette.blue}";
+          fg-col = mkLiteral "#${palette.text}";
+          grey = mkLiteral "#${palette.overlay0}";
 
           background-color = mkLiteral "@bg-col";
           text-color = mkLiteral "@fg-col";

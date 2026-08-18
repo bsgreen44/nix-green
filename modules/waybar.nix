@@ -1,4 +1,4 @@
-{ ... }:
+{ palette, ... }:
 
 {
   programs.waybar = {
@@ -132,15 +132,16 @@
 
       window#waybar {
           background-color: transparent;
-          color: #cdd6f4;
+          color: #${palette.text};
       }
 
       /* Island panels behind each module group. The last value is the
-         transparency knob: 0.0 is invisible, 1.0 is fully opaque. */
+         transparency knob: 0.0 is invisible, 1.0 is fully opaque. GTK's CSS
+         parser rejects the #rrggbbaa form, so alpha() does the mixing. */
       .modules-left,
       .modules-center,
       .modules-right {
-          background-color: rgba(30, 30, 46, 0.0);
+          background-color: alpha(#${palette.base}, 0.0);
           border-radius: 9px;
           padding: 0 4px;
       }
@@ -148,14 +149,14 @@
       #workspaces button {
           padding: 0 6px;
           margin: 2px;
-          color: #cdd6f4;
+          color: #${palette.text};
           background: transparent;
           border-radius: 7px;
       }
 
       #workspaces button.active {
-          color: #313244;
-          background-color: rgb(203, 166, 247);
+          color: #${palette.surface0};
+          background-color: #${palette.mauve};
       }
 
       #clock,
@@ -174,10 +175,10 @@
       #scratchpad,
       #mpd {
           padding: 0 8px;
-          background-color: rgb(203, 166, 247);
+          background-color: #${palette.mauve};
           border-radius: 7px;
           margin: 2px;
-          color: #313244;
+          color: #${palette.surface0};
       }
 
       /* The tray box is excluded from the pill rule above: with no status
