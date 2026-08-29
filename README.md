@@ -28,10 +28,12 @@ nix-green
 │   ├── mako.nix
 │   ├── neovim.nix
 │   ├── packages.nix
+│   ├── palette.nix
 │   ├── rofi.nix
 │   ├── screensaver.nix
 │   ├── shells.nix
 │   ├── starship.nix
+│   ├── swayosd.nix
 │   ├── terminal.nix
 │   ├── themes.nix
 │   └── waybar.nix
