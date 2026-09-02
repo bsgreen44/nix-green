@@ -7,8 +7,8 @@
     ../modules/starship.nix
     ../modules/neovim.nix
     ../modules/themes.nix
-    ../modules/raycast.nix
-    ../modules/aerospace.nix
+    # ../modules/raycast.nix
+    # ../modules/aerospace.nix
     # ../modules/sketchybar.nix
   ];
 
