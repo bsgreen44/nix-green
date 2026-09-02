@@ -13,11 +13,12 @@ window#waybar {
 }
 
 /* Island panels behind each module group. The last value is the
-   transparency knob: 0.0 is invisible, 1.0 is fully opaque. */
+   transparency knob: 0.0 is invisible, 1.0 is fully opaque. GTK's CSS
+   parser rejects the #rrggbbaa form, so alpha() does the mixing. */
 .modules-left,
 .modules-center,
 .modules-right {
-    background-color: rgba(30, 30, 46, 0.0);
+    background-color: alpha(#1e1e2e, 0.0);
     border-radius: 9px;
     padding: 0 4px;
 }
@@ -32,7 +33,7 @@ window#waybar {
 
 #workspaces button.active {
     color: #313244;
-    background-color: rgb(203, 166, 247);
+    background-color: #cba6f7;
 }
 
 #clock,
@@ -51,7 +52,7 @@ window#waybar {
 #scratchpad,
 #mpd {
     padding: 0 8px;
-    background-color: rgb(203, 166, 247);
+    background-color: #cba6f7;
     border-radius: 7px;
     margin: 2px;
     color: #313244;

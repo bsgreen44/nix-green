@@ -1,0 +1,61 @@
+* {
+background-color: @bg-col;
+bg-col: #1e1e2e;
+blue: #89b4fa;
+border-col: #cba6f7;
+fg-col: #cdd6f4;
+grey: #6c7086;
+text-color: @fg-col;
+}
+
+element {
+background-color: @bg-col;
+padding: 5px;
+text-color: @fg-col;
+}
+
+element selected {
+background-color: @blue;
+}
+
+element-icon {
+size: 25px;
+}
+
+entry {
+background-color: @bg-col;
+margin: 20px 0px 0px 10px;
+padding: 6px;
+placeholder: "Search...";
+placeholder-color: @grey;
+text-color: @fg-col;
+}
+
+inputbar {
+background-color: @bg-col;
+border-radius: 5px;
+children: [ prompt,entry ];
+padding: 2px;
+}
+
+listview {
+background-color: @bg-col;
+border: 0px 0px 0px;
+columns: 1;
+lines: 5;
+margin: 10px 20px 0px 20px;
+padding: 6px 0px 0px;
+}
+
+mainbox {
+background-color: @bg-col;
+}
+
+window {
+background-color: @bg-col;
+border: 3px;
+border-color: @border-col;
+border-radius: 10px;
+height: 360px;
+width: 600px;
+}

@@ -3,6 +3,11 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("dbus-update-activation-environment --systemd DISPLAY HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE && systemctl --user stop hyprland-session.target && systemctl --user start hyprland-session.target")
 end)
 
+-- shutdown
+hl.on("hyprland.shutdown", function()
+  os.execute("systemctl --user stop hyprland-session.target && sleep 0.1")
+end)
+
 -- extraConfig
 local terminal  = "ghostty"
 local mod       = "SUPER"
@@ -26,14 +31,15 @@ hl.env("XCURSOR_SIZE", "20")
 hl.config({ cursor = { no_hardware_cursors = false } })
 
 -- Autostart
--- Don't start the cliphist watchers here: services.cliphist already runs
--- them as user units, and doing both stores every copy twice.
+-- cliphist and swaybg are omitted here: both run as user units already, and
+-- starting them twice double-stores every copy / stacks a second wallpaper.
 hl.on("hyprland.start", function()
   hl.exec_cmd("waybar")
   hl.exec_cmd("pkill dunst; mako")
-  -- Without an agent, polkit prompts fail silently (gnome-disks, nm)
-  hl.exec_cmd("hyprpolkitagent")
-  hl.exec_cmd("swaybg -i " .. os.getenv("HOME") .. "/nix-green/wallpapers/catppuccin_mocha_japanese_wallpaper_8k.png -m fill")
+  -- Without an agent, polkit prompts fail silently (gnome-disks, nm).
+  -- The binary ships in libexec, so it is usually off PATH and there is no
+  -- portable location. First match wins; add yours if none of these hit.
+  hl.exec_cmd([[for p in hyprpolkitagent "$HOME/.nix-profile/libexec/hyprpolkitagent" /usr/libexec/hyprpolkitagent /usr/lib/hyprpolkitagent; do c=$(command -v "$p" 2>/dev/null) && exec "$c"; done]])
 end)
 
 -- Input configuration
@@ -218,15 +224,13 @@ hl.bind("ALT + SHIFT + TAB", hl.dsp.window.cycle_next({ next = false }))
 -- Print screen key
 hl.bind("PRINT", hl.dsp.exec_cmd([[grim -g "$(slurp)" -t png | wl-copy]]))
 
--- Volume
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd([[wpctl set-volume @DEFAULT_SINK@ 5%+ && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500]]))
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd([[wpctl set-volume @DEFAULT_SINK@ 5%- && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500]]))
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd([[wpctl set-mute @DEFAULT_SINK@ toggle && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@)" -t 1500]]))
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd([[wpctl set-mute @DEFAULT_SOURCE@ toggle && notify-send -h string:x-canonical-private-synchronous:mic "Microphone" "$(wpctl get-volume @DEFAULT_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')" -t 1500]]))
-
--- Brightness
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd([[brightnessctl set +10% && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500]]))
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd([[brightnessctl set 10%- && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500]]))
+-- Volume and brightness
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd([[swayosd-client --output-volume=+5]]))
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd([[swayosd-client --output-volume=-5]]))
+hl.bind("XF86AudioMute",        hl.dsp.exec_cmd([[swayosd-client --output-volume mute-toggle]]))
+hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd([[swayosd-client --input-volume mute-toggle]]))
+hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd([[swayosd-client --brightness=+10]]))
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd([[swayosd-client --brightness=-10]]))
 
 -- Resize active window ("code:20" = - key, "code:21" = = key)
 hl.bind(mod .. " + code:20",         hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
@@ -243,4 +247,6 @@ hl.bind(mod .. " + TAB",        hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
-hl.config({ misc = { allow_session_lock_restore = true } })
+-- allow_session_lock_restore is deliberately not set here. It weakens the
+-- ext-session-lock guarantee, so it belongs only to the non-NixOS path in
+-- linux/hyprland.nix. Do not copy it back in when refreshing this snapshot.

@@ -1,0 +1,42 @@
+window#osd {
+    /* GTK's CSS parser rejects #rrggbbaa, so alpha() does the mixing.
+       0.8 matches mako's `cc` suffix on the same base colour. */
+    background: alpha(#1e1e2e, 0.8);
+    border: 2px solid #cba6f7;
+    border-radius: 999px;
+}
+
+window#osd #container {
+    margin: 16px;
+}
+
+window#osd image,
+window#osd label {
+    color: #cdd6f4;
+}
+
+window#osd progressbar:disabled,
+window#osd image:disabled {
+    opacity: 0.5;
+}
+
+window#osd progressbar {
+    min-height: 6px;
+    border-radius: 999px;
+    background: transparent;
+    border: none;
+}
+
+window#osd trough {
+    min-height: inherit;
+    border-radius: inherit;
+    border: none;
+    background: #313244;
+}
+
+window#osd progress {
+    min-height: inherit;
+    border-radius: inherit;
+    border: none;
+    background: #cba6f7;
+}

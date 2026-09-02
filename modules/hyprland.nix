@@ -1,7 +1,7 @@
 # `hyprland` is the flake input on NixOS, null where the distro installs the
 # compositor. Must be supplied either way - the module system resolves declared
 # args eagerly, so a `? null` default here would never apply.
-{ pkgs, lib, wallpaper, hyprland, hidpi ? false, ... }:
+{ pkgs, lib, wallpaper, hyprland, palette, hidpi ? false, ... }:
 
 let
   monitorConfig =
@@ -148,7 +148,7 @@ in
           gaps_out = 7,
           border_size = 2,
           col = {
-            active_border = { colors = { "rgba(cba6f7ed)", "rgba(89b4faed)" }, angle = 45 },
+            active_border = { colors = { "rgba(${palette.mauve}ed)", "rgba(${palette.blue}ed)" }, angle = 45 },
             inactive_border = "rgba(595959aa)",
           },
         },
@@ -300,15 +300,13 @@ in
       -- Print screen key
       hl.bind("PRINT", hl.dsp.exec_cmd([[grim -g "$(slurp)" -t png | wl-copy]]))
 
-      -- Volume
-      hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd([[wpctl set-volume @DEFAULT_SINK@ 5%+ && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500]]))
-      hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd([[wpctl set-volume @DEFAULT_SINK@ 5%- && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@ | awk '{printf "%d%%", $2 * 100}')" -t 1500]]))
-      hl.bind("XF86AudioMute", hl.dsp.exec_cmd([[wpctl set-mute @DEFAULT_SINK@ toggle && notify-send -h string:x-canonical-private-synchronous:volume "Volume" "$(wpctl get-volume @DEFAULT_SINK@)" -t 1500]]))
-      hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd([[wpctl set-mute @DEFAULT_SOURCE@ toggle && notify-send -h string:x-canonical-private-synchronous:mic "Microphone" "$(wpctl get-volume @DEFAULT_SOURCE@ | grep -q MUTED && echo 'Muted' || echo 'Unmuted')" -t 1500]]))
-
-      -- Brightness
-      hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd([[brightnessctl set +10% && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500]]))
-      hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd([[brightnessctl set 10%- && notify-send -h string:x-canonical-private-synchronous:brightness "Brightness" "$(brightnessctl get)% / $(brightnessctl max)%" -t 1500]]))
+      -- Volume and brightness
+      hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd([[swayosd-client --output-volume=+5]]))
+      hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd([[swayosd-client --output-volume=-5]]))
+      hl.bind("XF86AudioMute",        hl.dsp.exec_cmd([[swayosd-client --output-volume mute-toggle]]))
+      hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd([[swayosd-client --input-volume mute-toggle]]))
+      hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd([[swayosd-client --brightness=+10]]))
+      hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd([[swayosd-client --brightness=-10]]))
 
       -- Resize active window ("code:20" = - key, "code:21" = = key)
       hl.bind(mod .. " + code:20",         hl.dsp.window.resize({ x = -100, y = 0, relative = true }))

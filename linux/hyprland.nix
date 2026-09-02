@@ -13,6 +13,7 @@
     ../modules/waybar.nix
     ../modules/rofi.nix
     ../modules/mako.nix
+    ../modules/swayosd.nix
     ../modules/screensaver.nix
   ];
 
