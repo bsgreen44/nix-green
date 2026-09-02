@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 
-# Raycast launcher — configured similarly to modules/hyprland.nix: a dedicated
+# Raycast launcher - configured similarly to modules/hyprland.nix: a dedicated
 # module holding the app's config with Catppuccin theming applied by hand
 # (matching the autoEnable = false convention in modules/themes.nix).
 #
@@ -17,9 +17,9 @@
 # versions. After first launch, run `defaults read com.raycast.macos` to capture
 # the actual keys on the installed version and reconcile them below. A wrong key
 # is harmless (ignored), just ineffective.
-lib.mkIf pkgs.stdenv.isDarwin {
+lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   targets.darwin.defaults."com.raycast.macos" = {
-    # Global hotkey → ⌘Space (49 = Space keycode). Replaces Spotlight — see the
+    # Global hotkey → ⌘Space (49 = Space keycode). Replaces Spotlight - see the
     # note by the raycast cask in nix-darwin/configuration.nix about freeing it.
     raycastGlobalHotkey = "Command-49";
 

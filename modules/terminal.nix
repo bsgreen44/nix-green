@@ -8,7 +8,7 @@
     # On Linux use the ghostty flake's package; on macOS ghostty has no Nix build
     # (installed via the Homebrew cask instead), so null = manage config only.
     package =
-      if pkgs.stdenv.isLinux
+      if pkgs.stdenv.hostPlatform.isLinux
       then ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
       else null;
     systemd.enable = false;
@@ -20,7 +20,7 @@
       font-family = "JetBrains Mono";
       font-size = 10;
       #window-decoration = false;
-    } // lib.optionalAttrs pkgs.stdenv.isLinux {
+    } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
       gtk-tabs-location = "hidden"; # GTK-only - Ghostty uses native UI on macOS
     };
   };

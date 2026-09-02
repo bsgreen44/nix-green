@@ -1,16 +1,17 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, palette, ... }:
 
-# SketchyBar status bar — the macOS analogue of modules/waybar.nix. Self-contained
+# SketchyBar status bar - the macOS analogue of modules/waybar.nix. Self-contained
 # like waybar.nix: installs the binary, writes the config + plugin scripts, and runs
-# it as a keep-alive launchd agent. Catppuccin Mocha applied by hand with the same
-# hex as waybar (bg #1e1e2e, fg #cdd6f4, accent #cba6f7); SketchyBar uses 0xAARRGGBB.
+# it as a keep-alive launchd agent. Catppuccin Mocha comes from modules/palette.nix,
+# the same source waybar.nix uses; SketchyBar wants 0xAARRGGBB, so only the RGB half
+# interpolates and the leading alpha byte stays literal.
 #
 # Widgets mirror waybar's (modules/waybar.nix): AeroSpace workspaces, clock, cpu,
 # memory, volume, wifi, battery. Refresh intervals are kept in seconds (volume is
-# event-driven) to stay light — see the MacBook Air resource note in the plan.
+# event-driven) to stay light - see the MacBook Air resource note in the plan.
 #
 # darwin-only; guarded so it's inert if ever imported on Linux (like modules/raycast.nix).
-lib.mkIf pkgs.stdenv.isDarwin {
+lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   home.packages = [ pkgs.sketchybar ];
 
   # Keep-alive agent so the bar runs at login and restarts if it dies. It reads
@@ -34,10 +35,10 @@ lib.mkIf pkgs.stdenv.isDarwin {
 
         PLUGIN_DIR="$CONFIG_DIR/plugins"
 
-        # Catppuccin Mocha (0xAARRGGBB)
-        BAR_BG=0xee1e1e2e
-        ITEM_BG=0x9931323b
-        FG=0xffcdd6f4
+        # Catppuccin Mocha, from modules/palette.nix (0xAARRGGBB)
+        BAR_BG=0xee${palette.base}
+        ITEM_BG=0x99${palette.surface0}
+        FG=0xff${palette.text}
 
         sketchybar --bar height=32 \
                          position=top \
@@ -61,7 +62,7 @@ lib.mkIf pkgs.stdenv.isDarwin {
                              padding_left=3 \
                              padding_right=3
 
-        # Workspaces (AeroSpace) — highlighted via the trigger fired by
+        # Workspaces (AeroSpace) - highlighted via the trigger fired by
         # exec-on-workspace-change in modules/aerospace.nix.
         sketchybar --add event aerospace_workspace_change
 
@@ -110,9 +111,9 @@ lib.mkIf pkgs.stdenv.isDarwin {
       text = ''
         #!/usr/bin/env bash
         if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
-          sketchybar --set "$NAME" background.drawing=on background.color=0xffcba6f7 label.color=0xff1e1e2e
+          sketchybar --set "$NAME" background.drawing=on background.color=0xff${palette.mauve} label.color=0xff${palette.base}
         else
-          sketchybar --set "$NAME" background.drawing=off label.color=0xffcdd6f4
+          sketchybar --set "$NAME" background.drawing=off label.color=0xff${palette.text}
         fi
       '';
     };

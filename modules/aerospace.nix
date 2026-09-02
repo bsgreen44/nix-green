@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 
-# AeroSpace tiling window manager — the macOS analogue of modules/hyprland.nix.
+# AeroSpace tiling window manager - the macOS analogue of modules/hyprland.nix.
 # Chosen over yabai because it needs no SIP changes. Fully declarative via the
 # TOML `settings` attrset, run as a login launchd agent.
 #
@@ -11,7 +11,7 @@
 # darwin-only; guarded so it's inert if ever imported on Linux (consistent with
 # modules/raycast.nix). If a home-manager pin lacks programs.aerospace, move this
 # settings attrset to nix-darwin's services.aerospace instead.
-lib.mkIf pkgs.stdenv.isDarwin {
+lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   programs.aerospace = {
     enable = true;
     launchd.enable = true; # start at login

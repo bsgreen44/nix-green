@@ -18,7 +18,7 @@
 
     # brave & vscodium are nix packages on Linux but homebrew casks on macOS,
     # so only theme them through nix on Linux:
-    brave.enable = pkgs.stdenv.isLinux;
-    vscodium.profiles.default.enable = pkgs.stdenv.isLinux; # follows catppuccin.flavor
+    brave.enable = pkgs.stdenv.hostPlatform.isLinux;
+    vscodium.profiles.default.enable = pkgs.stdenv.hostPlatform.isLinux; # follows catppuccin.flavor
   };
 }

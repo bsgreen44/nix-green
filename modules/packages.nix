@@ -23,7 +23,7 @@
       # herdr (AI coding-agent multiplexer) - cross-platform flake package
       herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]
-    ++ lib.optionals stdenv.isLinux [
+    ++ lib.optionals stdenv.hostPlatform.isLinux [
       # Linux-only GUI apps (macOS uses homebrew casks instead)
       brave
       obsidian
@@ -77,7 +77,7 @@
   };
 
   # VSCodium config (Linux-only - macOS installs via homebrew cask for /Applications integration)
-  programs.vscodium = lib.mkIf pkgs.stdenv.isLinux {
+  programs.vscodium = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     enable = true;
     package = pkgs.vscodium;
     profiles.default = {
@@ -103,7 +103,7 @@
   };
 
   # Gazelle config (Linux-only - gazelle is a NetworkManager TUI)
-  programs.gazelle = lib.mkIf pkgs.stdenv.isLinux {
+  programs.gazelle = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     enable = true;
     settings = {
       theme = "nord"; # choose your theme

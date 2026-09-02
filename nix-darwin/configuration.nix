@@ -95,9 +95,13 @@
 
     # AppleAccentColor/AppleHighlightColor have no typed option in this nix-darwin rev,
     # so write them out-of-band via CustomUserPreferences (passed straight to `defaults`).
+    #
+    # These stay literal rather than reading ../modules/palette.nix: that palette is a
+    # Home Manager module arg, and macOS wants 0-1 floats rather than hex. Keep the
+    # value below in sync with `mauve` there by hand.
     CustomUserPreferences.NSGlobalDomain = {
       AppleAccentColor = 5; # Purple accent, closest to Catppuccin mauve/lavender
-      AppleHighlightColor = "0.796078 0.650980 0.968627 Purple"; # selection highlight in Mocha mauve (#cba6f7)
+      AppleHighlightColor = "0.796078 0.650980 0.968627 Purple"; # Mocha mauve #cba6f7, see ../modules/palette.nix
     };
   };
 
