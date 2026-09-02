@@ -108,9 +108,41 @@ Yes. There are two Home Manager configurations: `.#username` installs CLI tools 
 ```
 home-manager switch --flake .#username-hyprland
 ```
-3. Log out and pick Hyprland from your login screen's session list.
+3. On a laptop, allow swayosd to control screen brightness (see the FAQ entry below). Volume works without this.
+4. Log out and pick Hyprland from your login screen's session list.
 
 Distro-specific settings, such as the wallpaper path, live in `~/nix-green/linux/hyprland.nix`.
+
+### Why don't my brightness keys work on a different Linux distro?
+Nix installs swayosd and runs it as a user service, but it can't set the permissions swayosd needs to change brightness. That part is a system-level change, so it has to be done once, by hand, as root. On NixOS `hyprland/configuration.nix` already handles it.
+
+The kernel exposes brightness at `/sys/class/backlight/*/brightness`, owned by `root` and read-only for everyone else. swayosd runs as your user and writes that file directly, so it needs write access. Backlight devices have no `/dev` node, which is why udev's usual `GROUP=`/`MODE=` settings don't apply here and the rule has to call `chgrp`/`chmod` itself.
+
+1. Give the `video` group write access to brightness
+```
+sudo tee /etc/udev/rules.d/99-swayosd.rules > /dev/null <<'EOF'
+ACTION=="add", SUBSYSTEM=="backlight", RUN+="/usr/bin/chgrp video /sys/class/backlight/%k/brightness"
+ACTION=="add", SUBSYSTEM=="backlight", RUN+="/usr/bin/chmod g+w /sys/class/backlight/%k/brightness"
+EOF
+```
+2. Add yourself to the `video` group
+```
+sudo usermod -aG video $USER
+```
+3. Apply the rule without rebooting
+```
+sudo udevadm control --reload
+sudo udevadm trigger --action=add --subsystem-match=backlight
+```
+4. Log out and back in, so your graphical session (and the swayosd service in it) picks up the new group.
+
+Check it worked. The file should be group `video` and group-writable (`rw-rw-r--`), and `video` should appear in your groups:
+```
+ls -l /sys/class/backlight/*/brightness
+id -nG
+```
+
+Installing swayosd from your distro's package manager instead is not a substitute: it would still not add you to the `video` group, it duplicates the copy Nix already installs, and not every distro packages it (Fedora does not).
 
 ### How do I update the system and packages?
 In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then `sudo nixos-rebuild --flake .#changethis --impure` replacing `changethis` with `kde` or `hyprland`.
