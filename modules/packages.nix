@@ -24,7 +24,6 @@
       herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]
     ++ lib.optionals stdenv.hostPlatform.isLinux [
-      # Linux-only GUI apps (macOS uses homebrew casks instead)
       brave
       obsidian
       nextcloud-client
@@ -76,10 +75,9 @@
     };
   };
 
-  # VSCodium config (Linux-only - macOS installs via homebrew cask for /Applications integration)
-  programs.vscodium = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+  programs.vscodium = {
     enable = true;
-    package = pkgs.vscodium;
+    package = if pkgs.stdenv.hostPlatform.isLinux then pkgs.vscodium else null;
     profiles.default = {
       extensions = with pkgs.vscode-extensions; [
         anthropic.claude-code
@@ -154,10 +152,4 @@
       autoupdate = false;
     };
   };
-
-  # NOTE: zen-browser is declared in the Linux entry points (linux/home.nix,
-  # kde/home.nix, hyprland/home.nix) rather than here. nix-darwin/home.nix
-  # imports this file, and the darwin path deliberately omits
-  # zen-browser.homeModules.beta - lib.mkIf would not suppress the resulting
-  # "option does not exist" error. macOS gets the homebrew cask instead.
 }

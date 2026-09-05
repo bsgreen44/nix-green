@@ -15,10 +15,7 @@
     btop.enable = true;
     kitty.enable = true;
     opencode.enable = true;
-
-    # brave & vscodium are nix packages on Linux but homebrew casks on macOS,
-    # so only theme them through nix on Linux:
+    vscodium.profiles.default.enable = true; # follows catppuccin.flavor
     brave.enable = pkgs.stdenv.hostPlatform.isLinux;
-    vscodium.profiles.default.enable = pkgs.stdenv.hostPlatform.isLinux; # follows catppuccin.flavor
   };
 }
