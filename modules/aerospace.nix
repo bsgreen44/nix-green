@@ -7,10 +7,6 @@
 # Mod key is Alt/Option (AeroSpace default), deliberately avoiding ⌘-chords so it
 # never collides with Raycast's ⌘Space or macOS system shortcuts. Keybindings
 # mirror the intent of modules/hyprland.nix (hjkl focus/move, 1-9 workspaces).
-#
-# darwin-only; guarded so it's inert if ever imported on Linux (consistent with
-# modules/raycast.nix). If a home-manager pin lacks programs.aerospace, move this
-# settings attrset to nix-darwin's services.aerospace instead.
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   programs.aerospace = {
     enable = true;

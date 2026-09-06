@@ -1,4 +1,5 @@
 { pkgs, lib, ... }:
+# Raycast is a macOS productivity launcher. (Replacement for Spotlight)
 
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   targets.darwin.defaults."com.raycast.macos" = {
