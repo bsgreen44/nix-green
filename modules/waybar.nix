@@ -1,5 +1,9 @@
-{ palette, ... }:
+{ config, palette, ... }:
 
+let
+  # Role registry, so a distro-provided terminal is what the click handlers open.
+  terminal = config.green.apps.terminal.command;
+in
 {
   programs.waybar = {
     enable = true;
@@ -58,12 +62,12 @@
 
         "cpu" = {
           format = "󰻠 {usage}%";
-          on-click = "ghostty --title=float -e btop";
+          on-click = "${terminal} --title=float -e btop";
         };
 
         "memory" = {
           format = "󰍛 {used}GB";
-          on-click = "ghostty --title=float -e btop";
+          on-click = "${terminal} --title=float -e btop";
         };
 
         "bluetooth" = {
@@ -74,7 +78,7 @@
           format-disabled = "󰂲";
           tooltip-format = "{status}";
           tooltip-format-connected = "{device_alias}";
-          on-click = "ghostty --title=float -e bluetui";
+          on-click = "${terminal} --title=float -e bluetui";
         };
 
         "pulseaudio" = {
@@ -88,7 +92,7 @@
               ""
             ];
           };
-          on-click = "ghostty --title=float -e wiremix";
+          on-click = "${terminal} --title=float -e wiremix";
         };
 
         "network" = {
@@ -97,7 +101,7 @@
           format-linked = "󰖩";
           format-disconnected = "󰖪";
           tooltip-format = "{essid} ({signalStrength}%)";
-          on-click = "ghostty --title=float -e gazelle";
+          on-click = "${terminal} --title=float -e gazelle";
         };
 
         "battery" = {
@@ -108,7 +112,7 @@
           format = "{capacity}% {icon}";
           format-charging = "{capacity}% ";
           format-plugged = "{capacity}% ";
-          on-click = "ghostty --title=float -e btop";
+          on-click = "${terminal} --title=float -e btop";
           format-icons = [
             ""
             ""

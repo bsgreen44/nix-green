@@ -1,12 +1,16 @@
 { pkgs, config, lib, palette, ... }:
 
 let
+  inherit (config.green.apps) terminal fileManager;
+
+  # Interpolated from the role registry so the help can't drift from the binds.
+  # The browser line stays literal, matching hyprland.nix's literal Lua local.
   keybindsScript = pkgs.writeShellScriptBin "hypr-keybinds" ''
     cat <<'EOF'
-Super + Return               →  Terminal (ghostty)
+Super + Return               →  Terminal (${terminal.command})
 Super + Space                →  App launcher (rofi)
 Super + Shift + B            →  Browser (brave)
-Super + Shift + F            →  File manager (thunar)
+Super + Shift + F            →  File manager (${fileManager.command})
 Super + Shift + O            →  Obsidian
 Super + Shift + V            →  VSCodium
 Super + Shift + N            →  Neovim
@@ -66,7 +70,7 @@ in
     hyprmon = {
       name = "HyprMon";
       genericName = "Monitor Manager";
-      exec = "ghostty --title=float -e hyprmon";
+      exec = "${terminal.command} --title=float -e hyprmon";
       terminal = false;
       categories = [ "System" "Settings" ];
       icon = "video-display";
@@ -74,7 +78,7 @@ in
     nvim = {
       name = "Neovim";
       genericName = "Text Editor";
-      exec = "ghostty -e nvim %F";
+      exec = "${terminal.command} -e nvim %F";
       terminal = false;
       categories = [ "Utility" "TextEditor" ];
       mimeType = [ "text/plain" "text/markdown" ];
@@ -85,7 +89,7 @@ in
       genericName = "Tailscale TUI";
       # No sudo: tailscale's operator setting grants this user write access, and
       # sudo's secure_path can't see ~/.nix-profile/bin on non-NixOS distros.
-      exec = "ghostty --title=float -e tsui";
+      exec = "${terminal.command} --title=float -e tsui";
       terminal = false;
       categories = [ "System" "Network" ];
       icon = "network-wireless-encrypted";
@@ -96,7 +100,7 @@ in
     enable = true;
     package = pkgs.rofi;
     font = "JetBrainsMono Nerd Font 12";
-    terminal = "${pkgs.ghostty}/bin/ghostty";
+    terminal = terminal.command;  # $PATH, not a store path: the distro build may be the real one
   
     extraConfig = {
       # This ensures that when you select a TUI app in 'drun', 

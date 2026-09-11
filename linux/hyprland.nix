@@ -3,7 +3,7 @@
 ## Layers the desktop modules on top of ./home.nix, so `.#green` stays CLI-only
 ## and `.#green-hyprland` is that plus the desktop. Install the compositor with
 ## the distro's package manager first; Nix only writes the config.
-{ pkgs, username, ... }:
+{ pkgs, lib, config, username, ... }:
 {
   imports = [
     ./home.nix
@@ -45,4 +45,53 @@
   # /etc/shadow, and the Nix copy isn't setuid here, so the nixpkgs build can
   # never authenticate. Config is still generated - same pattern as ghostty.
   programs.hyprlock.package = null;
+
+  # Default applications, derived from the role registry. Only roles that declare
+  # a .desktop name contribute, so a machine that declares none (or runs on NixOS,
+  # which never evaluates this file) gets no mimeapps.list at all. Without this
+  # the archiver and PDF roles would have no consumer and KDE would keep guessing.
+  xdg.mimeApps =
+    let
+      mimesByRole = {
+        fileManager = [ "inode/directory" ];
+        pdfViewer = [ "application/pdf" ];
+        archiver = [
+          "application/zip"
+          "application/gzip"
+          "application/x-tar"
+          "application/x-compressed-tar"     # .tar.gz, what file managers report
+          "application/x-bzip-compressed-tar"
+          "application/x-xz-compressed-tar"
+          "application/x-7z-compressed"
+          "application/vnd.rar"
+        ];
+        imageViewer = [
+          "image/png"
+          "image/jpeg"
+          "image/gif"
+          "image/webp"
+        ];
+      };
+      defaults = lib.concatMapAttrs
+        (role: mimes:
+          let desktop = config.green.apps.${role}.desktop or null;
+          in lib.optionalAttrs (desktop != null) (lib.genAttrs mimes (_: desktop)))
+        mimesByRole;
+      # Enabling xdg.mimeApps makes Home Manager own ~/.config/mimeapps.list
+      # outright, so anything that was in the unmanaged file and is not declared
+      # here is dropped. These were in it; the browser is spelled out rather than
+      # taken from the registry, matching hyprland.nix's literal `browser` local.
+      browser = {
+        "x-scheme-handler/http" = "brave-browser.desktop";
+        "x-scheme-handler/https" = "brave-browser.desktop";
+        "text/html" = "brave-browser.desktop";
+      };
+    in
+    lib.mkIf (defaults != { }) {
+      enable = true;
+      associations.added = browser;
+      defaultApplications = defaults // browser // {
+        "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
+      };
+    };
 }

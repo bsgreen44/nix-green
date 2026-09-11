@@ -38,6 +38,8 @@ nix-green
 │   ├── themes.nix
 │   └── waybar.nix
 ├── README.md
+├── scripts
+│   └── detect-system-apps.sh
 └── wallpapers
 ```
 
@@ -113,6 +115,19 @@ home-manager switch --flake .#username-hyprland
 
 Distro-specific settings, such as the wallpaper path, live in `~/nix-green/linux/hyprland.nix`.
 
+### How do I use apps my distro already installed, instead of the ones Nix declares?
+`modules/apps.nix` defines a role registry - `terminal`, `fileManager`, `calculator`, `imageViewer`, `archiver`, `pdfViewer`. Each role names the command to run, its Wayland `app_id` (for the floating window rules), its `.desktop` file (for default-application handling) and the package Nix installs for it. Setting a role's `package = null` means "the distro provides this binary, install nothing".
+
+The defaults are the nixpkgs apps, and every override for your machine goes in one file, `linux/system-apps.nix`. To find out what your distro already has:
+```
+./scripts/detect-system-apps.sh
+```
+It scans `/usr/bin` (never `$PATH`, which would match Nix's own packages), reports the owning distro package, and prints a `green.apps` block to paste into `linux/system-apps.nix`. Moving to another distro means rewriting that one file, or emptying it to `green.apps = { };` to have Nix install everything again.
+
+The scan is a script rather than something the config does during evaluation, because a flake evaluates in pure mode: `builtins.pathExists "/usr/bin/dolphin"` returns `false` there even when the file exists, and with `eval-cache` on, an `--impure` answer can go stale. Declaring the result keeps the config reproducible.
+
+Two things the registry does not cover. The `terminal` and `browser` locals at the top of `modules/hyprland.nix` are deliberately literal, so retargeting `terminal.command` changes waybar, rofi and the screensaver but not `SUPER + Return` - edit that local by hand. And `app_id` values the script reads from a `.desktop` name are a guess; confirm them with `hyprctl clients -j | jq -r '.[].class'` with the app open, or its window will not float.
+
 ### Why don't my brightness keys work on a different Linux distro?
 Nix installs swayosd and runs it as a user service, but it can't set the permissions swayosd needs to change brightness. That part is a system-level change, so it has to be done once, by hand, as root. On NixOS `hyprland/configuration.nix` already handles it.
 
@@ -152,7 +167,7 @@ On other distros, run `nix flake update` followed by `home-manager switch --flak
 ## Hyprland
 
 ### Is there a keybind list?
-`SUPER + SHIFT + H` opens a searchable keybind list. Edit the keybinds in `hyprland.nix`. After changing the keybind, update the keybinds list in `rofi.nix`. See [hyprland wiki](https://wiki.hypr.land/Configuring/Binds/) on how to set binds.
+`SUPER + SHIFT + H` opens a searchable keybind list. Edit the keybinds in `hyprland.nix`, and the descriptions in `rofi.nix`. App names that come from the role registry (terminal, file manager) are interpolated into both, so those stay in sync on their own. See [hyprland wiki](https://wiki.hypr.land/Configuring/Binds/) on how to set binds.
 
 ### How do I change the wallpaper?
 Set `wallpaper` in the `_module.args` block to the path of the desired wallpaper. On NixOS this is in `~/nix-green/hyprland/home.nix`; on other distros it's `~/nix-green/linux/hyprland.nix`.

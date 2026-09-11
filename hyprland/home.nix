@@ -5,6 +5,7 @@
     hidpi = false;   # set true on 2k/4k laptop panels
   };
   imports = [
+    ../modules/apps.nix
     ../modules/packages.nix
     ../modules/terminal.nix
     ../modules/shells.nix

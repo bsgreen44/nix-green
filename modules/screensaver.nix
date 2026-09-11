@@ -1,6 +1,10 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 let
+  # Role registry: the screensaver is a full-screen window of whatever terminal
+  # this machine uses, and the pkill patterns below have to match it.
+  term = config.green.apps.terminal.command;
+
   # On-demand screensaver. With `--lock` (idle use) it also arms a timer that
   # locks the session and turns the display off after 120s; without it the
   # animation just runs until a key is pressed.
@@ -12,13 +16,13 @@ let
     if [ "''${1:-}" = "--lock" ]; then
       ( sleep 120 \
           && loginctl lock-session \
-          && pkill -f "ghostty.*title=full" \
+          && pkill -f "${term}.*title=full" \
           && sleep 2 \
           && hyprctl dispatch dpms off ) &
       TIMER_PID=$!
     fi
 
-    ghostty --title=full --font-size=29 -e sh -c '
+    ${term} --title=full --font-size=29 -e sh -c '
       ( while true; do
           cols=$(tput cols); rows=$(tput lines)
           COLS=$cols ROWS=$rows python3 $HOME/.local/share/center_logo.py \
@@ -28,9 +32,9 @@ let
       kill $LOOP_PID 2>/dev/null
     '
 
-    # Reached when ghostty exits (keypress, or killed by the timer)
+    # Reached when the terminal exits (keypress, or killed by the timer)
     [ -n "''${TIMER_PID:-}" ] && kill "$TIMER_PID" 2>/dev/null
-    pkill -f "ghostty.*title=full"
+    pkill -f "${term}.*title=full"
   '';
 in
 {
