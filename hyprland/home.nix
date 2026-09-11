@@ -22,6 +22,10 @@
     ../modules/screensaver.nix
   ];
 
+  # Idle screensaver. false makes hypridle's 3-minute timeout lock the session
+  # directly; SUPER + SHIFT + Z still launches the screensaver by hand.
+  green.screensaver.enable = true;
+
   home.username = username;
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "25.11";

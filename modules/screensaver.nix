@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, lib, config, ... }:
 
 let
   # Role registry: the screensaver is a full-screen window of whatever terminal
@@ -38,58 +38,74 @@ let
   '';
 in
 {
-  home.packages = [ screensaver ];
+  ## The idle screensaver is a toggle rather than a commented-out hypridle
+  ## listener. modules/hypridle.nix reads this to pick what the 3-minute idle
+  ## timeout runs; the option lives here because this file owns the script.
+  options.green.screensaver.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = ''
+      Run the screensaver when the session goes idle. When false, hypridle's
+      3-minute listener locks the session directly instead. Either way the
+      `screensaver` command and its SUPER + SHIFT + Z bind stay available for
+      manual use.
+    '';
+  };
 
-  # Edit this to customize tte screensaver
-  home.file.".local/share/logo.txt".text = ''
-          ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖
-          ▜███▙       ▜███▙  ▟███▛
-           ▜███▙       ▜███▙▟███▛
-            ▜███▙       ▜██████▛
-     ▟█████████████████▙ ▜████▛     ▟▙
-    ▟███████████████████▙ ▜███▙    ▟██▙
-           ▄▄▄▄▖           ▜███▙  ▟███▛
-          ▟███▛             ▜██▛ ▟███▛
-         ▟███▛               ▜▛ ▟███▛
-▟███████████▛                  ▟██████████▙
-▜██████████▛                  ▟███████████▛
-      ▟███▛ ▟▙               ▟███▛
-     ▟███▛ ▟██▙             ▟███▛
-    ▟███▛  ▜███▙           ▝▀▀▀▀
-    ▜██▛    ▜███▙ ▜██████████████████▛
-     ▜▛     ▟████▙ ▜████████████████▛
-           ▟██████▙         ▜███▙
-          ▟███▛▜███▙         ▜███▙
-         ▟███▛  ▜███▙         ▜███▙
-         ▝▀▀▀    ▀▀▀▀▘         ▀▀▀▘
-  '';
+  config = {
+    home.packages = [ screensaver ];
 
-  # This centers the logo
-  home.file.".local/share/center_logo.py".text = ''
-  import unicodedata, os
+    # Edit this to customize tte screensaver
+    home.file.".local/share/logo.txt".text = ''
+            ▗▄▄▄       ▗▄▄▄▄    ▄▄▄▖
+            ▜███▙       ▜███▙  ▟███▛
+             ▜███▙       ▜███▙▟███▛
+              ▜███▙       ▜██████▛
+       ▟█████████████████▙ ▜████▛     ▟▙
+      ▟███████████████████▙ ▜███▙    ▟██▙
+             ▄▄▄▄▖           ▜███▙  ▟███▛
+            ▟███▛             ▜██▛ ▟███▛
+           ▟███▛               ▜▛ ▟███▛
+  ▟███████████▛                  ▟██████████▙
+  ▜██████████▛                  ▟███████████▛
+        ▟███▛ ▟▙               ▟███▛
+       ▟███▛ ▟██▙             ▟███▛
+      ▟███▛  ▜███▙           ▝▀▀▀▀
+      ▜██▛    ▜███▙ ▜██████████████████▛
+       ▜▛     ▟████▙ ▜████████████████▛
+             ▟██████▙         ▜███▙
+            ▟███▛▜███▙         ▜███▙
+           ▟███▛  ▜███▙         ▜███▙
+           ▝▀▀▀    ▀▀▀▀▘         ▀▀▀▘
+    '';
 
-  def wcswidth(s):
-      w = 0
-      for c in s:
-          e = unicodedata.east_asian_width(c)
-          w += 2 if e in ('W', 'F') else 1
-      return w
+    # This centers the logo
+    home.file.".local/share/center_logo.py".text = ''
+    import unicodedata, os
 
-  cols = int(os.environ.get("COLS", 80))
-  rows = int(os.environ.get("ROWS", 24))
+    def wcswidth(s):
+        w = 0
+        for c in s:
+            e = unicodedata.east_asian_width(c)
+            w += 2 if e in ('W', 'F') else 1
+        return w
 
-  lines = open(os.path.expanduser("~/.local/share/logo.txt")).read().splitlines()
-  lines = [l for l in lines if l.strip()]  # Remove empty lines
-  max_w = max(wcswidth(l) for l in lines)
+    cols = int(os.environ.get("COLS", 80))
+    rows = int(os.environ.get("ROWS", 24))
 
-  top_pad = max(0, (rows - len(lines)) // 2)
-  bottom_pad = max(0, rows - len(lines) - top_pad)
-  left_pad = max(0, (cols - max_w) // 2)
-  
-  print("\n" * top_pad, end="")
+    lines = open(os.path.expanduser("~/.local/share/logo.txt")).read().splitlines()
+    lines = [l for l in lines if l.strip()]  # Remove empty lines
+    max_w = max(wcswidth(l) for l in lines)
 
-  for l in lines:
-      print(" " * left_pad + l)
-  print("\n" * bottom_pad, end="")
-  '';
+    top_pad = max(0, (rows - len(lines)) // 2)
+    bottom_pad = max(0, rows - len(lines) - top_pad)
+    left_pad = max(0, (cols - max_w) // 2)
+
+    print("\n" * top_pad, end="")
+
+    for l in lines:
+        print(" " * left_pad + l)
+    print("\n" * bottom_pad, end="")
+    '';
+  };
 }

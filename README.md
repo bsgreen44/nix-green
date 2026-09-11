@@ -218,16 +218,12 @@ When `hidpi = true`, `hyprland.nix` emits the scaled monitor block (`monitor = e
 Alternatively, you can manually update `monitorConfig` block in `hyprland.nix` to your exact preferences or add the monitor config to `~/.config/hypr/local.conf` to override the monitor settings. Just make sure to uncomment `# source = ~/.config/hypr/local.conf` in hyprland.nix.
 
 ### How do I change the screensaver?
-Edit `screensaver.nix` change the screensaver text/ASCII art. To turn off the screensaver, comment out the screensaver lines in `hypridle.nix` and comment in the lock screen.
+Edit `screensaver.nix` to change the screensaver text/ASCII art.
+
+To turn the screensaver off, flip the `green.screensaver.enable` option - `~/nix-green/hyprland/home.nix` on NixOS, `~/nix-green/linux/hyprland.nix` on other distros:
 ```
-{
-  # 3 minutes turn on screensaver.
-  # After 5 minutes lock the screen and turn display off. After 20 minutes suspend
-  timeout = 180;
-  on-timeout = "screensaver --lock".;
-{
-#{
-#  timeout = 180; # 3 minutes
-#  on-timeout = "loginctl lock-session"; # Lock screen
-#}
+green.screensaver.enable = false;
 ```
+When `true`, hypridle's 3-minute idle timeout runs `screensaver --lock`, and the screensaver locks the session itself after a further 2 minutes. When `false`, that timeout runs `loginctl lock-session` directly. The 2.5-minute dim, 5.5-minute display-off and 20-minute suspend listeners are the same either way, and `SUPER + SHIFT + Z` still launches the screensaver by hand in both cases.
+
+Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
