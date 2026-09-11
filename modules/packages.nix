@@ -14,7 +14,6 @@
       obsidian
       nextcloud-client
       libreoffice
-      python315
       wakeonlan
       bluetui
       calcurse

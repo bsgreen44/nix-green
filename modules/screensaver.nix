@@ -25,7 +25,7 @@ let
     ${term} --title=full --font-size=29 -e sh -c '
       ( while true; do
           cols=$(tput cols); rows=$(tput lines)
-          COLS=$cols ROWS=$rows python3 $HOME/.local/share/center_logo.py \
+          COLS=$cols ROWS=$rows ${pkgs.python3Minimal}/bin/python3 $HOME/.local/share/center_logo.py \
             | tte --canvas-width $cols --canvas-height $rows --random-effect
         done ) & LOOP_PID=$!
       read -n 1 -s
