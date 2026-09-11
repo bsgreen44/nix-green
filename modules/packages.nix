@@ -11,7 +11,6 @@
       fastfetch
       claude-code
       codex
-      python315
       wakeonlan
       calcurse
       cmatrix

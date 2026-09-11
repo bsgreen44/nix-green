@@ -1,5 +1,15 @@
-{ ... }:
+{ config, ... }:
 
+let
+  # 3 minutes: either the screensaver (which arms its own 120s lock timer, so the
+  # session locks at ~5 minutes - see modules/screensaver.nix) or a straight lock.
+  # Flip `green.screensaver.enable` to choose; the manual SUPER + SHIFT + Z
+  # screensaver bind works either way.
+  idleAction =
+    if config.green.screensaver.enable
+    then "screensaver --lock"
+    else "loginctl lock-session";
+in
 {
   services.hypridle = {
     enable = true;
@@ -18,16 +28,10 @@
           on-resume = "brightnessctl -r"; # Restore brightness
         }
         {
-          # 3 minutes turn on screensaver.
-          # After 5 minutes lock the screen and turn display off. After 20 minutes suspend
-          timeout = 180;
-          on-timeout = "screensaver --lock";
+          timeout = 180; # 3 minutes: screensaver, or lock if it's disabled
+          on-timeout = idleAction;
         }
         {
-        #{
-        #  timeout = 180; # 3 minutes
-        #  on-timeout = "loginctl lock-session"; # Lock screen
-        #}
           timeout = 330; # 5.5 minutes
           on-timeout = "hyprctl dispatch dpms off"; # Screen off
           on-resume = "hyprctl dispatch dpms on"; # Screen on

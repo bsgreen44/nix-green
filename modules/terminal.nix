@@ -1,16 +1,23 @@
-{ pkgs, lib, ghostty, ... }:
+{ pkgs, lib, config, ghostty, ... }:
 
 {
+  # The ghostty flake package on Linux. Null on macOS, where ghostty has no Nix
+  # build and comes from the homebrew cask in nix-darwin/configuration.nix, and
+  # on any machine whose system-apps file nulls it. Lazy, so the flake package is
+  # never forced where something else provides the binary.
+  green.apps.terminal.package = lib.mkDefault (
+    if pkgs.stdenv.hostPlatform.isLinux
+    then ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
+    else null
+  );
+
   # ghostty config
   programs.ghostty = {
     enable = true;
     enableBashIntegration = false;
-    # On Linux use the ghostty flake's package; on macOS ghostty has no Nix build
-    # (installed via the Homebrew cask instead), so null = manage config only.
-    package =
-      if pkgs.stdenv.hostPlatform.isLinux
-      then ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
-      else null;
+    # Null where the distro (or macOS) ships ghostty; Nix then only writes the
+    # config below. Declared in the role registry, not toggled by hand here.
+    package = config.green.apps.terminal.package;
     systemd.enable = false;
     settings = {
       background-blur = true;

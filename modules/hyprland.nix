@@ -1,9 +1,21 @@
 # `hyprland` is the flake input on NixOS, null where the distro installs the
 # compositor. Must be supplied either way - the module system resolves declared
 # args eagerly, so a `? null` default here would never apply.
-{ pkgs, lib, wallpaper, hyprland, palette, hidpi ? false, ... }:
+{ pkgs, lib, config, wallpaper, hyprland, palette, hidpi ? false, ... }:
 
 let
+  apps = config.green.apps;
+
+  # Floating utility windows, matched on Wayland app_id. The file manager and
+  # calculator come from the role registry so a distro-provided app (dolphin,
+  # kcalc) still lands in the float rule.
+  floatClasses = [
+    "gnome-disks"
+    "com.nextcloud.desktopclient.nextcloud"
+    apps.fileManager.class
+    apps.calculator.class
+  ];
+
   monitorConfig =
     if hidpi then ''
       hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1.33 })
@@ -20,14 +32,16 @@ in
     mako         # notifications
     grim         # screenshot
     slurp        # screenshot
-    gnome-calculator
     wl-clipboard
     swaybg       # wallpaper; the unit below uses the store path, this is for manual use
-    swayimg      # Image viewer
     bibata-cursors
     rofi-power-menu
     hyprpolkitagent  # polkit authentication agent, started from the autostart block
-  ];
+  ]
+  # Calculator and image viewer only when the role still points at a nixpkgs
+  # package; a distro-provided dolphin/kcalc/gwenview sets package = null.
+  ++ lib.optional (apps.calculator.package != null) apps.calculator.package
+  ++ lib.optional (apps.imageViewer.package != null) apps.imageViewer.package;
 
   # clipboard manager
   services.cliphist.enable = true;
@@ -201,15 +215,15 @@ in
       -- Window rules
       hl.window_rule({
         name = "float-utilities",
-        match = { class = "^(gnome-disks|thunar|com.nextcloud.desktopclient.nextcloud|org.gnome.Calculator)$" },
+        match = { class = "^(${lib.concatStringsSep "|" floatClasses})$" },
         float = true,
         center = true,
         size = "900 600",
       })
 
       hl.window_rule({
-        name = "float-swayimg",
-        match = { class = "^(swayimg)$" },
+        name = "float-image-viewer",
+        match = { class = "^(${apps.imageViewer.class})$" },
         float = true,
         center = true,
       })
@@ -233,7 +247,7 @@ in
       -- Application launchers
       hl.bind(mod .. " + Return",     hl.dsp.exec_cmd(terminal))
       hl.bind(mod .. " + SHIFT + B",  hl.dsp.exec_cmd(browser))
-      hl.bind(mod .. " + SHIFT + F",  hl.dsp.exec_cmd("thunar"))
+      hl.bind(mod .. " + SHIFT + F",  hl.dsp.exec_cmd("${apps.fileManager.command}"))
       hl.bind(mod .. " + SHIFT + O",  hl.dsp.exec_cmd("obsidian"))
       hl.bind(mod .. " + SHIFT + V",  hl.dsp.exec_cmd("codium"))
       hl.bind(mod .. " + SHIFT + M",  hl.dsp.exec_cmd(terminal .. " --title=float -e btop"))
