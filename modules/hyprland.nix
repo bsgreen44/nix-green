@@ -255,7 +255,7 @@ in
       hl.bind(mod .. " + SHIFT + N",  hl.dsp.exec_cmd(terminal .. " -e nvim"))
       hl.bind(mod .. " + SHIFT + G",  hl.dsp.exec_cmd(terminal .. " -e lazygit"))
       hl.bind(mod .. " + SHIFT + A",  hl.dsp.exec_cmd(terminal .. " -e opencode"))
-      hl.bind(mod .. " + Q",          hl.dsp.window.close())
+      hl.bind(mod .. " + W",          hl.dsp.window.close())
       hl.bind(mod .. " + SHIFT + ESCAPE", hl.dsp.exit())
       hl.bind(mod .. " + T",          hl.dsp.window.float({ action = "toggle" }))
       hl.bind(mod .. " + SPACE",      hl.dsp.exec_cmd(menu))

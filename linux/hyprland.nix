@@ -28,7 +28,7 @@
 
   # Idle screensaver. false makes hypridle's 3-minute timeout lock the session
   # directly; SUPER + SHIFT + Z still launches the screensaver by hand.
-  green.screensaver.enable = true;
+  green.screensaver.enable = false;
 
   # On NixOS these come from configuration.nix, which this path never evaluates.
   home.packages = with pkgs; [

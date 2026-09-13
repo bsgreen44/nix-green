@@ -18,7 +18,7 @@ Super + Shift + G            →  Lazygit
 Super + Shift + A            →  opencode
 Super + Shift + M            →  btop
 Super + Shift + T            →  Tailscale (tsui)
-Super + Q                    →  Close window
+Super + W                    →  Close window
 Super + T                    →  Toggle floating
 Super + F                    →  Fullscreen
 Super + P                    →  Pseudotile
