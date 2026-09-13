@@ -154,7 +154,9 @@ in
         },
       })
 
-      -- General settings (dwindle is also available as layout = "dwindle")
+      -- General settings: layout is the default for every workspace (dwindle
+      -- is also available as layout = "dwindle"). Per-workspace overrides are
+      -- applied at runtime by modules/hypr-workspace-layout.nix, not pinned here.
       hl.config({
         general = {
           layout = "scrolling",
@@ -167,9 +169,6 @@ in
           },
         },
       })
-      hl.workspace_rule({ workspace = 10, layout = "dwindle" })
-      hl.workspace_rule({ workspace = 9, layout = "dwindle" })
-      hl.workspace_rule({ workspace = 8, layout = "dwindle" })
 
       -- Hyprland scrolling (a core layout in Lua, no longer under plugin)
       hl.config({
@@ -296,6 +295,8 @@ in
       hl.bind(mod .. " + SHIFT + J", hl.dsp.layout("swapcol l"))
       hl.bind(mod .. " + comma",     hl.dsp.layout("colresize -0.2"))
       hl.bind(mod .. " + period",    hl.dsp.layout("colresize +0.2"))
+      -- Flip the active workspace between dwindle and scrolling; persisted
+      hl.bind(mod .. " + SHIFT + L", hl.dsp.exec_cmd("hypr-workspace-layout-toggle"))
 
       -- Swap active window with the one next to it
       hl.bind(mod .. " + SHIFT + LEFT",  hl.dsp.window.swap({ direction = "l" }))

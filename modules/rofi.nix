@@ -35,6 +35,7 @@ Super + Shift + K            →  Swap column right
 Super + Shift + J            →  Swap column left
 Super + ,                    →  Shrink column
 Super + .                    →  Grow column
+Super + Shift + L            →  Toggle workspace layout (dwindle/scrolling)
 Super + -                    →  Shrink window width
 Super + =                    →  Grow window width
 Super + Shift + -            →  Shrink window height

@@ -8,6 +8,7 @@
   imports = [
     ./home.nix
     ../modules/hyprland.nix
+    ../modules/hypr-workspace-layout.nix
     ../modules/hypridle.nix
     ../modules/hyprlock.nix
     ../modules/waybar.nix
