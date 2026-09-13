@@ -19,7 +19,7 @@
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
       background-opacity = 0.75;
       window-theme = "dark";
-      font-family = "JetBrains Mono";
+      font-family = "JetBrainsMono Nerd Font Mono";
       font-size = 10;
       gtk-tabs-location = "hidden";
       #window-decoration = false;
