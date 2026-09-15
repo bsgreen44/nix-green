@@ -81,7 +81,15 @@ in
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
     };
-    
+
+    iconTheme.name = "breeze";
+    cursorTheme = {
+      name = "breeze_cursors";
+      size = 24;
+    };
+
+    gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
+
     gtk4.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
@@ -89,6 +97,9 @@ in
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
+
+    gtk3.extraCss = "/* Managed by Home Manager - deliberately no KDE colors.css import. */";
+    gtk4.extraCss = "/* Managed by Home Manager - deliberately no KDE colors.css import. */";
   };
 
   # Hyprland configuration
