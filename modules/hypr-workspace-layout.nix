@@ -34,8 +34,7 @@ in
 
         # Special workspaces get a dynamically assigned negative id, so a rule
         # keyed on one would restore onto an unrelated workspace after a
-        # restart. Refuse rather than persist garbage; this is stricter than
-        # omarchy's ^-?[0-9]+$ on purpose.
+        # restart. Refuse rather than persist garbage
         if [[ ! $workspace =~ ^[1-9][0-9]*$ ]]; then
           notify-send -a hyprland -t 2000 "Workspace layout" "Not a regular workspace"
           exit 1
@@ -45,7 +44,7 @@ in
         # on some third layout still converges instead of getting stuck.
         if [[ $current == dwindle ]]; then new=scrolling; else new=dwindle; fi
 
-        # Apply before persisting, the reverse of omarchy's order: a failed
+        # Apply before persisting, a failed
         # eval then leaves no state file promising a layout never applied.
         # `eval` runs Lua against the live config; the hyprlang keyword is the
         # fallback for a build predating it.

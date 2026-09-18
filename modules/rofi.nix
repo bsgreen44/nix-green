@@ -122,14 +122,15 @@ in
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
-    font = "JetBrainsMono Nerd Font 12";
-    terminal = terminal.command;  # $PATH, not a store path: the distro build may be the real one
-  
-    extraConfig = {
-      # This ensures that when you select a TUI app in 'drun', 
+
+    settings = {
+      font = "JetBrainsMono Nerd Font 12";
+      terminal = terminal.command;  # $PATH, not a store path: the distro build may be the real one
+
+      # This ensures that when you select a TUI app in 'drun',
       # Rofi knows to wrap it in a terminal.
       run-shell-command = "{terminal} -e {cmd}";
-  };
+    };
 
     theme =
       let
