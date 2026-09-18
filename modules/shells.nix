@@ -21,6 +21,7 @@
       }
       { name = "zsh-syntax-highlighting";
         src = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting";
+        file = "zsh-syntax-highlighting.zsh";
       }
     ];
     initContent = ''

@@ -24,7 +24,7 @@
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
       background-opacity = 0.75;
       window-theme = "dark";
-      font-family = "JetBrains Mono";
+      font-family = "JetBrainsMono Nerd Font Mono";
       font-size = 10;
       #window-decoration = false;
     } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {

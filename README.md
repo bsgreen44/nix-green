@@ -23,6 +23,7 @@ nix-green
 ├── modules
 │   ├── aerospace.nix
 │   ├── apps.nix
+│   ├── hypr-workspace-layout.nix
 │   ├── hypridle.nix
 │   ├── hyprland.nix
 │   ├── hyprlock.nix
@@ -242,3 +243,8 @@ green.screensaver.enable = false;
 When `true`, hypridle's 3-minute idle timeout runs `screensaver --lock`, and the screensaver locks the session itself after a further 2 minutes. When `false`, that timeout runs `loginctl lock-session` directly. The 2.5-minute dim, 5.5-minute display-off and 20-minute suspend listeners are the same either way, and `SUPER + SHIFT + Z` still launches the screensaver by hand in both cases.
 
 Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
+
+### How do I toggle a workspace's layout?
+`SUPER + SHIFT + L` flips the active workspace between `dwindle` and `scrolling`. It's per-workspace - other workspaces keep whatever they were last set to - and persists across `hyprctl reload` and reboot, unlike the general `layout` setting in `hyprland.nix`, which only picks the default a workspace starts from.
+
+The toggle writes the override to `~/.local/state/nix-green/workspace-layouts`, and `hypr-workspace-layout.nix` replays it into a `hl.workspace_rule(...)` call on every config load. Note this is mutable, untracked state that lives outside the flake, so it is not reproducible across machines. Deleting that file and running `hyprctl reload` resets every workspace back to the layout declared in Nix.

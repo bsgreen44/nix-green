@@ -7,59 +7,82 @@ let
   # The browser line stays literal, matching hyprland.nix's literal Lua local.
   keybindsScript = pkgs.writeShellScriptBin "hypr-keybinds" ''
     cat <<'EOF'
-Super + Return               →  Terminal (${terminal.command})
-Super + Space                →  App launcher (rofi)
-Super + Shift + B            →  Browser (brave)
-Super + Shift + F            →  File manager (${fileManager.command})
-Super + Shift + O            →  Obsidian
-Super + Shift + V            →  VSCodium
-Super + Shift + N            →  Neovim
-Super + Shift + G            →  Lazygit
-Super + Shift + A            →  opencode
-Super + Shift + M            →  btop
-Super + Shift + T            →  Tailscale (tsui)
-Super + Q                    →  Close window
-Super + T                    →  Toggle floating
-Super + F                    →  Fullscreen
-Super + P                    →  Pseudotile
-Super + U                    →  Toggle split
-Super + ←/→/↑/↓              →  Focus direction
-Super + Shift + ←/→/↑/↓      →  Swap window
-Super + LMB drag             →  Move window
-Super + RMB drag             →  Resize window
-Alt + Tab                    →  Cycle windows
-Alt + Shift + Tab            →  Cycle windows (back)
-Super + K                    →  Focus column right
-Super + J                    →  Focus column left
-Super + Shift + K            →  Swap column right
-Super + Shift + J            →  Swap column left
-Super + ,                    →  Shrink column
-Super + .                    →  Grow column
-Super + -                    →  Shrink window width
-Super + =                    →  Grow window width
-Super + Shift + -            →  Shrink window height
-Super + Shift + =            →  Grow window height
-Super + 1–9                  →  Switch workspace
-Super + 0                    →  Switch workspace 10
-Super + Shift + 1–9          →  Move to workspace
-Super + Shift + 0            →  Move to workspace 10
-Super + Tab                  →  Next workspace
-Super + Scroll               →  Cycle workspaces
-Super + L                    →  Lock screen
-Super + Shift + Z            →  Screensaver
-Super + Esc                  →  Power menu
-Super + Shift + Esc          →  Exit Hyprland
-Super + Shift + Space        →  Toggle Waybar
-Super + Shift + H            →  Show this keybind list
-Super + Ctrl + V             →  Clipboard history
-Super + Shift + S            →  Screenshot to clipboard
-Print                        →  Screenshot to clipboard
-Super + N                    →  Dismiss notification
-Super + Ctrl + N             →  Dismiss all notifications
-Vol Up/Down                  →  Volume ±5%
-Mute                         →  Toggle mute
-Mic Mute                     →  Toggle microphone mute
-Brightness Up/Down           →  Brightness ±10%
+Super + Return                 →  Terminal (${terminal.command})
+Super + Space                  →  App launcher (rofi)
+Super + Shift + B              →  Browser (brave)
+Super + Shift + F              →  File manager (${fileManager.command})
+Super + Shift + O              →  Obsidian
+Super + Shift + V              →  VSCodium
+Super + Shift + N              →  Neovim
+Super + Shift + G              →  Lazygit
+Super + Shift + A              →  opencode
+Super + Shift + M              →  btop
+Super + Shift + T              →  Tailscale (tsui)
+Super + W                      →  Close window
+Super + Q                      →  Close window
+Super + T                      →  Toggle floating
+Super + F                      →  Fullscreen
+Super + Alt + F                →  Full width (maximized)
+Super + P                      →  Pseudotile
+Super + J                      →  Toggle split
+Super + ←/→/↑/↓                →  Focus direction
+Super + Shift + ←/→/↑/↓        →  Swap window
+Super + LMB drag               →  Move window
+Super + RMB drag               →  Resize window
+Alt + Tab                      →  Cycle windows / reveal on top
+Alt + Shift + Tab              →  Cycle windows (back) / reveal on top
+Ctrl + Alt + Tab               →  Focus next monitor
+Ctrl + Alt + Shift + Tab       →  Focus previous monitor
+Super + Shift + L              →  Toggle workspace layout (dwindle/scrolling)
+Super + -                      →  Shrink window width
+Super + =                      →  Grow window width
+Super + Shift + -              →  Shrink window height
+Super + Shift + =              →  Grow window height
+Super + Alt + -                →  Shrink window width (fine)
+Super + Alt + =                →  Grow window width (fine)
+Super + Shift + Alt + -        →  Shrink window height (fine)
+Super + Shift + Alt + =        →  Grow window height (fine)
+Super + Ctrl + -               →  Shrink window width (coarse)
+Super + Ctrl + =               →  Grow window width (coarse)
+Super + Ctrl + Shift + -       →  Shrink window height (coarse)
+Super + Ctrl + Shift + =       →  Grow window height (coarse)
+Super + 1–9                    →  Switch workspace
+Super + 0                      →  Switch workspace 10
+Super + Shift + 1–9            →  Move to workspace
+Super + Shift + 0              →  Move to workspace 10
+Super + Shift + Alt + 1–9      →  Move to workspace silently
+Super + Shift + Alt + 0        →  Move to workspace 10 silently
+Super + Shift + Alt + ←/→/↑/↓  →  Move workspace to another monitor
+Super + Tab                    →  Next workspace
+Super + Shift + Tab            →  Previous workspace
+Super + Ctrl + Tab             →  Former workspace
+Super + Scroll                 →  Cycle workspaces
+Super + S                      →  Toggle scratchpad
+Super + Alt + S                →  Move window to scratchpad
+Super + L                      →  Lock screen
+Super + Shift + Z              →  Screensaver
+Super + Esc                    →  Power menu
+Super + Shift + Esc            →  Exit Hyprland
+Super + Shift + Space          →  Toggle Waybar
+Super + K                      →  Show this keybind list
+Super + Shift + H              →  Show this keybind list
+Super + Ctrl + V               →  Clipboard history
+Super + Shift + S              →  Screenshot to clipboard
+Print                          →  Screenshot to clipboard
+Super + N                      →  Dismiss notification
+Super + Ctrl + N               →  Dismiss all notifications
+Vol Up/Down                    →  Volume ±5%
+Mute                           →  Toggle mute
+Mic Mute                       →  Toggle microphone mute
+Brightness Up/Down             →  Brightness ±10%
+Super + G                      →  Toggle window grouping
+Super + Alt + G                →  Move window out of group
+Super + Alt + ←/→/↑/↓          →  Move window into group (direction)
+Super + Alt + Tab              →  Next window in group
+Super + Alt + Shift + Tab      →  Previous window in group
+Super + Ctrl + ←/→             →  Cycle grouped window focus
+Super + Alt + Scroll           →  Cycle window in group
+Super + Alt + 1–5              →  Switch to group window N
 EOF
   '';
 in
@@ -99,14 +122,15 @@ in
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
-    font = "JetBrainsMono Nerd Font 12";
-    terminal = terminal.command;  # $PATH, not a store path: the distro build may be the real one
-  
-    extraConfig = {
-      # This ensures that when you select a TUI app in 'drun', 
+
+    settings = {
+      font = "JetBrainsMono Nerd Font 12";
+      terminal = terminal.command;  # $PATH, not a store path: the distro build may be the real one
+
+      # This ensures that when you select a TUI app in 'drun',
       # Rofi knows to wrap it in a terminal.
       run-shell-command = "{terminal} -e {cmd}";
-  };
+    };
 
     theme =
       let

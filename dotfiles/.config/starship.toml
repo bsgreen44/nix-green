@@ -1,4 +1,5 @@
 format = "$username$directory$git_branch$git_status$c$rust$golang$nodejs$php$java$kotlin$haskell$python$conda$cmd_duration$line_break$character"
+command_timeout = 200
 
 [c]
 format = "via [$symbol($version )]($style)"
@@ -24,6 +25,10 @@ ignore_base = false
 format = "[$path]($style)[$read_only]($read_only_style) "
 truncation_length = 3
 truncation_symbol = "…/"
+# Dimmed relative to repo_root_style, so the repo root stands out from the rest
+# of the path. Starship's own defaults make both "bold cyan", which shows nothing.
+style = "cyan"
+repo_root_style = "bold cyan"
 
 [git_branch]
 format = "on [$symbol$branch]($style) "
