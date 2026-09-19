@@ -6,6 +6,17 @@
 let
   apps = config.green.apps;
 
+  # polkit_gnome's helper needs a setuid wrapper at /run/wrappers/bin, which
+  # only exists on NixOS (security.wrappers). On the distro branch that path
+  # is never created, so the nixpkgs build can never authenticate - same
+  # class of bug as hyprlock.package = null in linux/hyprland.nix. Fedora's
+  # own polkit-kde-authentication-agent-1 is already built against the real
+  # setuid helper, so use that instead.
+  polkitAgentCmd =
+    if hyprland != null
+    then "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+    else "/usr/libexec/kf6/polkit-kde-authentication-agent-1";
+
   # Floating utility windows, matched on Wayland app_id. The file manager and
   # calculator come from the role registry so a distro-provided app (dolphin,
   # kcalc) still lands in the float rule.
@@ -36,8 +47,10 @@ in
     swaybg       # wallpaper; the unit below uses the store path, this is for manual use
     bibata-cursors
     rofi-power-menu
-    hyprpolkitagent  # polkit authentication agent, started from the autostart block
   ]
+  # NixOS only: on the distro branch the agent comes from the distro package
+  # (polkit-kde), not nixpkgs - see polkitAgentCmd above.
+  ++ lib.optional (hyprland != null) pkgs.polkit_gnome
   # Calculator and image viewer only when the role still points at a nixpkgs
   # package; a distro-provided dolphin/kcalc/gwenview sets package = null.
   ++ lib.optional (apps.calculator.package != null) apps.calculator.package
@@ -139,8 +152,10 @@ in
       hl.on("hyprland.start", function()
         hl.exec_cmd("waybar")
         hl.exec_cmd("pkill dunst; mako")
-        -- Without an agent, polkit prompts fail silently (gnome-disks, nm)
-        hl.exec_cmd("${pkgs.hyprpolkitagent}/libexec/hyprpolkitagent")
+        -- Without an agent, polkit prompts fail silently (gnome-disks, nm).
+        -- hyprpolkitagent was tried first but segfaults mid-authentication
+        -- (hyprwm/hyprpolkitagent#45); see polkitAgentCmd above for the rest.
+        hl.exec_cmd("${polkitAgentCmd}")
       end)
 
       -- Input configuration
