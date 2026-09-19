@@ -12,7 +12,7 @@ in
       mainBar = {
         layer = "top";
         position = "top";
-        height = 22;
+        height = 20;
         margin-top = 7;
         margin-left = 7;
         margin-right = 7;
@@ -61,12 +61,12 @@ in
         };
 
         "cpu" = {
-          format = "󰻠 {usage}%";
+          format = "<span size='120%'>󰍛</span> {usage}%";
           on-click = "${terminal} --title=float -e btop";
         };
 
         "memory" = {
-          format = "󰍛 {used}GB";
+          format = "<span size='120%'></span> {used}GB";
           on-click = "${terminal} --title=float -e btop";
         };
 
@@ -82,8 +82,8 @@ in
         };
 
         "pulseaudio" = {
-          format = "{volume}% {icon}";
-          format-bluetooth = "{volume}% {icon}";
+          format = "{volume}% <span size='120%'>{icon}</span>";
+          format-bluetooth = "{volume}% <span size='120%'>{icon}</span>";
           format-muted = "";
           format-icons = {
             headphone = "";
@@ -130,7 +130,7 @@ in
              it in that cell; the plain variant leaves wide icons overhanging
              to the right, which knocks glyph-only modules off centre. */
           font-family: "JetBrainsMono Nerd Font Mono";
-          font-size: 12px;
+          font-size: 10.56px;
           font-weight: bold;
       }
 
@@ -146,16 +146,19 @@ in
       .modules-center,
       .modules-right {
           background-color: alpha(#${palette.base}, 0.0);
-          border-radius: 9px;
-          padding: 0 4px;
+          border-radius: 7.92px;
+          padding: 0 2px;
       }
 
       #workspaces button {
-          padding: 0 6px;
-          margin: 2px;
+          /* GTK gives buttons a default min-height (~24px) that outvotes the
+             bar's `height` setting, so waybar silently grows the bar to fit. */
+          min-height: 0;
+          padding: 0 3px;
+          margin: 1.76px;
           color: #${palette.text};
           background: transparent;
-          border-radius: 7px;
+          border-radius: 6.16px;
       }
 
       #workspaces button.active {
@@ -165,24 +168,39 @@ in
 
       #clock,
       #battery,
-      #bluetooth,
       #cpu,
       #memory,
       #disk,
       #temperature,
       #backlight,
-      #network,
       #pulseaudio,
       #wireplumber,
       #mode,
       #idle_inhibitor,
       #scratchpad,
       #mpd {
-          padding: 0 8px;
+          padding: 0 5px;
           background-color: #${palette.mauve};
-          border-radius: 7px;
-          margin: 2px;
+          border-radius: 6.16px;
+          margin: 1.76px;
           color: #${palette.surface0};
+      }
+
+      /* Icon-only pills (no text like the others carry) get extra horizontal
+         padding so their pill width doesn't look cramped next to its siblings. */
+      #bluetooth,
+      #network {
+          padding: 0 14px;
+          background-color: #${palette.mauve};
+          border-radius: 6.16px;
+          margin: 1.76px;
+          color: #${palette.surface0};
+          font-size: 13px;
+      }
+
+      /* Wifi icon gets its own size, separate from bluetooth's. */
+      #network {
+          font-size: 13px;
       }
 
       /* The tray box is excluded from the pill rule above: with no status
@@ -196,7 +214,7 @@ in
       /* The clock keeps the shared pill fill and text colour; it only
          opts out of the common font size. */
       #clock {
-          font-size: 13px;
+          font-size: 11.44px;
       }
     '';
   };

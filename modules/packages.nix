@@ -1,4 +1,25 @@
-{ pkgs, lib, gazelle, tsui, pvetui, herdr, ... }:
+{ pkgs, lib, config, gazelle, tsui, pvetui, herdr, ... }:
+
+let
+  # One global instruction file for every agent harness.
+  #
+  # Linked out of the Nix store so it stays editable in place: change
+  # global-agents.md in the working tree and Claude, Codex and opencode all pick
+  # it up on their next run, with no rebuild. The tradeoff is that the content is
+  # not reproducible from the flake alone - it is whatever the checkout holds.
+  # That is the point; a read-only store symlink would stop the agents (and you)
+  # appending to their own instructions.
+  #
+  # Deliberately NOT named AGENTS.md: all three harnesses walk up from the cwd
+  # looking for AGENTS.md, so that name would make this file double as
+  # nix-green's *project* instructions and load twice in this repo. opencode and
+  # codex have no way to opt out of that.
+  #
+  # Same hardcoded repo path as the wallpaper in hyprland/home.nix; a checkout
+  # somewhere other than ~/nix-green needs this edited.
+  agentsContext = config.lib.file.mkOutOfStoreSymlink
+    "${config.home.homeDirectory}/nix-green/global-agents.md";
+in
 
 {
   home.packages =
@@ -129,10 +150,29 @@
     };
   };
 
-  # Opencode config
+  # Global agent instructions. One file, every harness. See `agentsContext` above
+  # for why it is an out-of-store symlink and why it is not called AGENTS.md.
+  home.file.".claude/CLAUDE.md".source = agentsContext;      # Claude Code
+  home.file.".codex/AGENTS.md".source = agentsContext;       # Codex CLI, $CODEX_HOME
+  xdg.configFile."opencode/AGENTS.md".source = agentsContext;
+
+  # opencode
   programs.opencode = {
     enable = true;
     settings = {
+      model = "openai/gpt-5.5";
+      small_model = "openai/gpt-5.4-mini";
+      default_agent = "plan";
+      agent = {
+        plan.model = "openai/gpt-5.5";
+        general.model = "openai/gpt-5.5";
+        explore.model = "openai/gpt-5.4-mini";
+        scout.model = "openai/gpt-5.4-mini";
+      };
+
+      autoupdate = false;
+
+      # Local fallback, selectable at runtime with /models.
       provider = {
         ollama = {
           npm = "@ai-sdk/openai-compatible";
@@ -147,8 +187,6 @@
           };
         };
       };
-      # model = "ollama/qwen2.5-coder:3b";  # default model on startup
-      autoupdate = false;
     };
   };
 }
