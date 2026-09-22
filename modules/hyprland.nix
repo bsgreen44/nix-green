@@ -34,6 +34,23 @@ let
     '' else ''
       hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
     '';
+
+  # Mutable, per-machine monitor overrides. Sourced from the Lua config below
+  # and written by hyprmon; untracked state outside the flake, so it is not
+  # reproducible across machines.
+  localConfig = "${config.home.homeDirectory}/.config/hypr/local.lua";
+
+  # Wrapped rather than exported session-wide: Hyprland itself reads
+  # HYPRLAND_CONFIG to locate its main config, so a global export would
+  # repoint the compositor at the override file.
+  hyprmonWrapped = pkgs.symlinkJoin {
+    name = "hyprmon-local-config";
+    paths = [ pkgs.hyprmon ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/hyprmon --set HYPRLAND_CONFIG "${localConfig}"
+    '';
+  };
 in
 {
   # Hyprland packages
@@ -47,6 +64,7 @@ in
     swaybg       # wallpaper; the unit below uses the store path, this is for manual use
     bibata-cursors
     rofi-power-menu
+    hyprmonWrapped      # monitor manager; rofi.nix has a desktop entry for it
   ]
   # NixOS only: on the distro branch the agent comes from the distro package
   # (polkit-kde), not nixpkgs - see polkitAgentCmd above.
@@ -136,10 +154,11 @@ in
       -- Monitor configuration
       ${monitorConfig}
 
-      -- Optional per-machine overrides (monitor layout, keybinds, etc.).
-      -- With Lua the local override file is Lua too; dofile a missing file is a
-      -- harmless no-op thanks to pcall.
-      -- pcall(dofile, os.getenv("HOME") .. "/.config/hypr/local.lua")
+      -- Per-machine overrides (monitor layout, keybinds, etc.), applied after
+      -- the defaults above so they win. This is where hyprmon saves its monitor
+      -- rules. With Lua the local override file is Lua too; dofile a missing
+      -- file is a harmless no-op thanks to pcall.
+      pcall(dofile, os.getenv("HOME") .. "/.config/hypr/local.lua")
 
       -- Cursor configuration
       hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
