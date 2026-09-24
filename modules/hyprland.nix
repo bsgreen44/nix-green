@@ -220,6 +220,8 @@ in
         scrolling = {
           column_width = 0.5,
           fullscreen_on_one_column = true,
+          -- Presets cycled by SUPER + R / SUPER + SHIFT + R (colresize +conf/-conf)
+          explicit_column_widths = "0.333, 0.5, 0.667, 1.0",
         },
       })
 
@@ -262,7 +264,7 @@ in
         match = { class = "^(${lib.concatStringsSep "|" floatClasses})$" },
         float = true,
         center = true,
-        size = "900 600",
+        size = { 900, 600 },
       })
 
       hl.window_rule({
@@ -277,7 +279,7 @@ in
         match = { title = "^(float)$" },
         float = true,
         center = true,
-        size = "900 600",
+        size = { 900, 600 },
       })
 
       hl.window_rule({
@@ -340,6 +342,12 @@ in
       -- Flip the active workspace between dwindle and scrolling; persisted
       hl.bind(mod .. " + SHIFT + L", hl.dsp.exec_cmd("hypr-workspace-layout-toggle"))
 
+      -- Scrolling layout: column width. Layout messages, so no-ops on dwindle.
+      hl.bind(mod .. " + R",         hl.dsp.layout("colresize +conf"))
+      hl.bind(mod .. " + SHIFT + R", hl.dsp.layout("colresize -conf"))
+      hl.bind(mod .. " + comma",     hl.dsp.layout("colresize -0.1"))
+      hl.bind(mod .. " + period",    hl.dsp.layout("colresize +0.1"))
+
       -- Move the active workspace to another monitor
       hl.bind(mod .. " + SHIFT + ALT + LEFT",  hl.dsp.workspace.move({ monitor = "l" }))
       hl.bind(mod .. " + SHIFT + ALT + RIGHT", hl.dsp.workspace.move({ monitor = "r" }))
@@ -353,10 +361,15 @@ in
       hl.bind(mod .. " + SHIFT + DOWN",  hl.dsp.window.swap({ direction = "d" }))
 
       -- Cycle through windows in the active workspace
-      hl.bind("ALT + TAB",         hl.dsp.window.cycle_next({ next = true }))
-      hl.bind("ALT + SHIFT + TAB", hl.dsp.window.cycle_next({ next = false }))
-      hl.bind("ALT + TAB",         hl.dsp.window.bring_to_top())
-      hl.bind("ALT + SHIFT + TAB", hl.dsp.window.bring_to_top())
+      -- and raise it, so a floating window is not left hidden behind others
+      hl.bind("ALT + TAB", function()
+        hl.dispatch(hl.dsp.window.cycle_next({ next = true }))
+        hl.dispatch(hl.dsp.window.bring_to_top())
+      end)
+      hl.bind("ALT + SHIFT + TAB", function()
+        hl.dispatch(hl.dsp.window.cycle_next({ next = false }))
+        hl.dispatch(hl.dsp.window.bring_to_top())
+      end)
 
       -- Focus another monitor
       hl.bind("CTRL + ALT + TAB",         hl.dsp.focus({ monitor = "+1" }))
