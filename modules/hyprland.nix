@@ -77,6 +77,20 @@ in
   # clipboard manager
   services.cliphist.enable = true;
 
+  # Low battery notifications via mako: normal urgency at the warning level,
+  # mako's red urgency=critical style at the critical level. At the danger
+  # level suspend instead of letting the laptop hard power-off.
+  services.batsignal = {
+    enable = true;
+    extraArgs = [
+      "-w" "20"
+      "-c" "10"
+      "-d" "3"
+      "-D" "systemctl suspend"
+      "-a" "Battery"
+    ];
+  };
+
   # Wallpaper. A unit and not an autostart exec_cmd, which fires once at login
   # and leaves the background bare if swaybg ever dies.
   systemd.user.services.swaybg = {
