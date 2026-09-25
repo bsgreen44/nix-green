@@ -1,24 +1,50 @@
-{ pkgs, config, gazelle, tsui, pvetui, herdr, ... }:
+{ pkgs, lib, config, gazelle, tsui, pvetui, herdr, ... }:
 
 let
   # One global instruction file for every agent harness.
   #
-  # Linked out of the Nix store so it stays editable in place: change
-  # global-agents.md in the working tree and Claude, Codex and opencode all pick
-  # it up on their next run, with no rebuild. The tradeoff is that the content is
-  # not reproducible from the flake alone - it is whatever the checkout holds.
-  # That is the point; a read-only store symlink would stop the agents (and you)
-  # appending to their own instructions.
-  #
-  # Deliberately NOT named AGENTS.md: all three harnesses walk up from the cwd
-  # looking for AGENTS.md, so that name would make this file double as
-  # nix-green's *project* instructions and load twice in this repo. opencode and
-  # codex have no way to opt out of that.
-  #
-  # Same hardcoded repo path as the wallpaper in hyprland/home.nix; a checkout
-  # somewhere other than ~/nix-green needs this edited.
+  # Out of the store so it stays editable without a rebuild - agents (and you)
+  # append to it. The cost: content is not reproducible from the flake alone.
+  # NOT named AGENTS.md, or the harnesses' walk up from cwd would also load it
+  # as nix-green's project instructions, twice in this repo.
+  # Hardcodes ~/nix-green, as hyprland/home.nix does for the wallpaper.
   agentsContext = config.lib.file.mkOutOfStoreSymlink
     "${config.home.homeDirectory}/nix-green/global-agents.md";
+
+  # VSCodium's settings.json, but writable.
+  #
+  # Home Manager links it out of the store, so the GUI cannot save anything.
+  # Instead, merge `userSettings` below into a real file at activation:
+  # Nix-declared keys win on every rebuild, the rest (font, zoom) are yours.
+  # Close VSCodium before switching - it rewrites the file from memory.
+  vscodiumSettings = "${config.xdg.configHome}/VSCodium/User/settings.json";
+  vscodiumDeclared =
+    (pkgs.formats.json { }).generate "vscodium-settings-declared"
+      config.programs.vscodium.profiles.default.userSettings;
+  vscodiumMerge = pkgs.writeShellScript "vscodium-settings-merge" ''
+    set -euo pipefail
+    PATH=${lib.makeBinPath [ pkgs.jq pkgs.coreutils ]}''${PATH:+:}$PATH
+
+    target="${vscodiumSettings}"
+    # Last activation's declared keys, to tell one you dropped from Nix apart
+    # from one you set yourself.
+    state="${config.xdg.stateHome}/nix-green/vscodium-settings.json"
+
+    mkdir -p "$(dirname "$target")" "$(dirname "$state")"
+    # Left over from when Home Manager linked this file.
+    if [ -L "$target" ]; then rm -f "$target"; fi
+    [ -f "$target" ] || echo "{}" > "$target"
+    [ -f "$state" ] || echo "{}" > "$state"
+
+    merged="$(jq -s '
+      .[0] as $local | .[1] as $prev | .[2] as $declared
+      | (($prev | keys) - ($declared | keys)) as $dropped
+      | ($local | delpaths($dropped | map([.]))) * $declared
+    ' "$target" "$state" "${vscodiumDeclared}")"
+
+    printf "%s\n" "$merged" > "$target"
+    install -m 644 "${vscodiumDeclared}" "$state"
+  '';
 in
 
 {
@@ -115,6 +141,11 @@ in
       };
     };
   };
+
+  # Unlink settings.json; `vscodiumMerge` above writes it instead.
+  home.file.${vscodiumSettings}.enable = lib.mkForce false;
+  home.activation.vscodiumSettings =
+    lib.hm.dag.entryAfter [ "writeBoundary" ] "run ${vscodiumMerge}";
 
   # Gazelle config
   programs.gazelle = {
