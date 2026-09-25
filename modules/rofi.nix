@@ -34,6 +34,10 @@ Alt + Shift + Tab              →  Cycle windows (back) / reveal on top
 Ctrl + Alt + Tab               →  Focus next monitor
 Ctrl + Alt + Shift + Tab       →  Focus previous monitor
 Super + Shift + L              →  Toggle workspace layout (dwindle/scrolling)
+Super + R                      →  Next column width preset (scrolling)
+Super + Shift + R              →  Previous column width preset (scrolling)
+Super + ,                      →  Shrink column 10% (scrolling)
+Super + .                      →  Grow column 10% (scrolling)
 Super + -                      →  Shrink window width
 Super + =                      →  Grow window width
 Super + Shift + -              →  Shrink window height

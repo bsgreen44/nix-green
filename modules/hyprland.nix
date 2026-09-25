@@ -34,6 +34,23 @@ let
     '' else ''
       hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
     '';
+
+  # Mutable, per-machine monitor overrides. Sourced from the Lua config below
+  # and written by hyprmon; untracked state outside the flake, so it is not
+  # reproducible across machines.
+  localConfig = "${config.home.homeDirectory}/.config/hypr/local.lua";
+
+  # Wrapped rather than exported session-wide: Hyprland itself reads
+  # HYPRLAND_CONFIG to locate its main config, so a global export would
+  # repoint the compositor at the override file.
+  hyprmonWrapped = pkgs.symlinkJoin {
+    name = "hyprmon-local-config";
+    paths = [ pkgs.hyprmon ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/hyprmon --set HYPRLAND_CONFIG "${localConfig}"
+    '';
+  };
 in
 {
   # Hyprland packages
@@ -47,6 +64,7 @@ in
     swaybg       # wallpaper; the unit below uses the store path, this is for manual use
     bibata-cursors
     rofi-power-menu
+    hyprmonWrapped      # monitor manager; rofi.nix has a desktop entry for it
   ]
   # NixOS only: on the distro branch the agent comes from the distro package
   # (polkit-kde), not nixpkgs - see polkitAgentCmd above.
@@ -58,6 +76,20 @@ in
 
   # clipboard manager
   services.cliphist.enable = true;
+
+  # Low battery notifications via mako: normal urgency at the warning level,
+  # mako's red urgency=critical style at the critical level. At the danger
+  # level suspend instead of letting the laptop hard power-off.
+  services.batsignal = {
+    enable = true;
+    extraArgs = [
+      "-w" "20"
+      "-c" "10"
+      "-d" "3"
+      "-D" "systemctl suspend"
+      "-a" "Battery"
+    ];
+  };
 
   # Wallpaper. A unit and not an autostart exec_cmd, which fires once at login
   # and leaves the background bare if swaybg ever dies.
@@ -136,10 +168,11 @@ in
       -- Monitor configuration
       ${monitorConfig}
 
-      -- Optional per-machine overrides (monitor layout, keybinds, etc.).
-      -- With Lua the local override file is Lua too; dofile a missing file is a
-      -- harmless no-op thanks to pcall.
-      -- pcall(dofile, os.getenv("HOME") .. "/.config/hypr/local.lua")
+      -- Per-machine overrides (monitor layout, keybinds, etc.), applied after
+      -- the defaults above so they win. This is where hyprmon saves its monitor
+      -- rules. With Lua the local override file is Lua too; dofile a missing
+      -- file is a harmless no-op thanks to pcall.
+      pcall(dofile, os.getenv("HOME") .. "/.config/hypr/local.lua")
 
       -- Cursor configuration
       hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
@@ -201,6 +234,8 @@ in
         scrolling = {
           column_width = 0.5,
           fullscreen_on_one_column = true,
+          -- Presets cycled by SUPER + R / SUPER + SHIFT + R (colresize +conf/-conf)
+          explicit_column_widths = "0.333, 0.5, 0.667, 1.0",
         },
       })
 
@@ -243,7 +278,7 @@ in
         match = { class = "^(${lib.concatStringsSep "|" floatClasses})$" },
         float = true,
         center = true,
-        size = "900 600",
+        size = { 900, 600 },
       })
 
       hl.window_rule({
@@ -258,7 +293,7 @@ in
         match = { title = "^(float)$" },
         float = true,
         center = true,
-        size = "900 600",
+        size = { 900, 600 },
       })
 
       hl.window_rule({
@@ -321,6 +356,12 @@ in
       -- Flip the active workspace between dwindle and scrolling; persisted
       hl.bind(mod .. " + SHIFT + L", hl.dsp.exec_cmd("hypr-workspace-layout-toggle"))
 
+      -- Scrolling layout: column width. Layout messages, so no-ops on dwindle.
+      hl.bind(mod .. " + R",         hl.dsp.layout("colresize +conf"))
+      hl.bind(mod .. " + SHIFT + R", hl.dsp.layout("colresize -conf"))
+      hl.bind(mod .. " + comma",     hl.dsp.layout("colresize -0.1"))
+      hl.bind(mod .. " + period",    hl.dsp.layout("colresize +0.1"))
+
       -- Move the active workspace to another monitor
       hl.bind(mod .. " + SHIFT + ALT + LEFT",  hl.dsp.workspace.move({ monitor = "l" }))
       hl.bind(mod .. " + SHIFT + ALT + RIGHT", hl.dsp.workspace.move({ monitor = "r" }))
@@ -334,10 +375,15 @@ in
       hl.bind(mod .. " + SHIFT + DOWN",  hl.dsp.window.swap({ direction = "d" }))
 
       -- Cycle through windows in the active workspace
-      hl.bind("ALT + TAB",         hl.dsp.window.cycle_next({ next = true }))
-      hl.bind("ALT + SHIFT + TAB", hl.dsp.window.cycle_next({ next = false }))
-      hl.bind("ALT + TAB",         hl.dsp.window.bring_to_top())
-      hl.bind("ALT + SHIFT + TAB", hl.dsp.window.bring_to_top())
+      -- and raise it, so a floating window is not left hidden behind others
+      hl.bind("ALT + TAB", function()
+        hl.dispatch(hl.dsp.window.cycle_next({ next = true }))
+        hl.dispatch(hl.dsp.window.bring_to_top())
+      end)
+      hl.bind("ALT + SHIFT + TAB", function()
+        hl.dispatch(hl.dsp.window.cycle_next({ next = false }))
+        hl.dispatch(hl.dsp.window.bring_to_top())
+      end)
 
       -- Focus another monitor
       hl.bind("CTRL + ALT + TAB",         hl.dsp.focus({ monitor = "+1" }))

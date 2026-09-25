@@ -18,7 +18,7 @@ let
           && loginctl lock-session \
           && pkill -f "${term}.*title=full" \
           && sleep 2 \
-          && hyprctl dispatch dpms off ) &
+          && hyprctl dispatch 'hl.dsp.dpms({ action = "disable" })' ) &
       TIMER_PID=$!
     fi
 

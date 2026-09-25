@@ -56,7 +56,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     gnome-disk-utility
-    hyprmon
     xarchiver
     unzip
   ];
