@@ -180,10 +180,10 @@ in
       hl.config({ cursor = { no_hardware_cursors = false } })
 
       -- Autostart
-      -- cliphist and swaybg are omitted here: both run as user units already, and
-      -- starting them twice double-stores every copy / stacks a second wallpaper.
+      -- cliphist, swaybg and waybar are omitted here: all run as user units
+      -- already, and starting them twice double-stores every copy / stacks a
+      -- second wallpaper / draws a second bar.
       hl.on("hyprland.start", function()
-        hl.exec_cmd("waybar")
         hl.exec_cmd("pkill dunst; mako")
         -- Without an agent, polkit prompts fail silently (gnome-disks, nm).
         -- hyprpolkitagent was tried first but segfaults mid-authentication
@@ -333,7 +333,8 @@ in
       hl.bind(mod .. " + SHIFT + S",  hl.dsp.exec_cmd([[grim -g "$(slurp)" -t png | wl-copy]]))
       hl.bind(mod .. " + K",          hl.dsp.exec_cmd([[rofi -modi "keybinds:hypr-keybinds" -show keybinds -p " Keybinds"]]))
       hl.bind(mod .. " + SHIFT + H",  hl.dsp.exec_cmd([[rofi -modi "keybinds:hypr-keybinds" -show keybinds -p " Keybinds"]]))
-      hl.bind(mod .. " + SHIFT + SPACE", hl.dsp.exec_cmd([[pkill waybar || waybar]]))
+      -- Through systemd so a bar toggled back on is still supervised by the unit.
+      hl.bind(mod .. " + SHIFT + SPACE", hl.dsp.exec_cmd([[systemctl --user is-active --quiet waybar && systemctl --user stop waybar || systemctl --user start waybar]]))
       -- Notifications: N dismisses the top one, CTRL+N clears the whole stack.
       hl.bind(mod .. " + N",         hl.dsp.exec_cmd("makoctl dismiss"))
       hl.bind(mod .. " + CTRL + N",  hl.dsp.exec_cmd("makoctl dismiss --all"))

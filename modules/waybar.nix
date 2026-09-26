@@ -8,6 +8,13 @@ in
   programs.waybar = {
     enable = true;
 
+    # Bound to the Hyprland session rather than the default 
+    # graphical-session.target so a Plasma login on the same machine does not get a bar too.
+    systemd = {
+      enable = true;
+      targets = [ "hyprland-session.target" ];
+    };
+
     settings = {
       mainBar = {
         layer = "top";
