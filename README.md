@@ -22,6 +22,7 @@ nix-green
 │   ├── home.nix
 │   └── hyprland.nix
 ├── modules
+│   ├── dictation.nix
 │   ├── hypr-workspace-layout.nix
 │   ├── hypridle.nix
 │   ├── hyprland.nix
@@ -166,6 +167,11 @@ In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake
 
 On other distros, run `nix flake update` followed by `home-manager switch --flake .#username`, or `.#username-hyprland` if you installed the desktop.
 
+### Is there voice dictation?
+Yes, the `dictation` command, installed on every Linux configuration (`modules/dictation.nix`). Run it once to start recording and again to stop. The audio is transcribed on your machine by [whisper.cpp](https://github.com/ggml-org/whisper.cpp), so nothing is sent anywhere. The text is copied to the clipboard, and on Hyprland it is also typed into the focused window.
+
+On Hyprland it is bound to `SUPER + D`. On KDE Plasma, GNOME and other desktops, add a custom shortcut that runs `dictation` in the desktop's keyboard settings. Those desktops do not allow other programs to type into windows, so paste the text with `Ctrl + V`.
+
 ### Where do I put instructions for AI coding agents?
 
 `global-agents.md` in the repo root. It is the single source of truth, and `modules/packages.nix` links it into every harness's global instruction path:
@@ -181,6 +187,7 @@ All three are `mkOutOfStoreSymlink` links, which point at the working tree rathe
 The path is hardcoded to `~/nix-green`. A checkout anywhere else needs `agentsContext` in `modules/packages.nix` edited.
 
 **Why it is not called `AGENTS.md`.** All three harnesses walk up from the current directory looking for a project `AGENTS.md`. Naming the file that would make it double as *this repo's* project instructions, so working inside `nix-green` would load the same content twice - once globally, once as project context. opencode keys its instruction set on `path.resolve`, which does not follow symlinks, so it cannot tell the two apart; neither it nor Codex has a way to opt out. The `global-agents.md` name is discovered by nothing, so it stays purely global. Project instructions, if this repo ever wants them, belong in a separate `AGENTS.md` or `CLAUDE.md`.
+
 ## Hyprland
 
 ### Is there a keybind list?

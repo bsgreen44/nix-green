@@ -9,6 +9,7 @@
     ../modules/neovim.nix
     ../modules/kdethemes.nix
     ../modules/themes.nix
+    ../modules/dictation.nix
     ../modules/screensaver.nix
   ];
 

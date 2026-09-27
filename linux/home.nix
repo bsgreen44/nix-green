@@ -9,6 +9,7 @@
     ../modules/starship.nix
     ../modules/neovim.nix
     ../modules/themes.nix
+    ../modules/dictation.nix
   ];
 
   home.username = username;

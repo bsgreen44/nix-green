@@ -73,6 +73,7 @@ Super + Shift + H              →  Show this keybind list
 Super + Ctrl + V               →  Clipboard history
 Super + Shift + S              →  Screenshot to clipboard
 Print                          →  Screenshot to clipboard
+Super + D                      →  Dictation start/stop (local Whisper)
 Super + N                      →  Dismiss notification
 Super + Ctrl + N               →  Dismiss all notifications
 Vol Up/Down                    →  Volume ±5%

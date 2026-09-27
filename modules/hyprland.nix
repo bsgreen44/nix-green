@@ -331,6 +331,8 @@ in
       hl.bind(mod .. " + ESCAPE",     hl.dsp.exec_cmd(powermenu))
       hl.bind(mod .. " + CTRL + V",   hl.dsp.exec_cmd([[cliphist list | rofi -dmenu | cliphist decode | wl-copy]]))
       hl.bind(mod .. " + SHIFT + S",  hl.dsp.exec_cmd([[grim -g "$(slurp)" -t png | wl-copy]]))
+      -- Local Whisper dictation: press to record, press again to type the transcript
+      hl.bind(mod .. " + D",          hl.dsp.exec_cmd("dictation"))
       hl.bind(mod .. " + K",          hl.dsp.exec_cmd([[rofi -modi "keybinds:hypr-keybinds" -show keybinds -p " Keybinds"]]))
       hl.bind(mod .. " + SHIFT + H",  hl.dsp.exec_cmd([[rofi -modi "keybinds:hypr-keybinds" -show keybinds -p " Keybinds"]]))
       -- Through systemd so a bar toggled back on is still supervised by the unit.
