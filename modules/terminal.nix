@@ -15,8 +15,6 @@
   programs.ghostty = {
     enable = true;
     enableBashIntegration = false;
-    # Null where the distro (or macOS) ships ghostty; Nix then only writes the
-    # config below. Declared in the role registry, not toggled by hand here.
     package = config.green.apps.terminal.package;
     systemd.enable = false;
     settings = {
@@ -28,7 +26,7 @@
       font-size = 10;
       #window-decoration = false;
     } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
-      gtk-tabs-location = "hidden"; # GTK-only - Ghostty uses native UI on macOS
+      window-show-tab-bar = "never"; # GTK-only - Ghostty uses native UI on macOS
     };
   };
 
@@ -42,7 +40,7 @@
     };
     settings = {
       background_opacity = "0.9";
-      tab_bar_style = "hidden"; # matches ghostty gtk-tabs-location = "hidden"
+      tab_bar_style = "hidden"; # matches ghostty window-show-tab-bar = "never"
     };
   };
 }

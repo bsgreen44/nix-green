@@ -24,6 +24,7 @@ nix-green
 ├── modules
 │   ├── aerospace.nix
 │   ├── apps.nix
+│   ├── dictation.nix
 │   ├── hypr-workspace-layout.nix
 │   ├── hypridle.nix
 │   ├── hyprland.nix
@@ -143,7 +144,7 @@ It scans `/usr/bin` (never `$PATH`, which would match Nix's own packages), repor
 
 The scan is a script rather than something the config does during evaluation, because a flake evaluates in pure mode: `builtins.pathExists "/usr/bin/dolphin"` returns `false` there even when the file exists, and with `eval-cache` on, an `--impure` answer can go stale. Declaring the result keeps the config reproducible.
 
-Two things the registry does not cover. The `terminal` and `browser` locals at the top of `modules/hyprland.nix` are deliberately literal, so retargeting `terminal.command` changes waybar, rofi and the screensaver but not `SUPER + Return` - edit that local by hand. And `app_id` values the script reads from a `.desktop` name are a guess; confirm them with `hyprctl clients -j | jq -r '.[].class'` with the app open, or its window will not float.
+Two things the registry does not cover. There is no browser role, so the `browser` local at the top of `modules/hyprland.nix` names it literally - edit that local by hand. And `app_id` values the script reads from a `.desktop` name are a guess; confirm them with `hyprctl clients -j | jq -r '.[].class'` with the app open, or its window will not float.
 
 ### Why don't my brightness keys work on a different Linux distro?
 Nix installs swayosd and runs it as a user service, but it can't set the permissions swayosd needs to change brightness. That part is a system-level change, so it has to be done once, by hand, as root. On NixOS `hyprland/configuration.nix` already handles it.
@@ -180,6 +181,11 @@ Installing swayosd from your distro's package manager instead is not a substitut
 In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then `sudo nixos-rebuild --flake .#changethis --impure` replacing `changethis` with `kde` or `hyprland`.
 
 On other distros, run `nix flake update` followed by `home-manager switch --flake .#username`, or `.#username-hyprland` if you installed the desktop.
+
+### Is there voice dictation?
+Yes, the `dictation` command, installed on every Linux configuration (`modules/dictation.nix`). Run it once to start recording and again to stop. The audio is transcribed on your machine by [whisper.cpp](https://github.com/ggml-org/whisper.cpp), so nothing is sent anywhere. The text is copied to the clipboard, and on Hyprland it is also typed into the focused window.
+
+On Hyprland it is bound to `SUPER + D`. On KDE Plasma, GNOME and other desktops, add a custom shortcut that runs `dictation` in the desktop's keyboard settings. Those desktops do not allow other programs to type into windows, so paste the text with `Ctrl + V`.
 
 ### Where do I put instructions for AI coding agents?
 

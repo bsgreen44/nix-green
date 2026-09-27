@@ -12,6 +12,7 @@
     ../modules/starship.nix
     ../modules/neovim.nix
     ../modules/themes.nix
+    ../modules/dictation.nix
     ../modules/hyprland.nix
     ../modules/hypr-workspace-layout.nix
     ../modules/hypridle.nix
