@@ -17,7 +17,10 @@ let
   # Instead, merge `userSettings` below into a real file at activation:
   # Nix-declared keys win on every rebuild, the rest (font, zoom) are yours.
   # Close VSCodium before switching - it rewrites the file from memory.
-  vscodiumSettings = "${config.xdg.configHome}/VSCodium/User/settings.json";
+  vscodiumSettings =
+    if pkgs.stdenv.hostPlatform.isDarwin
+    then "${config.home.homeDirectory}/Library/Application Support/VSCodium/User/settings.json"
+    else "${config.xdg.configHome}/VSCodium/User/settings.json";
   vscodiumDeclared =
     (pkgs.formats.json { }).generate "vscodium-settings-declared"
       config.programs.vscodium.profiles.default.userSettings;
