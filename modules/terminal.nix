@@ -10,8 +10,6 @@
   programs.ghostty = {
     enable = true;
     enableBashIntegration = false;
-    # Null on a machine whose distro ships ghostty; Nix then only writes the
-    # config below. Declared in the role registry, not toggled by hand here.
     package = config.green.apps.terminal.package;
     systemd.enable =false;
     settings = {
@@ -21,7 +19,7 @@
       window-theme = "dark";
       font-family = "JetBrainsMono Nerd Font Mono";
       font-size = 10;
-      gtk-tabs-location = "hidden";
+      window-show-tab-bar = "never";
       #window-decoration = false;
     };
   };
@@ -36,7 +34,7 @@
     };
     settings = {
       background_opacity = "0.9";
-      tab_bar_style = "hidden"; # matches ghostty gtk-tabs-location = "hidden"
+      tab_bar_style = "hidden"; # matches ghostty window-show-tab-bar = "never"
     };
   };
 }

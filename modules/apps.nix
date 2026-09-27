@@ -8,9 +8,8 @@
 ## below are what NixOS gets; per-machine overrides live in one file next to the
 ## profile that needs them (see linux/system-apps.nix).
 ##
-## Not covered: hyprland.nix's `terminal`/`browser` Lua locals (modules/hyprland.nix
-## L91-95) are deliberately literal, so changing `terminal.command` here retargets
-## waybar/rofi/the screensaver but NOT Super+Return - edit that local by hand.
+## Not covered: the browser. There is no browser role, so hyprland.nix's `browser`
+## Lua local and linux/hyprland.nix's mime defaults name it literally.
 let
   role = lib.types.submodule ({ config, ... }: {
     options = {

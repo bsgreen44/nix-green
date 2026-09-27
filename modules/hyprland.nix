@@ -158,7 +158,7 @@ in
     # attrset. Since Hyprland 0.55 hyprlang is deprecated in favor of Lua, so this
     # is emitted to ~/.config/hypr/hyprland.lua. See https://hypr.land/news/26_lua/
     extraConfig = ''
-      local terminal  = "ghostty"
+      local terminal  = "${apps.terminal.command}"
       local mod       = "SUPER"
       local menu      = [[rofi -show drun -show-icons -display-drun ""]]
       local browser   = "brave"

@@ -11,9 +11,6 @@
 {
   # Fedora 44 KDE Plasma.
   green.apps = {
-    # ghostty comes from the Fedora package; Nix only writes ~/.config/ghostty/config.
-    terminal = { package = null; };
-
     fileManager = {
       command = "dolphin";
       class = "org.kde.dolphin";
