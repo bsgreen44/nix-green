@@ -11,7 +11,11 @@
     enable = true;
     enableBashIntegration = false;
     package = config.green.apps.terminal.package;
-    systemd.enable =false;
+    # The package's desktop entry is DBusActivatable and its D-Bus service
+    # names app-com.mitchellh.ghostty.service, so without this unit launching
+    # Ghostty from a menu or krunner fails. A distro ghostty (package = null)
+    # brings its own unit, and the module asserts a package for this anyway.
+    systemd.enable = config.green.apps.terminal.package != null;
     settings = {
       background-blur = true;
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
