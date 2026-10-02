@@ -240,21 +240,9 @@ Hyprland sources that file (monitor layout, keybinds, etc.) if it exists, and tr
 
 ### How do I change the scaling and resolution?
 
-There are 2 options:
+Use `hyprmoncfg`. Run `hyprmoncfg` (or open it from the launcher), arrange the displays, set each one's mode and scale, and press `s` to save the layout as a named profile, e.g. `docked` or `laptop`. The `hyprmoncfgd` user service then applies the best matching profile whenever monitors are plugged or unplugged or the lid changes. Profiles live in `~/.config/hyprmoncfg/profiles/` and persist across reboots and rebuilds.
 
-#### Use `hyprmon`
-Easiest and quickest. Not persistent across reboots and rebuilds.
-
-#### hidpi toggle
-For hi-DPI (2k/4k) laptop panels there's a declarative `hidpi` flag instead of editing the monitor lines by hand. It's set per machine in the `_module.args` block, alongside the wallpaper path - `~/nix-green/hyprland/home.nix` on NixOS, `~/nix-green/linux/hyprland.nix` on other distros:
-```
-_module.args = {
-  hidpi = false;   # set true on 2k/4k laptop panels
-};
-```
-When `hidpi = true`, `hyprland.nix` emits the scaled monitor block (`monitor = eDP-1, preferred, auto, 1.5` and `env = GDK_SCALE, 1.5`) via the `monitorConfig` binding; when `false` it uses the default `monitor = , preferred, auto, 1`. Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
-
-Alternatively, you can manually update `monitorConfig` block in `hyprland.nix` to your exact preferences or add the monitor config to `~/.config/hypr/local.conf` to override the monitor settings. Just make sure to uncomment `# source = ~/.config/hypr/local.conf` in hyprland.nix.
+Displays no profile covers fall back to their preferred mode at scale 1.
 
 ### How do I change the screensaver?
 Edit `screensaver.nix` to change the screensaver text/ASCII art.

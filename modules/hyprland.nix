@@ -1,7 +1,7 @@
 # `hyprland` is the flake input on NixOS, null where the distro installs the
 # compositor. Must be supplied either way - the module system resolves declared
 # args eagerly, so a `? null` default here would never apply.
-{ pkgs, lib, config, wallpaper, hyprland, palette, hidpi ? false, ... }:
+{ pkgs, lib, config, wallpaper, hyprland, palette, ... }:
 
 let
   apps = config.green.apps;
@@ -27,30 +27,46 @@ let
     apps.calculator.class
   ];
 
-  monitorConfig =
-    if hidpi then ''
-      hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1.33 })
-      hl.env("GDK_SCALE", "1.33")
-    '' else ''
-      hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
+  # Monitor profile editor and hotplug/lid daemon. Bumped past nixpkgs (1.9.1):
+  # 1.10 verifies a Lua config by asking the running Hyprland rather than
+  # parsing the include chain, which the pcall/dofile includes below defeat,
+  # and 1.14 writes a file of its own instead of taking over monitors.lua.
+  # Drop the override once nixpkgs catches up.
+  hyprmoncfg = (pkgs.hyprmoncfg.override (lib.optionalAttrs (hyprland != null) {
+    # hyprctl must match the running compositor.
+    hyprland = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+  })).overrideAttrs (finalAttrs: _: {
+    version = "1.22.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "crmne";
+      repo = "hyprmoncfg";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-hrZZpyNk7jtJJXcEGP+DfzxfO1p4hn5ky3jc97ROR5Q=";
+    };
+    # Not scripts/capture-fixture, a screenshot tool for upstream's docs.
+    # excludedPackages rather than subPackages, which would also skip the
+    # internal/ tests.
+    excludedPackages = [ "scripts/capture-fixture" ];
+    # Tests write helper scripts with FHS shebangs the build sandbox lacks.
+    # Rewritten wholesale: nixpkgs' per-file list (and upstream's own) goes
+    # stale as tests are added.
+    postPatch = ''
+      grep -rlZ --include='*_test.go' -e '#!/bin/' -e '#!/usr/bin/env bash' . \
+        | xargs -0 sed -i \
+            -e 's|#!/bin/bash|#!${lib.getExe pkgs.bash}|g' \
+            -e 's|#!/usr/bin/env bash|#!${lib.getExe pkgs.bash}|g' \
+            -e 's|#!/bin/sh|#!${lib.getExe pkgs.bash}|g'
     '';
+  } // lib.optionalAttrs (hyprland == null) {
+    # Distro compositor: hyprctl comes from the session $PATH, the same as
+    # hypr-workspace-layout-toggle. nixpkgs' wrapper would put its own
+    # hyprctl first.
+    postFixup = "";
+  });
 
-  # Mutable, per-machine monitor overrides. Sourced from the Lua config below
-  # and written by hyprmon; untracked state outside the flake, so it is not
-  # reproducible across machines.
-  localConfig = "${config.home.homeDirectory}/.config/hypr/local.lua";
-
-  # Wrapped rather than exported session-wide: Hyprland itself reads
-  # HYPRLAND_CONFIG to locate its main config, so a global export would
-  # repoint the compositor at the override file.
-  hyprmonWrapped = pkgs.symlinkJoin {
-    name = "hyprmon-local-config";
-    paths = [ pkgs.hyprmon ];
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/hyprmon --set HYPRLAND_CONFIG "${localConfig}"
-    '';
-  };
+  # hyprmoncfg's generated rules. It would append the include to hyprland.lua
+  # itself, but that is a read-only store path here, so the include is below.
+  hyprmoncfgMonitors = ''(os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config") .. "/hypr/hyprmoncfg-monitors.lua"'';
 in
 {
   # Hyprland packages
@@ -64,7 +80,7 @@ in
     swaybg       # wallpaper; the unit below uses the store path, this is for manual use
     bibata-cursors
     rofi-power-menu
-    hyprmonWrapped      # monitor manager; rofi.nix has a desktop entry for it
+    hyprmoncfg   # monitor manager; rofi.nix has a desktop entry for it
   ]
   # NixOS only: on the distro branch the agent comes from the distro package
   # (polkit-kde), not nixpkgs - see polkitAgentCmd above.
@@ -107,6 +123,23 @@ in
       RestartSec = 1;
     };
     Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  # Applies the best matching hyprmoncfg profile on hotplug and lid changes.
+  # Defined here rather than enabling the package's unit, which is wanted by
+  # default.target and so would also manage monitors in a Plasma session.
+  systemd.user.services.hyprmoncfgd = {
+    Unit = {
+      Description = "Hyprland monitor profile daemon (hyprmoncfgd)";
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "hyprland-session.target" ];
+    };
+    Service = {
+      ExecStart = "${hyprmoncfg}/bin/hyprmoncfgd";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "hyprland-session.target" ];
   };
 
   # Enable GNOME Keyring
@@ -157,7 +190,7 @@ in
     # Use extraConfig for raw Lua configuration (hl.* API) instead of the settings
     # attrset. Since Hyprland 0.55 hyprlang is deprecated in favor of Lua, so this
     # is emitted to ~/.config/hypr/hyprland.lua. See https://hypr.land/news/26_lua/
-    extraConfig = ''
+    extraConfig = lib.mkMerge [ ''
       local terminal  = "${apps.terminal.command}"
       local mod       = "SUPER"
       local menu      = [[rofi -show drun -show-icons -display-drun ""]]
@@ -165,13 +198,14 @@ in
       local powermenu = [[rofi -show power-menu -theme-str 'inputbar { enabled: false; }' -theme-str 'window {width: 225px;}' -theme-str 'window {height: 260px;}' -modi "power-menu:rofi-power-menu"]]
 
 
-      -- Monitor configuration
-      ${monitorConfig}
+      -- Fallback for displays no hyprmoncfg profile covers. Per-display mode,
+      -- position and scale come from its profiles, loaded at the very end.
+      hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 
-      -- Per-machine overrides (monitor layout, keybinds, etc.), applied after
-      -- the defaults above so they win. This is where hyprmon saves its monitor
-      -- rules. With Lua the local override file is Lua too; dofile a missing
-      -- file is a harmless no-op thanks to pcall.
+      -- Per-machine overrides (keybinds, etc.), applied after the defaults
+      -- above so they win. Monitor layouts belong to hyprmoncfg, whose rules
+      -- load at the very end. With Lua the local override file is Lua too;
+      -- dofile a missing file is a harmless no-op thanks to pcall.
       pcall(dofile, os.getenv("HOME") .. "/.config/hypr/local.lua")
 
       -- Cursor configuration
@@ -457,7 +491,71 @@ in
       for index = 1, 5 do
         hl.bind(mod .. " + ALT + code:" .. tostring(index + 9), hl.dsp.group.active({ index = index }))
       end
-    '';
+    ''
+
+    # After everything, including hypr-workspace-layout's mkAfter block: any
+    # monitor rule read later would override the layout hyprmoncfg applied.
+    (lib.mkOrder 2000 ''
+
+      -- hyprmoncfg's generated monitor rules, last so the applied layout is
+      -- final. The file holds whichever profile was applied last, so after
+      -- undocking, a docked profile's disabled laptop panel comes back at the
+      -- next login with nothing else connected: the screen stays frozen on the
+      -- greeter's last frame, and an output disabled that early may not come
+      -- back until Hyprland restarts. Its disable rules are therefore held
+      -- back and applied only if some connected display stays on.
+      local function guarded_dofile(path)
+        local file = io.open(path, "r")
+        if not file then return end
+        file:close()
+
+        -- The selector a rule disables, for both the table and the legacy
+        -- string form hyprmoncfg writes.
+        local function disabledOutput(rule)
+          if type(rule) == "table" then
+            return rule.disabled and rule.output or nil
+          end
+          return tostring(rule):match("^%s*([^,]-)%s*,%s*disable")
+        end
+
+        local monitor = hl.monitor
+        local disables = {}
+        hl.monitor = function(rule)
+          if disabledOutput(rule) then disables[#disables + 1] = rule else monitor(rule) end
+        end
+        local ok, err = pcall(dofile, path)
+        hl.monitor = monitor
+
+        local function isDisabled(m)
+          for _, rule in ipairs(disables) do
+            local output = disabledOutput(rule)
+            if output == m.name or output == "desc:" .. m.description then return true end
+          end
+          return false
+        end
+
+        -- get_monitors() omits outputs that are already off, and FALLBACK /
+        -- HEADLESS-* are Hyprland's placeholders, not displays.
+        local keepsOne = false
+        for _, m in ipairs(hl.get_monitors()) do
+          local virtual = m.name == "FALLBACK" or m.name:match("^HEADLESS") ~= nil
+          if not virtual and not isDisabled(m) then keepsOne = true end
+        end
+        if keepsOne then
+          for _, rule in ipairs(disables) do monitor(rule) end
+        end
+
+        if not ok then
+          io.stderr:write("nix-green: hyprmoncfg monitor rules failed: " .. tostring(err) .. "\n")
+        end
+      end
+
+      -- One line, in the shape `hyprmoncfg doctor` recognizes as its include
+      -- (`do local`, `dofile(`, the generated file's name) when it checks
+      -- that nothing loads after it.
+      do local path = ${hyprmoncfgMonitors}; guarded_dofile(path) end
+    '')
+    ];
   }
   // (
     if hyprland != null then {

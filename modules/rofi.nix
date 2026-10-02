@@ -95,10 +95,12 @@ in
   home.packages = [ keybindsScript ];
 
   xdg.desktopEntries = {
-    hyprmon = {
-      name = "HyprMon";
+    # Same id as the package's own entry, which this shadows: that one sets
+    # Terminal=true and so would open in a tiled terminal, and show up twice.
+    hyprmoncfg = {
+      name = "hyprmoncfg";
       genericName = "Monitor Manager";
-      exec = "${terminal.command} --title=float -e hyprmon";
+      exec = "${terminal.command} --title=float -e hyprmoncfg";
       terminal = false;
       categories = [ "System" "Settings" ];
       icon = "video-display";
