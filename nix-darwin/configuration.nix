@@ -1,11 +1,10 @@
 { pkgs, username, hostname, ... }:
 
 {
-  # Enable flakes and other nix features
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  # Nix itself is installed and managed by Determinate (see README), which runs
+  # its own daemon and has flakes on by default. nix-darwin aborts activation if
+  # it also tries to manage Nix, and every other `nix.*` option needs this on.
+  nix.enable = false;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -32,20 +31,6 @@
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
   ];
-
-  # Nix garbage collection
-  nix.gc = {
-    automatic = true;
-    interval = {
-      Weekday = 0;
-      Hour = 2;
-      Minute = 0;
-    };
-    options = "--delete-older-than 7d";
-  };
-
-  # Nix store optimization
-  nix.optimise.automatic = true;
 
   # Enable Tailscale
   services.tailscale.enable = true;

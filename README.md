@@ -66,7 +66,7 @@ nix-green
 **NOTE: `git` NEEDS TO BE INSTALLED ON YOUR SYSTEM.** 
 **THIS CAN BE DONE BY INSTALLING IT IN MANUALLY `/etc/nixos/configuration.nix` OR TEMPORARILY IN AN INTERACPTIVE SHELL BY RUNNUNG `nix-shell -p git` IN YOUR TERMINAL.**
 
-**FOR MACOS it is recommended to install Nix using [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer)**
+**FOR MACOS install Nix using the [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer). The macOS configuration expects it: Determinate manages Nix, so `nix-darwin/configuration.nix` sets `nix.enable = false`.**
 ```
 curl -fsSL https://install.determinate.systems/nix | sh -s -- install
 ```
@@ -94,7 +94,10 @@ sudo nixos-rebuild switch --flake .#kde --impure
 # For Hyprland desktop
 sudo nixos-rebuild switch --flake .#hyprland --impure
 
-# For macOS desktop
+# For macOS desktop (first install - darwin-rebuild is not installed yet)
+sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#nix-darwin
+
+# For macOS desktop (every rebuild after that)
 sudo darwin-rebuild switch --flake .#nix-darwin
 ``` 
 
