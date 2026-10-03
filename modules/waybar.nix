@@ -31,6 +31,7 @@ in
         modules-center = [ "clock" ];
         modules-right = [
           "tray"
+          "idle_inhibitor"
           "cpu"
           "memory"
           "pulseaudio"
@@ -65,6 +66,17 @@ in
           format = "{:%H:%M %m-%d}";
           tooltip-format = "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>";
           format-alt = "{:%H:%M}";
+        };
+
+        "idle_inhibitor" = {
+          format = "{icon}";
+          format-icons = {
+            activated = "󰅶";
+            deactivated = "󰾪";
+          };
+          tooltip-format-activated = "Idle lock screen and screensaver are off. Click to allow them";
+          tooltip-format-deactivated = "Idle lock screen and screensaver are on. Click to prevent them";
+          start-activated = false;
         };
 
         "cpu" = {
@@ -183,7 +195,6 @@ in
       #pulseaudio,
       #wireplumber,
       #mode,
-      #idle_inhibitor,
       #scratchpad,
       #mpd {
           padding: 0 5px;
@@ -196,7 +207,8 @@ in
       /* Icon-only pills (no text like the others carry) get extra horizontal
          padding so their pill width doesn't look cramped next to its siblings. */
       #bluetooth,
-      #network {
+      #network,
+      #idle_inhibitor {
           padding: 0 14px;
           background-color: #${palette.mauve};
           border-radius: 6.16px;
@@ -208,6 +220,12 @@ in
       /* Wifi icon gets its own size, separate from bluetooth's. */
       #network {
           font-size: 13px;
+      }
+
+      /* Highlighted while idle lock/screensaver is being held off, so it's
+         obvious the machine won't lock on its own. */
+      #idle_inhibitor.activated {
+          background-color: #${palette.red};
       }
 
       /* The tray box is excluded from the pill rule above: with no status
