@@ -4,23 +4,23 @@
 # Chosen over yabai because it needs no SIP changes. Fully declarative via the
 # TOML `settings` attrset, run as a login launchd agent.
 #
-# Mod key is Alt/Option (AeroSpace default), deliberately avoiding ⌘-chords so it
-# never collides with Raycast's ⌘Space or macOS system shortcuts. Keybindings
-# mirror the intent of modules/hyprland.nix (hjkl focus/move, 1-9 workspaces).
+# Mod key is Alt/Option (Hyprland's SUPER maps to alt), deliberately avoiding
+# command-chords so it never collides with macOS system shortcuts. Keybindings
+# mirror modules/hyprland.nix / dotfiles/.config/hypr/hyprland.lua.
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   programs.aerospace = {
     enable = true;
     launchd.enable = true; # start at login
 
     settings = {
-      # Match hyprland's gapped, minimal feel (see modules/waybar.nix spacing).
+      # Match hyprland.lua's gaps (inner 3, outer 7).
       gaps = {
-        inner.horizontal = 8;
-        inner.vertical = 8;
-        outer.left = 8;
-        outer.right = 8;
-        outer.top = 8;
-        outer.bottom = 8;
+        inner.horizontal = 3;
+        inner.vertical = 3;
+        outer.left = 7;
+        outer.right = 7;
+        outer.top = 7;
+        outer.bottom = 7;
       };
 
       # Default to tiling with an accordion fallback (analogue of dwindle).
@@ -40,28 +40,61 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
           "if".app-id = "com.raycast.macos";
           run = [ "layout floating" ];
         }
+        # Mirrors hyprland.lua's float-title rule: terminals opened with
+        # --title=float (btop etc.) float.
+        {
+          "if".window-title-regex-substring = "float";
+          run = [ "layout floating" ];
+        }
       ];
 
       mode.main.binding = {
-        # Focus (hjkl, like hyprland).
-        alt-h = "focus left";
-        alt-j = "focus down";
-        alt-k = "focus up";
-        alt-l = "focus right";
+        # Application launchers (hyprland.lua "Application launchers").
+        alt-enter = "exec-and-forget open -na Ghostty";
+        alt-shift-b = "exec-and-forget open -a \"Brave Browser\"";
+        alt-shift-f = "exec-and-forget open -a Finder";
+        alt-shift-o = "exec-and-forget open -a Obsidian";
+        alt-shift-v = "exec-and-forget open -a VSCodium";
+        alt-shift-m = "exec-and-forget open -na Ghostty --args --title=float -e btop";
+        alt-shift-n = "exec-and-forget open -na Ghostty --args -e nvim";
+        alt-shift-g = "exec-and-forget open -na Ghostty --args -e lazygit";
+        alt-shift-a = "exec-and-forget open -na Ghostty --args -e opencode";
 
-        # Move window.
-        alt-shift-h = "move left";
-        alt-shift-j = "move down";
-        alt-shift-k = "move up";
-        alt-shift-l = "move right";
-
-        # Layout.
+        # Window and session.
+        alt-q = "close";
+        alt-t = "layout floating tiling"; # toggle float
         alt-f = "fullscreen";
-        alt-shift-space = "layout floating tiling"; # toggle float
-        alt-slash = "layout tiles horizontal vertical";
-        alt-comma = "layout accordion horizontal vertical";
+        alt-u = "layout tiles horizontal vertical"; # togglesplit
+        alt-l = "exec-and-forget pmset displaysleepnow"; # lock (needs "require password" on wake)
+        alt-shift-z = "exec-and-forget open -a ScreenSaverEngine"; # screensaver
+        alt-shift-s = "exec-and-forget screencapture -ic"; # region screenshot to clipboard
+        alt-shift-space = "exec-and-forget sketchybar --bar hidden=toggle"; # toggle bar
 
-        # Switch to workspace 1-9.
+        # Focus and swap with the arrow keys.
+        alt-left = "focus left";
+        alt-down = "focus down";
+        alt-up = "focus up";
+        alt-right = "focus right";
+        alt-shift-left = "move left";
+        alt-shift-down = "move down";
+        alt-shift-up = "move up";
+        alt-shift-right = "move right";
+
+        # Scrolling-layout binds (J/K move across columns, comma/period resize).
+        alt-j = "focus left";
+        alt-k = "focus right";
+        alt-shift-j = "move left";
+        alt-shift-k = "move right";
+        alt-comma = "resize width -100";
+        alt-period = "resize width +100";
+
+        # Resize the active window (hyprland.lua mod + minus/equal).
+        alt-minus = "resize width -100";
+        alt-equal = "resize width +100";
+        alt-shift-minus = "resize height -100";
+        alt-shift-equal = "resize height +100";
+
+        # Switch to workspace 1-10 (0 is 10, like hyprland.lua).
         alt-1 = "workspace 1";
         alt-2 = "workspace 2";
         alt-3 = "workspace 3";
@@ -71,8 +104,9 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         alt-7 = "workspace 7";
         alt-8 = "workspace 8";
         alt-9 = "workspace 9";
+        alt-0 = "workspace 10";
 
-        # Move focused window to workspace 1-9.
+        # Move focused window to workspace 1-10.
         alt-shift-1 = "move-node-to-workspace 1";
         alt-shift-2 = "move-node-to-workspace 2";
         alt-shift-3 = "move-node-to-workspace 3";
@@ -82,6 +116,22 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         alt-shift-7 = "move-node-to-workspace 7";
         alt-shift-8 = "move-node-to-workspace 8";
         alt-shift-9 = "move-node-to-workspace 9";
+        alt-shift-0 = "move-node-to-workspace 10";
+
+        # Next workspace (hyprland.lua mod + TAB).
+        alt-tab = "workspace --wrap-around next";
+
+        # Hyprland binds with no macOS analogue, intentionally not mapped:
+        #  - tsui (Shift+T): Linux-only package, not installed on macOS
+        #  - pseudo (P), exit (Shift+Esc), powermenu (Esc), keybind help (Shift+H)
+        #  - mako dismiss (N, Ctrl+N): macOS has its own notification centre
+        #  - ALT+TAB window cycling: collides with mod+Tab under the Alt mod
+        #    (macOS Cmd+Tab covers it)
+        #  - media/brightness keys: native on macOS
+        #  - launcher (Space): Raycast owns alt-space (modules/raycast.nix), so it is
+        #    deliberately left unbound here
+        #  - clipboard history (Ctrl+V): Raycast's per-command hotkeys are not
+        #    declarative, so set Alt+Ctrl+V by hand in Raycast's Clipboard History
       };
     };
   };

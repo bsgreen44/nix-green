@@ -6,9 +6,12 @@
 # the same source waybar.nix uses; SketchyBar wants 0xAARRGGBB, so only the RGB half
 # interpolates and the leading alpha byte stays literal.
 #
-# Widgets mirror waybar's (modules/waybar.nix): AeroSpace workspaces, clock, cpu,
-# memory, volume, wifi, battery. Refresh intervals are kept in seconds (volume is
-# event-driven) to stay light - see the MacBook Air resource note in the plan.
+# Styled like waybar: a fully transparent bar with mauve icon/text pills and a
+# Nerd Font glyph per widget (glyphs are copied from waybar.nix). Widgets: AeroSpace
+# workspaces 1-10 (left), clock (center), then idle inhibitor (caffeinate), cpu,
+# memory, volume, bluetooth, network, battery (right). The tray is omitted - macOS
+# menu bar extras have no SketchyBar equivalent. Refresh intervals are kept in
+# seconds (volume is event-driven) to stay light.
 #
 # darwin-only; guarded so it's inert if ever imported on Linux (like modules/raycast.nix).
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
@@ -36,68 +39,108 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         PLUGIN_DIR="$CONFIG_DIR/plugins"
 
         # Catppuccin Mocha, from modules/palette.nix (0xAARRGGBB)
-        BAR_BG=0xee${palette.base}
-        ITEM_BG=0x99${palette.surface0}
+        PILL=0xff${palette.mauve}
+        PILL_FG=0xff${palette.surface0}
         FG=0xff${palette.text}
 
-        sketchybar --bar height=32 \
-                         position=top \
-                         padding_left=8 \
-                         padding_right=8 \
-                         color=$BAR_BG \
-                         corner_radius=12 \
-                         margin=6 \
-                         y_offset=4
+        # Same click target as waybar's on-click (a floating btop in the terminal).
+        BTOP="open -na Ghostty --args --title=float -e btop"
 
+        # Transparent bar; the pills carry the colour, like waybar's islands.
+        sketchybar --bar height=20 \
+                         position=top \
+                         padding_left=2 \
+                         padding_right=2 \
+                         color=0x00000000 \
+                         margin=7 \
+                         y_offset=7
+
+        # Every item is a mauve pill by default (waybar's shared pill rule).
+        # The Mono Nerd Font variant keeps glyphs in a single centred cell.
         sketchybar --default updates=when_shown \
-                             icon.font="JetBrainsMono Nerd Font:Bold:14.0" \
-                             label.font="JetBrainsMono Nerd Font:Bold:13.0" \
-                             icon.color=$FG \
-                             label.color=$FG \
-                             background.color=$ITEM_BG \
-                             background.corner_radius=8 \
-                             background.height=24 \
-                             label.padding_left=6 \
-                             label.padding_right=6 \
-                             padding_left=3 \
-                             padding_right=3
+                             icon.font="JetBrainsMono Nerd Font Mono:Bold:13.0" \
+                             label.font="JetBrainsMono Nerd Font Mono:Bold:11.0" \
+                             icon.color=$PILL_FG \
+                             label.color=$PILL_FG \
+                             background.color=$PILL \
+                             background.corner_radius=6 \
+                             background.height=20 \
+                             icon.padding_left=5 \
+                             icon.padding_right=3 \
+                             label.padding_left=0 \
+                             label.padding_right=5 \
+                             padding_left=2 \
+                             padding_right=2
 
         # Workspaces (AeroSpace) - highlighted via the trigger fired by
         # exec-on-workspace-change in modules/aerospace.nix.
         sketchybar --add event aerospace_workspace_change
 
-        for sid in 1 2 3 4 5 6 7 8 9; do
+        for sid in 1 2 3 4 5 6 7 8 9 10; do
           sketchybar --add item space.$sid left \
                      --subscribe space.$sid aerospace_workspace_change \
                      --set space.$sid \
                            background.drawing=off \
                            icon.drawing=off \
                            label="$sid" \
+                           label.color=$FG \
+                           label.padding_left=5 \
+                           label.padding_right=5 \
                            script="$PLUGIN_DIR/aerospace.sh $sid"
         done
 
-        # Clock (center)
+        # Clock (center) - slightly larger text, like waybar's #clock.
         sketchybar --add item clock center \
-                   --set clock update_freq=10 background.drawing=off icon.drawing=off \
+                   --set clock update_freq=10 icon.drawing=off \
+                         label.font="JetBrainsMono Nerd Font Mono:Bold:12.0" \
+                         label.padding_left=5 \
                          script="$PLUGIN_DIR/clock.sh"
 
         # Right side (added right-to-left; mirrors waybar's modules-right)
         sketchybar --add item battery right \
-                   --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+                   --set battery update_freq=120 icon.drawing=off \
+                         label.padding_left=5 \
+                         click_script="$BTOP" \
+                         script="$PLUGIN_DIR/battery.sh" \
                    --subscribe battery power_source_change system_woke
 
-        sketchybar --add item wifi right \
-                   --set wifi update_freq=30 script="$PLUGIN_DIR/wifi.sh"
+        # Icon-only pills get the wide padding, like waybar's icon-only CSS rule.
+        sketchybar --add item network right \
+                   --set network update_freq=30 label.drawing=off \
+                         icon.padding_left=14 icon.padding_right=14 \
+                         click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
+                         script="$PLUGIN_DIR/network.sh" \
+                   --subscribe network wifi_change system_woke
+
+        sketchybar --add item bluetooth right \
+                   --set bluetooth update_freq=30 label.drawing=off \
+                         icon.padding_left=14 icon.padding_right=14 \
+                         click_script="open 'x-apple.systempreferences:com.apple.BluetoothSettings'" \
+                         script="$PLUGIN_DIR/bluetooth.sh" \
+                   --subscribe bluetooth system_woke
 
         sketchybar --add item volume right \
-                   --set volume script="$PLUGIN_DIR/volume.sh" \
+                   --set volume icon.drawing=off \
+                         label.padding_left=5 \
+                         click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
+                         script="$PLUGIN_DIR/volume.sh" \
                    --subscribe volume volume_change
 
         sketchybar --add item memory right \
-                   --set memory update_freq=5 script="$PLUGIN_DIR/memory.sh"
+                   --set memory update_freq=5 \
+                         click_script="$BTOP" \
+                         script="$PLUGIN_DIR/memory.sh"
 
         sketchybar --add item cpu right \
-                   --set cpu update_freq=10 script="$PLUGIN_DIR/cpu.sh"
+                   --set cpu update_freq=10 \
+                         click_script="$BTOP" \
+                         script="$PLUGIN_DIR/cpu.sh"
+
+        sketchybar --add item idle_inhibitor right \
+                   --set idle_inhibitor update_freq=10 label.drawing=off \
+                         icon.padding_left=14 icon.padding_right=14 \
+                         click_script="$PLUGIN_DIR/idle_inhibitor.sh toggle" \
+                         script="$PLUGIN_DIR/idle_inhibitor.sh"
 
         sketchybar --update
 
@@ -111,7 +154,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       text = ''
         #!/usr/bin/env bash
         if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
-          sketchybar --set "$NAME" background.drawing=on background.color=0xff${palette.mauve} label.color=0xff${palette.base}
+          sketchybar --set "$NAME" background.drawing=on background.color=0xff${palette.mauve} label.color=0xff${palette.surface0}
         else
           sketchybar --set "$NAME" background.drawing=off label.color=0xff${palette.text}
         fi
@@ -126,12 +169,47 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       '';
     };
 
+    # Mirrors waybar's idle_inhibitor: a click toggles a background caffeinate that
+    # holds off display/idle sleep (and so the lock screen). It starts deactivated.
+    "sketchybar/plugins/idle_inhibitor.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        NAME=idle_inhibitor
+        pidfile="/tmp/sketchybar-caffeinate.$(id -u).pid"
+
+        running() {
+          [ -f "$pidfile" ] || return 1
+          case "$(ps -p "$(cat "$pidfile")" -o comm= 2>/dev/null)" in
+            *caffeinate) return 0 ;;
+            *) return 1 ;;
+          esac
+        }
+
+        if [ "$1" = "toggle" ]; then
+          if running; then
+            kill "$(cat "$pidfile")"
+            rm -f "$pidfile"
+          else
+            nohup caffeinate -dimsu >/dev/null 2>&1 &
+            echo $! >"$pidfile"
+          fi
+        fi
+
+        if running; then
+          sketchybar --set "$NAME" icon="󰅶" background.color=0xff${palette.red}
+        else
+          sketchybar --set "$NAME" icon="󰾪" background.color=0xff${palette.mauve}
+        fi
+      '';
+    };
+
     "sketchybar/plugins/cpu.sh" = {
       executable = true;
       text = ''
         #!/usr/bin/env bash
         cpu=$(top -l 1 | awk '/CPU usage/ {gsub("%","",$7); printf "%.0f", 100-$7}')
-        sketchybar --set "$NAME" label="CPU: $cpu%"
+        sketchybar --set "$NAME" icon="󰍛" label="$cpu%"
       '';
     };
 
@@ -139,9 +217,14 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        free=$(memory_pressure | awk '/free percentage/ {gsub("%","",$5); print $5}')
-        used=$((100 - free))
-        sketchybar --set "$NAME" label="Mem: $used%"
+        # Used = active + wired + compressor pages, in GiB (waybar's {used}GB).
+        used=$(vm_stat | awk '
+          /page size of/ {size=$8}
+          /Pages active/ {a=$3}
+          /Pages wired down/ {w=$4}
+          /Pages occupied by compressor/ {c=$5}
+          END {printf "%.1f", (a + w + c) * size / 1073741824}')
+        sketchybar --set "$NAME" icon="" label="''${used}GB"
       '';
     };
 
@@ -149,24 +232,61 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        if [ "$SENDER" = "volume_change" ]; then
-          vol="$INFO"
+        # Query both values every time: volume_change only carries the level.
+        read -r vol muted < <(osascript -e 'set s to get volume settings' \
+          -e '(output volume of s as text) & " " & (output muted of s as text)')
+
+        case "$vol" in
+          ""|*[!0-9]*) sketchybar --set "$NAME" label="--%" ; exit 0 ;;
+        esac
+
+        if [ "$muted" = "true" ]; then
+          sketchybar --set "$NAME" label=""
+        elif [ "$vol" -lt 50 ]; then
+          sketchybar --set "$NAME" label="$vol% "
         else
-          vol=$(osascript -e "output volume of (get volume settings)")
+          sketchybar --set "$NAME" label="$vol% "
         fi
-        sketchybar --set "$NAME" label="Vol: $vol%"
       '';
     };
 
-    "sketchybar/plugins/wifi.sh" = {
+    "sketchybar/plugins/bluetooth.sh" = {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        ssid=$(networksetup -getairportnetwork en0 | sed 's/^Current Wi-Fi Network: //')
-        case "$ssid" in
-          *"not associated"*|"") sketchybar --set "$NAME" label="Wi-Fi: off" ;;
-          *) sketchybar --set "$NAME" label="$ssid" ;;
-        esac
+        blueutil=${pkgs.blueutil}/bin/blueutil
+
+        if [ "$($blueutil -p)" != "1" ]; then
+          icon="󰂲"
+        elif [ -n "$($blueutil --connected)" ]; then
+          icon="󰂱"
+        else
+          icon="󰂯"
+        fi
+        sketchybar --set "$NAME" icon="$icon"
+      '';
+    };
+
+    # Icon only: the SSID is not used because `networksetup -getairportnetwork`
+    # is redacted on recent macOS. The default route's interface decides.
+    "sketchybar/plugins/network.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        iface=$(route -n get default 2>/dev/null | awk '/interface:/ {print $2}')
+
+        if [ -z "$iface" ]; then
+          icon="󰖪"
+        else
+          port=$(networksetup -listallhardwareports | awk -v i="$iface" '
+            /^Hardware Port:/ {sub(/^Hardware Port: /, ""); p=$0}
+            /^Device:/ && $2 == i {print p; exit}')
+          case "$port" in
+            Wi-Fi) icon="󰖩" ;;
+            *) icon="󰀂" ;;
+          esac
+        fi
+        sketchybar --set "$NAME" icon="$icon"
       '';
     };
 
@@ -174,11 +294,24 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        pct=$(pmset -g batt | grep -Eo "[0-9]+%" | head -1 | tr -d '%')
-        if pmset -g batt | grep -q "AC Power"; then
-          sketchybar --set "$NAME" label="Bat: $pct% (chg)"
+        batt=$(pmset -g batt)
+        pct=$(echo "$batt" | grep -Eo "[0-9]+%" | head -1 | tr -d '%')
+
+        # No battery (desktop Mac): hide the pill.
+        if [ -z "$pct" ]; then
+          sketchybar --set "$NAME" drawing=off
+          exit 0
+        fi
+
+        # Five levels, like waybar's format-icons; charging and plugged share a glyph.
+        icons=("" "" "" "" "")
+        idx=$((pct * 5 / 100))
+        [ "$idx" -gt 4 ] && idx=4
+
+        if echo "$batt" | grep -q "AC Power"; then
+          sketchybar --set "$NAME" drawing=on label="$pct% "
         else
-          sketchybar --set "$NAME" label="Bat: $pct%"
+          sketchybar --set "$NAME" drawing=on label="$pct% ''${icons[$idx]}"
         fi
       '';
     };

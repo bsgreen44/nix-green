@@ -1,11 +1,12 @@
 { pkgs, lib, ... }:
-# Raycast is a macOS productivity launcher. (Replacement for Spotlight)
+# Raycast is a macOS productivity launcher. (Launcher alongside Spotlight)
 
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   targets.darwin.defaults."com.raycast.macos" = {
-    # Global hotkey → ⌘Space (49 = Space keycode). Replaces Spotlight - see the
-    # note by the raycast cask in nix-darwin/configuration.nix about freeing it.
-    raycastGlobalHotkey = "Command-49";
+    # Global hotkey -> Option+Space (49 = Space keycode), mirroring hyprland.lua's
+    # `mod + SPACE` launcher (mod is Alt on macOS, see modules/aerospace.nix).
+    # Cmd+Space stays with Spotlight.
+    raycastGlobalHotkey = "Option-49";
 
     # Compact launcher window, matching hyprland's tight/minimal feel.
     raycastPreferredWindowMode = "compact";
