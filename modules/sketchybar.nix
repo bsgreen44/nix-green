@@ -1,4 +1,4 @@
-{ pkgs, lib, palette, ... }:
+{ config, pkgs, lib, palette, ... }:
 
 # SketchyBar status bar - the macOS analogue of modules/waybar.nix. Self-contained
 # like waybar.nix: installs the binary, writes the config + plugin scripts, and runs
@@ -8,10 +8,10 @@
 #
 # Styled like waybar: a fully transparent bar with mauve icon/text pills and a
 # Nerd Font glyph per widget (glyphs are copied from waybar.nix). Widgets: AeroSpace
-# workspaces 1-10 (left), clock (center), then idle inhibitor (caffeinate), cpu,
-# memory, volume, bluetooth, network, battery (right). The tray is omitted - macOS
-# menu bar extras have no SketchyBar equivalent. Refresh intervals are kept in
-# seconds (volume is event-driven) to stay light.
+# workspaces 1-10 (left), then idle inhibitor (caffeinate), cpu, memory, volume,
+# bluetooth, network, battery, clock (right; the notch hides the center). The tray
+# is omitted - macOS menu bar extras have no SketchyBar equivalent. Refresh
+# intervals are kept in seconds (volume is event-driven) to stay light.
 #
 # darwin-only; guarded so it's inert if ever imported on Linux (like modules/raycast.nix).
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
@@ -44,7 +44,9 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         FG=0xff${palette.text}
 
         # Same click target as waybar's on-click (a floating btop in the terminal).
-        BTOP="open -na Ghostty --args --title=float -e btop"
+        # Absolute path: Ghostty runs the command without a login shell, so the
+        # Home Manager profile is not on its PATH and a bare `btop` is not found.
+        BTOP="open -na Ghostty --args --title=float -e ${config.home.profileDirectory}/bin/btop"
 
         # Transparent bar; the pills carry the colour, like waybar's islands.
         sketchybar --bar height=20 \
@@ -72,31 +74,39 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
                              padding_left=2 \
                              padding_right=2
 
-        # Workspaces (AeroSpace) - highlighted via the trigger fired by
-        # exec-on-workspace-change in modules/aerospace.nix.
+        # Workspaces (AeroSpace), like waybar's hyprland/workspaces: only workspaces
+        # holding windows (plus the focused one) are shown, and the focused one is a
+        # mauve pill. One hidden controller item redraws all ten on each event, fired
+        # by exec-on-workspace-change / on-focus-changed in modules/aerospace.nix.
         sketchybar --add event aerospace_workspace_change
 
         for sid in 1 2 3 4 5 6 7 8 9 10; do
           sketchybar --add item space.$sid left \
-                     --subscribe space.$sid aerospace_workspace_change \
                      --set space.$sid \
+                           drawing=off \
                            background.drawing=off \
                            icon.drawing=off \
                            label="$sid" \
                            label.color=$FG \
                            label.padding_left=5 \
-                           label.padding_right=5 \
-                           script="$PLUGIN_DIR/aerospace.sh $sid"
+                           label.padding_right=5
         done
 
-        # Clock (center) - slightly larger text, like waybar's #clock.
-        sketchybar --add item clock center \
+        # updates=on: the controller never draws, and when_shown would skip it.
+        sketchybar --add item aerospace left \
+                   --set aerospace drawing=off updates=on \
+                         script="$PLUGIN_DIR/aerospace.sh" \
+                   --subscribe aerospace aerospace_workspace_change front_app_switched system_woke
+
+        # Right side (added right-to-left; mirrors waybar's modules-right). The
+        # clock sits at the far right instead of waybar's center slot, because the
+        # MacBook notch covers the middle of the bar.
+        sketchybar --add item clock right \
                    --set clock update_freq=10 icon.drawing=off \
                          label.font="JetBrainsMono Nerd Font Mono:Bold:12.0" \
                          label.padding_left=5 \
                          script="$PLUGIN_DIR/clock.sh"
 
-        # Right side (added right-to-left; mirrors waybar's modules-right)
         sketchybar --add item battery right \
                    --set battery update_freq=120 icon.drawing=off \
                          label.padding_left=5 \
@@ -144,8 +154,8 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
 
         sketchybar --update
 
-        # Initialise the workspace highlight (AeroSpace starts on workspace 1).
-        sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=1
+        # Draw the workspaces once at startup.
+        sketchybar --trigger aerospace_workspace_change
       '';
     };
 
@@ -153,11 +163,23 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        if [ "$1" = "$FOCUSED_WORKSPACE" ]; then
-          sketchybar --set "$NAME" background.drawing=on background.color=0xff${palette.mauve} label.color=0xff${palette.surface0}
-        else
-          sketchybar --set "$NAME" background.drawing=off label.color=0xff${palette.text}
-        fi
+        aerospace=${config.programs.aerospace.package}/bin/aerospace
+
+        # exec-on-workspace-change passes the focused workspace; other events don't.
+        focused="''${FOCUSED_WORKSPACE:-$($aerospace list-workspaces --focused)}"
+        used=" $($aerospace list-workspaces --monitor all --empty no | tr '\n' ' ') "
+
+        args=()
+        for sid in 1 2 3 4 5 6 7 8 9 10; do
+          if [ "$sid" = "$focused" ]; then
+            args+=(--set "space.$sid" drawing=on background.drawing=on label.color=0xff${palette.surface0})
+          elif [[ "$used" == *" $sid "* ]]; then
+            args+=(--set "space.$sid" drawing=on background.drawing=off label.color=0xff${palette.text})
+          else
+            args+=(--set "space.$sid" drawing=off)
+          fi
+        done
+        sketchybar "''${args[@]}"
       '';
     };
 

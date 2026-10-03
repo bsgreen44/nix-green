@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 # AeroSpace tiling window manager - the macOS analogue of modules/hyprland.nix.
 # Chosen over yabai because it needs no SIP changes. Fully declarative via the
@@ -27,11 +27,17 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       default-root-container-layout = "tiles";
       default-root-container-orientation = "auto";
 
-      # Keep SketchyBar's workspace highlight in sync with focus.
+      # Keep SketchyBar's workspaces in sync. on-focus-changed also catches a window
+      # being moved to or closed on another workspace, which changes which
+      # workspaces are in use. Store paths: AeroSpace's launchd PATH lacks the
+      # Home Manager profile.
       exec-on-workspace-change = [
         "/bin/bash"
         "-c"
-        "sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE"
+        "${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE"
+      ];
+      on-focus-changed = [
+        "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_workspace_change"
       ];
 
       # Never tile Raycast's launcher panel (usually automatic; explicit is safe).
@@ -49,16 +55,18 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       ];
 
       mode.main.binding = {
-        # Application launchers (hyprland.lua "Application launchers").
+        # Application launchers (hyprland.lua "Application launchers"). Terminal
+        # tools use absolute paths: Ghostty runs them without a login shell, so the
+        # Home Manager profile is not on PATH.
         alt-enter = "exec-and-forget open -na Ghostty";
         alt-shift-b = "exec-and-forget open -a \"Brave Browser\"";
         alt-shift-f = "exec-and-forget open -a Finder";
         alt-shift-o = "exec-and-forget open -a Obsidian";
         alt-shift-v = "exec-and-forget open -a VSCodium";
-        alt-shift-m = "exec-and-forget open -na Ghostty --args --title=float -e btop";
-        alt-shift-n = "exec-and-forget open -na Ghostty --args -e nvim";
-        alt-shift-g = "exec-and-forget open -na Ghostty --args -e lazygit";
-        alt-shift-a = "exec-and-forget open -na Ghostty --args -e opencode";
+        alt-shift-m = "exec-and-forget open -na Ghostty --args --title=float -e ${config.home.profileDirectory}/bin/btop";
+        alt-shift-n = "exec-and-forget open -na Ghostty --args -e ${config.home.profileDirectory}/bin/nvim";
+        alt-shift-g = "exec-and-forget open -na Ghostty --args -e ${config.home.profileDirectory}/bin/lazygit";
+        alt-shift-a = "exec-and-forget open -na Ghostty --args -e ${config.home.profileDirectory}/bin/opencode";
 
         # Window and session.
         alt-q = "close";
@@ -68,7 +76,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         alt-l = "exec-and-forget pmset displaysleepnow"; # lock (needs "require password" on wake)
         alt-shift-z = "exec-and-forget open -a ScreenSaverEngine"; # screensaver
         alt-shift-s = "exec-and-forget screencapture -ic"; # region screenshot to clipboard
-        alt-shift-space = "exec-and-forget sketchybar --bar hidden=toggle"; # toggle bar
+        alt-shift-space = "exec-and-forget ${pkgs.sketchybar}/bin/sketchybar --bar hidden=toggle"; # toggle bar
 
         # Focus and swap with the arrow keys.
         alt-left = "focus left";
