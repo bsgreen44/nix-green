@@ -43,10 +43,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         PILL_FG=0xff${palette.surface0}
         FG=0xff${palette.text}
 
-        # Same click target as waybar's on-click (a floating btop in the terminal).
-        # Absolute path: Ghostty runs the command without a login shell, so the
-        # Home Manager profile is not on its PATH and a bare `btop` is not found.
-        BTOP="open -na Ghostty --args --title=float -e ${config.home.profileDirectory}/bin/btop"
+        MONITOR="open -a 'Activity Monitor'"
 
         # Transparent bar; the pills carry the colour, like waybar's islands.
         sketchybar --bar height=20 \
@@ -110,7 +107,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         sketchybar --add item battery right \
                    --set battery update_freq=120 icon.drawing=off \
                          label.padding_left=5 \
-                         click_script="$BTOP" \
+                         click_script="$MONITOR" \
                          script="$PLUGIN_DIR/battery.sh" \
                    --subscribe battery power_source_change system_woke
 
@@ -138,12 +135,12 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
 
         sketchybar --add item memory right \
                    --set memory update_freq=5 \
-                         click_script="$BTOP" \
+                         click_script="$MONITOR" \
                          script="$PLUGIN_DIR/memory.sh"
 
         sketchybar --add item cpu right \
                    --set cpu update_freq=10 \
-                         click_script="$BTOP" \
+                         click_script="$MONITOR" \
                          script="$PLUGIN_DIR/cpu.sh"
 
         sketchybar --add item idle_inhibitor right \
@@ -187,7 +184,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        sketchybar --set "$NAME" label="$(date '+%H:%M %m-%d')"
+        sketchybar --set "$NAME" label="$(date '+%m-%d %H:%M')"
       '';
     };
 

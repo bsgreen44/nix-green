@@ -68,7 +68,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         alt-shift-f = "exec-and-forget open -a Finder";
         alt-shift-o = "exec-and-forget open -a Obsidian";
         alt-shift-v = "exec-and-forget open -a VSCodium";
-        alt-shift-m = "exec-and-forget open -na Ghostty --args --title=float -e ${config.home.profileDirectory}/bin/btop";
+        alt-shift-m = "exec-and-forget open -a \"Activity Monitor\""; # btop in hyprland.lua; Ghostty prompts before running a passed command
         alt-shift-n = "exec-and-forget open -na Ghostty --args -e ${config.home.profileDirectory}/bin/nvim";
         alt-shift-g = "exec-and-forget open -na Ghostty --args -e ${config.home.profileDirectory}/bin/lazygit";
         alt-shift-a = "exec-and-forget open -na Ghostty --args -e ${config.home.profileDirectory}/bin/opencode";
