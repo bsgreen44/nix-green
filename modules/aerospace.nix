@@ -28,9 +28,18 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         outer.bottom = 7;
       };
 
-      # Default to tiling with an accordion fallback (analogue of dwindle).
+      # Approximate Hyprland's dwindle (AeroSpace has no dwindle layout). The
+      # catch-all on-window-detected rule below runs `split opposite` on every new
+      # tiled window, so the next window splits it the other way. The first window
+      # is alone in the root, where `split` flips the root's orientation instead,
+      # hence a vertical root: it turns horizontal and the second window opens side
+      # by side, like dwindle on a wide screen. `split` does nothing while
+      # flatten-containers normalization is on. Limits: it only spirals cleanly
+      # while focus stays on the newest window, and closing windows can leave
+      # single-child containers behind.
       default-root-container-layout = "tiles";
-      default-root-container-orientation = "auto";
+      default-root-container-orientation = "vertical";
+      enable-normalization-flatten-containers = false;
 
       # Keep SketchyBar's workspaces in sync. on-focus-changed also catches a window
       # being moved to or closed on another workspace, which changes which
@@ -51,11 +60,12 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
           "if".app-id = "com.raycast.macos";
           run = [ "layout floating" ];
         }
-        # Mirrors hyprland.lua's float-title rule: terminals opened with
-        # --title=float (btop etc.) float.
+        # Dwindle approximation (see default-root-container-orientation). Last, so
+        # the Raycast rule above matches first and stops further callbacks. AeroSpace
+        # rejects a callback with no `if`; "true" matches every window.
         {
-          "if".window-title-regex-substring = "float";
-          run = [ "layout floating" ];
+          "if" = "true";
+          run = [ "split opposite" ];
         }
       ];
 
