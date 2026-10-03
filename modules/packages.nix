@@ -86,7 +86,7 @@ in
       #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
 
       (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        vendorHash = "sha256-7Tuh9T3uTlNxdSlSL7gQIYXpfpNbCkQrRWj/FoU8fbU=";
+        vendorHash = "sha256-WJhQVt+UZj5N+P6spH9soS2UMnaWt2/rj1juiMF6fWU=";
       }))
 
       # Tailscale tui
