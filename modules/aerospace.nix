@@ -13,6 +13,11 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     launchd.enable = true; # start at login
 
     settings = {
+      # Version 2 stops AeroSpace inferring persistent workspaces from the bindings
+      # (version 1, the default when omitted, is deprecated). With no
+      # persistent-workspaces set, empty workspaces vanish like Hyprland's.
+      config-version = 2;
+
       # Match hyprland.lua's gaps (inner 3, outer 7).
       gaps = {
         inner.horizontal = 3;
