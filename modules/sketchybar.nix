@@ -9,10 +9,9 @@
 # Styled like waybar: a fully transparent bar with mauve icon/text pills and a
 # Nerd Font glyph per widget (glyphs are copied from waybar.nix). The pills hug the
 # notch so the native app menus and menu bar extras stay clear: AeroSpace workspaces
-# 1-10 sit left of it, idle inhibitor (caffeinate), cpu and memory pressure right of
-# it. Volume, bluetooth, network, battery and clock are commented out because the
-# native menu bar already shows them. Refresh intervals are kept in seconds to stay
-# light.
+# 1-10, the clock and battery sit left of it; idle inhibitor (caffeinate), cpu,
+# memory pressure, volume, bluetooth and network sit right of it. Refresh intervals
+# are kept in seconds (volume is event-driven) to stay light.
 #
 # darwin-only; guarded so it's inert if ever imported on Linux (like modules/raycast.nix).
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
@@ -49,7 +48,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         # Transparent bar; the pills carry the colour, like waybar's islands.
         # notch_width is the gap the q/e positions leave for the notch.
         sketchybar --bar height=20 \
-                         notch_width=200 \
+                         notch_width=230 \
                          position=top \
                          padding_left=2 \
                          padding_right=2 \
@@ -80,8 +79,22 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         # by exec-on-workspace-change / on-focus-changed in modules/aerospace.nix.
         sketchybar --add event aerospace_workspace_change
 
-        # q (left of the notch) fills outward from the notch like right does, so add
-        # 10 first to read 1-10 left to right.
+        # q (left of the notch) fills outward from the notch like right does, so the
+        # first item added sits against the notch: battery, then clock, then the
+        # workspaces, which add 10 first to read 1-10 left to right.
+        sketchybar --add item battery q \
+                   --set battery update_freq=120 icon.drawing=off \
+                         label.padding_left=5 \
+                         click_script="$MONITOR" \
+                         script="$PLUGIN_DIR/battery.sh" \
+                   --subscribe battery power_source_change system_woke
+
+        sketchybar --add item clock q \
+                   --set clock update_freq=10 icon.drawing=off \
+                         label.font="JetBrainsMono Nerd Font Mono:Bold:12.0" \
+                         label.padding_left=5 \
+                         script="$PLUGIN_DIR/clock.sh"
+
         for sid in 10 9 8 7 6 5 4 3 2 1; do
           sketchybar --add item space.$sid q \
                      --set space.$sid \
@@ -118,41 +131,26 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
                          click_script="$MONITOR" \
                          script="$PLUGIN_DIR/memory.sh"
 
-        # The native menu bar already shows these; uncomment to add them back after
-        # memory. Their plugin scripts are still written below.
-        # sketchybar --add item volume e \
-        #            --set volume icon.drawing=off \
-        #                  label.padding_left=5 \
-        #                  click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
-        #                  script="$PLUGIN_DIR/volume.sh" \
-        #            --subscribe volume volume_change
-        #
-        # sketchybar --add item bluetooth e \
-        #            --set bluetooth update_freq=30 label.drawing=off \
-        #                  icon.padding_left=14 icon.padding_right=14 \
-        #                  click_script="open 'x-apple.systempreferences:com.apple.BluetoothSettings'" \
-        #                  script="$PLUGIN_DIR/bluetooth.sh" \
-        #            --subscribe bluetooth system_woke
-        #
-        # sketchybar --add item network e \
-        #            --set network update_freq=30 label.drawing=off \
-        #                  icon.padding_left=14 icon.padding_right=14 \
-        #                  click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
-        #                  script="$PLUGIN_DIR/network.sh" \
-        #            --subscribe network wifi_change system_woke
-        #
-        # sketchybar --add item battery e \
-        #            --set battery update_freq=120 icon.drawing=off \
-        #                  label.padding_left=5 \
-        #                  click_script="$MONITOR" \
-        #                  script="$PLUGIN_DIR/battery.sh" \
-        #            --subscribe battery power_source_change system_woke
-        #
-        # sketchybar --add item clock e \
-        #            --set clock update_freq=10 icon.drawing=off \
-        #                  label.font="JetBrainsMono Nerd Font Mono:Bold:12.0" \
-        #                  label.padding_left=5 \
-        #                  script="$PLUGIN_DIR/clock.sh"
+        sketchybar --add item volume e \
+                   --set volume icon.drawing=off \
+                         label.padding_left=5 \
+                         click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
+                         script="$PLUGIN_DIR/volume.sh" \
+                   --subscribe volume volume_change
+
+        sketchybar --add item bluetooth e \
+                   --set bluetooth update_freq=30 label.drawing=off \
+                         icon.padding_left=14 icon.padding_right=14 \
+                         click_script="open 'x-apple.systempreferences:com.apple.BluetoothSettings'" \
+                         script="$PLUGIN_DIR/bluetooth.sh" \
+                   --subscribe bluetooth system_woke
+
+        sketchybar --add item network e \
+                   --set network update_freq=30 label.drawing=off \
+                         icon.padding_left=14 icon.padding_right=14 \
+                         click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
+                         script="$PLUGIN_DIR/network.sh" \
+                   --subscribe network wifi_change system_woke
 
         sketchybar --update
 
@@ -189,7 +187,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        sketchybar --set "$NAME" label="$(date '+%m-%d %H:%M')"
+        sketchybar --set "$NAME" label="$(date '+%b %d %H:%M')"
       '';
     };
 

@@ -63,7 +63,7 @@ in
         };
 
         "clock" = {
-          format = "{:%H:%M %m-%d}";
+          format = "{:%b %d %H:%M}";
           tooltip-format = "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>";
           format-alt = "{:%H:%M}";
         };
