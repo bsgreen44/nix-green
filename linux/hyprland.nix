@@ -30,6 +30,9 @@
   # directly; SUPER + SHIFT + Z still launches the screensaver by hand.
   green.screensaver.enable = false;
 
+  # Overrides the `cli` default from ./home.nix.
+  home.shellAliases.rebuild = "${config.home.homeDirectory}/nix-green/scripts/install.sh hyprland";
+
   # On NixOS these come from configuration.nix, which this path never evaluates.
   home.packages = with pkgs; [
     terminaltexteffects  # `tte`, used by screensaver.nix

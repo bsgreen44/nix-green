@@ -79,11 +79,20 @@ git clone https://github.com/bsgreen44/nix-green
 cd ~/nix-green
 ./scripts/install.sh
 ```
-It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`, and on macOS whether it is Apple Silicon or Intel), installs Nix if it is missing, and runs the matching rebuild command. On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question, and use the same command for every rebuild after that:
+It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`, and on macOS whether it is Apple Silicon or Intel), installs Nix if it is missing, and runs the matching rebuild command. On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question:
 ```
 ./scripts/install.sh hyprland
 ```
 Add `--dry-run` to see what it would change and run without doing it.
+
+3. Rebuild with `rebuild` from then on
+
+The install adds a `rebuild` alias that runs the script with the configuration this machine is on, so you never type or pick the switch command again. Open a new terminal after the first install, then run it from any directory:
+```
+rebuild
+rebuild --dry-run
+```
+To move to a different configuration, run `./scripts/install.sh <name>` once; `rebuild` follows it after that.
 
 ### Manual install
 If you'd rather not use the script, follow these steps instead. On macOS or another Linux distro, first install Nix with Determinate:
@@ -197,9 +206,9 @@ id -nG
 Installing swayosd from your distro's package manager instead is not a substitute: it would still not add you to the `video` group, it duplicates the copy Nix already installs, and not every distro packages it (Fedora does not).
 
 ### How do I update the system and packages?
-In the `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then rerun `./scripts/install.sh`, or `sudo nixos-rebuild switch --flake .#changethis --impure`, replacing `changethis` with `kde` or `hyprland`.
+In the `~/nix-green` directory, run `nix flake update`. This will update `flake.lock`. Then run `rebuild`, or `sudo nixos-rebuild switch --flake .#changethis --impure`, replacing `changethis` with `kde` or `hyprland`.
 
-On other distros, run `nix flake update` followed by `home-manager switch --flake .#username`, or `.#username-hyprland` if you installed the desktop.
+On other distros, run `nix flake update` followed by `rebuild`, or `home-manager switch --flake .#username`, or `.#username-hyprland` if you installed the desktop.
 
 ### Is there voice dictation?
 Yes, the `dictation` command, installed on every Linux configuration (`modules/dictation.nix`). Run it once to start recording and again to stop. The audio is transcribed on your machine by [whisper.cpp](https://github.com/ggml-org/whisper.cpp), so nothing is sent anywhere. The text is copied to the clipboard, and on Hyprland it is also typed into the focused window.
@@ -247,7 +256,7 @@ waybar      ----> `waybar.nix`
 
 rofi (menu) ----> `rofi.nix`
 
-After making changes, run `./scripts/install.sh hyprland` (or `sudo nixos-rebuild switch --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros).
+After making changes, run `rebuild` (or `sudo nixos-rebuild switch --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros).
 *NOTE: hyprland is managed by home manager. DO NOT modify files in `~/.config`. Any changes to the files will be overwritten after rebuild.*
 
 ### Is there a way to manage hyprland NOT through nix?
@@ -272,7 +281,7 @@ green.screensaver.enable = false;
 ```
 When `true`, hypridle's 3-minute idle timeout runs `screensaver --lock`, and the screensaver locks the session itself after a further 2 minutes. When `false`, that timeout runs `loginctl lock-session` directly. The 2.5-minute dim, 5.5-minute display-off and 20-minute suspend listeners are the same either way, and `SUPER + SHIFT + Z` still launches the screensaver by hand in both cases.
 
-Flip the flag and run `./scripts/install.sh hyprland` (or `sudo nixos-rebuild switch --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros).
+Flip the flag and run `rebuild` (or `sudo nixos-rebuild switch --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros).
 
 ### How do I toggle a workspace's layout?
 `SUPER + SHIFT + L` flips the active workspace between `dwindle` and `scrolling`. It's per-workspace - other workspaces keep whatever they were last set to - and persists across `hyprctl reload` and reboot, unlike the general `layout` setting in `hyprland.nix`, which only picks the default a workspace starts from.

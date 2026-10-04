@@ -1,4 +1,4 @@
-{ username, ... }:
+{ config, username, ... }:
 {
   imports = [
     ../modules/apps.nix
@@ -16,6 +16,9 @@
   home.username = username;
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "25.11";
+
+  # `rebuild` re-runs the switch for this configuration, from any directory.
+  home.shellAliases.rebuild = "${config.home.homeDirectory}/nix-green/scripts/install.sh kde";
 
   # zen-browser (Linux-only; macOS uses the homebrew cask)
   programs.zen-browser = {

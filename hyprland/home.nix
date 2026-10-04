@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, config, username, ... }:
 {
   _module.args = {
     wallpaper = "/home/${username}/nix-green/wallpapers/catppuccin_mocha_japanese_wallpaper_8k.png";
@@ -30,6 +30,9 @@
   home.username = username;
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "25.11";
+
+  # `rebuild` re-runs the switch for this configuration, from any directory.
+  home.shellAliases.rebuild = "${config.home.homeDirectory}/nix-green/scripts/install.sh hyprland";
 
   # zen-browser (Linux-only; macOS uses the homebrew cask)
   programs.zen-browser = {

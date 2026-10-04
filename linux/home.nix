@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, lib, config, username, ... }:
 {
   imports = [
     ../modules/apps.nix
@@ -15,6 +15,10 @@
   home.username = username;
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "25.11";
+
+  # `rebuild` re-runs the switch for this configuration, from any directory;
+  # ./hyprland.nix overrides it.
+  home.shellAliases.rebuild = lib.mkDefault "${config.home.homeDirectory}/nix-green/scripts/install.sh cli";
 
   # On NixOS this comes from configuration.nix, which this path never evaluates.
   home.packages = with pkgs; [

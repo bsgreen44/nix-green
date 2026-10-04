@@ -1,4 +1,4 @@
-{ username, ... }:
+{ config, username, ... }:
 {
   imports = [
     # Defines the green.apps role registry that ../modules/terminal.nix reads.
@@ -19,6 +19,10 @@
   home.username = username;
   home.homeDirectory = "/Users/${username}";
   home.stateVersion = "25.11";
+
+  # `rebuild` re-runs the switch for this configuration, from any directory.
+  # macOS has a single configuration, so install.sh takes no target here.
+  home.shellAliases.rebuild = "${config.home.homeDirectory}/nix-green/scripts/install.sh";
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
