@@ -1,5 +1,5 @@
 # Description
-This is my nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You can choose between [KDE Plasma](https://kde.org/plasma-desktop/) or [Hyprland](https://hypr.land/) on Linux, or run it on macOS through [nix-darwin](https://github.com/LnL7/nix-darwin). This can be installed on most machines due to it's low resource usage. Feel free to use this configuration as is or customize it to how you see fit!
+This is the nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You can choose between [KDE Plasma](https://kde.org/plasma-desktop/) or [Hyprland](https://hypr.land/) on Linux, or run it on macOS through [nix-darwin](https://github.com/LnL7/nix-darwin). This can be installed on most machines due to its low resource usage. Feel free to use this configuration as is or customize it as you see fit!
 
 ## In Progress/Future updates
 
@@ -49,7 +49,8 @@ nix-green
 │   └── home.nix
 ├── README.md
 ├── scripts
-│   └── detect-system-apps.sh
+│   ├── detect-system-apps.sh
+│   └── install.sh
 └── wallpapers
 ```
 
@@ -64,26 +65,40 @@ nix-green
 
 # How to install
 **NOTE: `git` NEEDS TO BE INSTALLED ON YOUR SYSTEM.** 
-**THIS CAN BE DONE BY INSTALLING IT IN MANUALLY `/etc/nixos/configuration.nix` OR TEMPORARILY IN AN INTERACPTIVE SHELL BY RUNNUNG `nix-shell -p git` IN YOUR TERMINAL.**
+**THIS CAN BE DONE BY ADDING IT MANUALLY TO `/etc/nixos/configuration.nix` OR TEMPORARILY IN AN INTERACTIVE SHELL BY RUNNING `nix-shell -p git` IN YOUR TERMINAL.**
 
-**FOR MACOS install Nix using the [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer). The macOS configuration expects it: Determinate manages Nix, so `nix-darwin/configuration.nix` sets `nix.enable = false`.**
-```
-curl -fsSL https://install.determinate.systems/nix | sh -s -- install
-```
+**FOR MACOS, Nix must come from the [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer). The macOS configuration expects it: Determinate manages Nix, so `nix-darwin/configuration.nix` sets `nix.enable = false`. The install script offers to run it for you if Nix is missing.**
 
-This setup works right of the box so all you have to do is: 
-1. Clone the repo to your directory by opening the terminal, and running the following command (*if you are using `nix-shell` make sure it to `exit` the shell after running the command*):
+This setup works right out of the box, so all you have to do is:
+1. Clone the repo to your directory by opening the terminal and running the following command (*if you are using `nix-shell`, make sure to `exit` the shell after running the command*):
 ```
 git clone https://github.com/bsgreen44/nix-green
 ```
-2. Update `hostname` and `username` in `~/nix-green/flake.nix` to match your system
+2. Run the install script from the repo
+```
+cd ~/nix-green
+./scripts/install.sh
+```
+It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`, and on macOS whether it is Apple Silicon or Intel), installs Nix if it is missing, and runs the matching rebuild command. On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question, and use the same command for every rebuild after that:
+```
+./scripts/install.sh hyprland
+```
+Add `--dry-run` to see what it would change and run without doing it.
+
+### Manual install
+If you'd rather not use the script, follow these steps instead. On macOS or another Linux distro, first install Nix with Determinate:
+```
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
+1. Update `hostname` and `username` in `~/nix-green/flake.nix` to match your system
 ```
     let
       hostname = "nixos"; # change to your hostname
       username = "green"; # change to your username
     in
 ```
-3. While in the `nix-green` directory, rebuild your system using **ONE** of the commands below and you're good to go! 
+2. While in the `nix-green` directory, rebuild your system using **ONE** of the commands below and you're good to go! 
 ```
 # Make sure you're in the correct directory
 cd ~/nix-green
@@ -104,21 +119,21 @@ sudo darwin-rebuild switch --flake .#nix-darwin
 # FAQ
 
 ### Can I use this on a different Linux distro?
-Yes (mostly)! The `~/nix-green/modules` directory contains all of the Home Manager setup including packages, dotfiles and user preferences. What won't transfer over are system level settings and services specific to NixOS set in `configuration.nix` such as boot loader, kernel, openssh and tailscale. These are set on your linux distro.
+Yes (mostly)! The `~/nix-green/modules` directory contains all of the Home Manager setup including packages, dotfiles and user preferences. What won't transfer over are system level settings and services specific to NixOS set in `configuration.nix` such as boot loader, kernel, openssh and tailscale. These are set on your Linux distro.
 
-To install on any Linux distro:
-1. Install Nix Determinate 
+To install on any Linux distro, clone the repo and run the install script, choosing `cli`. It installs Nix if needed and runs Home Manager:
 ```
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-```
-2. Clone the repo and run home-manager switch command
-```
-git clone https://github.com/bsgreen44/nix-green 
+git clone https://github.com/bsgreen44/nix-green
 cd ~/nix-green
+./scripts/install.sh cli
+```
+
+To do it by hand instead, install Nix with Determinate (see [How to install](#how-to-install)), set `username` in `flake.nix`, and run:
+```
 nix run home-manager/master -- switch --flake .#username
 ```
 
-Any future updates use:
+For future updates, use `./scripts/install.sh cli` or:
 ```
 home-manager switch --flake .#username
 ```
@@ -129,8 +144,9 @@ Yes. There are two Home Manager configurations: `.#username` installs CLI tools 
 1. Install `hyprland`, `xdg-desktop-portal-hyprland` and `hyprlock` with your distro's package manager. Some distros ship these in a third-party repository rather than the default ones.
 2. Switch to the desktop configuration
 ```
-home-manager switch --flake .#username-hyprland
+./scripts/install.sh hyprland
 ```
+Or do it by hand with `home-manager switch --flake .#username-hyprland`.
 3. On a laptop, allow swayosd to control screen brightness (see the FAQ entry below). Volume works without this.
 4. Log out and pick Hyprland from your login screen's session list.
 
@@ -181,7 +197,7 @@ id -nG
 Installing swayosd from your distro's package manager instead is not a substitute: it would still not add you to the `video` group, it duplicates the copy Nix already installs, and not every distro packages it (Fedora does not).
 
 ### How do I update the system and packages?
-In `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then `sudo nixos-rebuild --flake .#changethis --impure` replacing `changethis` with `kde` or `hyprland`.
+In the `~/nix-green` directory, run `sudo nix flake update`. This will update `flake.lock`. Then rerun `./scripts/install.sh`, or `sudo nixos-rebuild switch --flake .#changethis --impure`, replacing `changethis` with `kde` or `hyprland`.
 
 On other distros, run `nix flake update` followed by `home-manager switch --flake .#username`, or `.#username-hyprland` if you installed the desktop.
 
@@ -231,7 +247,7 @@ waybar      ----> `waybar.nix`
 
 rofi (menu) ----> `rofi.nix`
 
-After changes are made run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
+After making changes, run `./scripts/install.sh hyprland` (or `sudo nixos-rebuild switch --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros).
 *NOTE: hyprland is managed by home manager. DO NOT modify files in `~/.config`. Any changes to the files will be overwritten after rebuild.*
 
 ### Is there a way to manage hyprland NOT through nix?
@@ -256,7 +272,7 @@ green.screensaver.enable = false;
 ```
 When `true`, hypridle's 3-minute idle timeout runs `screensaver --lock`, and the screensaver locks the session itself after a further 2 minutes. When `false`, that timeout runs `loginctl lock-session` directly. The 2.5-minute dim, 5.5-minute display-off and 20-minute suspend listeners are the same either way, and `SUPER + SHIFT + Z` still launches the screensaver by hand in both cases.
 
-Flip the flag and run `sudo nixos-rebuild --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros.
+Flip the flag and run `./scripts/install.sh hyprland` (or `sudo nixos-rebuild switch --flake .#hyprland --impure`, or `home-manager switch --flake .#username-hyprland` on other distros).
 
 ### How do I toggle a workspace's layout?
 `SUPER + SHIFT + L` flips the active workspace between `dwindle` and `scrolling`. It's per-workspace - other workspaces keep whatever they were last set to - and persists across `hyprctl reload` and reboot, unlike the general `layout` setting in `hyprland.nix`, which only picks the default a workspace starts from.
