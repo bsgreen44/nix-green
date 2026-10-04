@@ -11,5 +11,6 @@
     blue = "89b4fa";
     mauve = "cba6f7";
     red = "f38ba8";
+    peach = "fab387";
   };
 }

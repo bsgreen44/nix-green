@@ -7,11 +7,12 @@
 # interpolates and the leading alpha byte stays literal.
 #
 # Styled like waybar: a fully transparent bar with mauve icon/text pills and a
-# Nerd Font glyph per widget (glyphs are copied from waybar.nix). Widgets: AeroSpace
-# workspaces 1-10 (left), then idle inhibitor (caffeinate), cpu, memory, volume,
-# bluetooth, network, battery, clock (right; the notch hides the center). The tray
-# is omitted - macOS menu bar extras have no SketchyBar equivalent. Refresh
-# intervals are kept in seconds (volume is event-driven) to stay light.
+# Nerd Font glyph per widget (glyphs are copied from waybar.nix). The pills hug the
+# notch so the native app menus and menu bar extras stay clear: AeroSpace workspaces
+# 1-10 sit left of it, idle inhibitor (caffeinate), cpu and memory pressure right of
+# it. Volume, bluetooth, network, battery and clock are commented out because the
+# native menu bar already shows them. Refresh intervals are kept in seconds to stay
+# light.
 #
 # darwin-only; guarded so it's inert if ever imported on Linux (like modules/raycast.nix).
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
@@ -46,7 +47,9 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         MONITOR="open -a 'Activity Monitor'"
 
         # Transparent bar; the pills carry the colour, like waybar's islands.
+        # notch_width is the gap the q/e positions leave for the notch.
         sketchybar --bar height=20 \
+                         notch_width=200 \
                          position=top \
                          padding_left=2 \
                          padding_right=2 \
@@ -77,8 +80,10 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         # by exec-on-workspace-change / on-focus-changed in modules/aerospace.nix.
         sketchybar --add event aerospace_workspace_change
 
-        for sid in 1 2 3 4 5 6 7 8 9 10; do
-          sketchybar --add item space.$sid left \
+        # q (left of the notch) fills outward from the notch like right does, so add
+        # 10 first to read 1-10 left to right.
+        for sid in 10 9 8 7 6 5 4 3 2 1; do
+          sketchybar --add item space.$sid q \
                      --set space.$sid \
                            drawing=off \
                            background.drawing=off \
@@ -90,64 +95,64 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         done
 
         # updates=on: the controller never draws, and when_shown would skip it.
-        sketchybar --add item aerospace left \
+        sketchybar --add item aerospace q \
                    --set aerospace drawing=off updates=on \
                          script="$PLUGIN_DIR/aerospace.sh" \
                    --subscribe aerospace aerospace_workspace_change front_app_switched system_woke
 
-        # Right side (added right-to-left; mirrors waybar's modules-right). The
-        # clock sits at the far right instead of waybar's center slot, because the
-        # MacBook notch covers the middle of the bar.
-        sketchybar --add item clock right \
-                   --set clock update_freq=10 icon.drawing=off \
-                         label.font="JetBrainsMono Nerd Font Mono:Bold:12.0" \
-                         label.padding_left=5 \
-                         script="$PLUGIN_DIR/clock.sh"
-
-        sketchybar --add item battery right \
-                   --set battery update_freq=120 icon.drawing=off \
-                         label.padding_left=5 \
-                         click_script="$MONITOR" \
-                         script="$PLUGIN_DIR/battery.sh" \
-                   --subscribe battery power_source_change system_woke
-
+        # e (right of the notch) fills outward from the notch like left does.
         # Icon-only pills get the wide padding, like waybar's icon-only CSS rule.
-        sketchybar --add item network right \
-                   --set network update_freq=30 label.drawing=off \
-                         icon.padding_left=14 icon.padding_right=14 \
-                         click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
-                         script="$PLUGIN_DIR/network.sh" \
-                   --subscribe network wifi_change system_woke
-
-        sketchybar --add item bluetooth right \
-                   --set bluetooth update_freq=30 label.drawing=off \
-                         icon.padding_left=14 icon.padding_right=14 \
-                         click_script="open 'x-apple.systempreferences:com.apple.BluetoothSettings'" \
-                         script="$PLUGIN_DIR/bluetooth.sh" \
-                   --subscribe bluetooth system_woke
-
-        sketchybar --add item volume right \
-                   --set volume icon.drawing=off \
-                         label.padding_left=5 \
-                         click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
-                         script="$PLUGIN_DIR/volume.sh" \
-                   --subscribe volume volume_change
-
-        sketchybar --add item memory right \
-                   --set memory update_freq=5 \
-                         click_script="$MONITOR" \
-                         script="$PLUGIN_DIR/memory.sh"
-
-        sketchybar --add item cpu right \
-                   --set cpu update_freq=10 \
-                         click_script="$MONITOR" \
-                         script="$PLUGIN_DIR/cpu.sh"
-
-        sketchybar --add item idle_inhibitor right \
+        sketchybar --add item idle_inhibitor e \
                    --set idle_inhibitor update_freq=10 label.drawing=off \
                          icon.padding_left=14 icon.padding_right=14 \
                          click_script="$PLUGIN_DIR/idle_inhibitor.sh toggle" \
                          script="$PLUGIN_DIR/idle_inhibitor.sh"
+
+        sketchybar --add item cpu e \
+                   --set cpu update_freq=10 \
+                         click_script="$MONITOR" \
+                         script="$PLUGIN_DIR/cpu.sh"
+
+        sketchybar --add item memory e \
+                   --set memory update_freq=5 \
+                         click_script="$MONITOR" \
+                         script="$PLUGIN_DIR/memory.sh"
+
+        # The native menu bar already shows these; uncomment to add them back after
+        # memory. Their plugin scripts are still written below.
+        # sketchybar --add item volume e \
+        #            --set volume icon.drawing=off \
+        #                  label.padding_left=5 \
+        #                  click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
+        #                  script="$PLUGIN_DIR/volume.sh" \
+        #            --subscribe volume volume_change
+        #
+        # sketchybar --add item bluetooth e \
+        #            --set bluetooth update_freq=30 label.drawing=off \
+        #                  icon.padding_left=14 icon.padding_right=14 \
+        #                  click_script="open 'x-apple.systempreferences:com.apple.BluetoothSettings'" \
+        #                  script="$PLUGIN_DIR/bluetooth.sh" \
+        #            --subscribe bluetooth system_woke
+        #
+        # sketchybar --add item network e \
+        #            --set network update_freq=30 label.drawing=off \
+        #                  icon.padding_left=14 icon.padding_right=14 \
+        #                  click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
+        #                  script="$PLUGIN_DIR/network.sh" \
+        #            --subscribe network wifi_change system_woke
+        #
+        # sketchybar --add item battery e \
+        #            --set battery update_freq=120 icon.drawing=off \
+        #                  label.padding_left=5 \
+        #                  click_script="$MONITOR" \
+        #                  script="$PLUGIN_DIR/battery.sh" \
+        #            --subscribe battery power_source_change system_woke
+        #
+        # sketchybar --add item clock e \
+        #            --set clock update_freq=10 icon.drawing=off \
+        #                  label.font="JetBrainsMono Nerd Font Mono:Bold:12.0" \
+        #                  label.padding_left=5 \
+        #                  script="$PLUGIN_DIR/clock.sh"
 
         sketchybar --update
 
@@ -236,14 +241,16 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        # Used = active + wired + compressor pages, in GiB (waybar's {used}GB).
-        used=$(vm_stat | awk '
-          /page size of/ {size=$8}
-          /Pages active/ {a=$3}
-          /Pages wired down/ {w=$4}
-          /Pages occupied by compressor/ {c=$5}
-          END {printf "%.1f", (a + w + c) * size / 1073741824}')
-        sketchybar --set "$NAME" icon="" label="''${used}GB"
+        # Memory pressure instead of memory used: the kernel's system-wide free
+        # percentage (what `memory_pressure` prints), inverted. The pill turns peach
+        # at the warn level and red at critical, like Activity Monitor's graph.
+        free=$(sysctl -n kern.memorystatus_level)
+        case "$(sysctl -n kern.memorystatus_vm_pressure_level)" in
+          4) color=0xff${palette.red} ;;
+          2) color=0xff${palette.peach} ;;
+          *) color=0xff${palette.mauve} ;;
+        esac
+        sketchybar --set "$NAME" icon="" label="$((100 - free))%" background.color=$color
       '';
     };
 
