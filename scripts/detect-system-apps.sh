@@ -16,6 +16,7 @@ ROLES=(
   "imageViewer:gwenview loupe eog swayimg imv"
   "archiver:ark file-roller xarchiver"
   "pdfViewer:okular evince zathura"
+  "office:libreoffice"
 )
 
 # nixpkgs package the repo installs for a role today, so the report can say what
@@ -24,6 +25,7 @@ declare -A NIX_PKG=(
   [terminal]="ghostty (flake input)"
   [calculator]="gnome-calculator"
   [imageViewer]="swayimg"
+  [office]="libreoffice"
 )
 
 # System prefixes only. $PATH would match ~/.nix-profile/bin and report Nix's own

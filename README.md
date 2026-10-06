@@ -162,7 +162,7 @@ Or do it by hand with `home-manager switch --flake .#username-hyprland`.
 Distro-specific settings, such as the wallpaper path, live in `~/nix-green/linux/hyprland.nix`.
 
 ### How do I use apps my distro already installed, instead of the ones Nix declares?
-`modules/apps.nix` defines a role registry - `terminal`, `fileManager`, `calculator`, `imageViewer`, `archiver`, `pdfViewer`. Each role names the command to run, its Wayland `app_id` (for the floating window rules), its `.desktop` file (for default-application handling) and the package Nix installs for it. Setting a role's `package = null` means "the distro provides this binary, install nothing".
+`modules/apps.nix` defines a role registry - `terminal`, `fileManager`, `calculator`, `imageViewer`, `archiver`, `pdfViewer`, `office`. Each role names the command to run, its Wayland `app_id` (for the floating window rules), its `.desktop` file (for default-application handling) and the package Nix installs for it. Setting a role's `package = null` means "the distro provides this binary, install nothing".
 
 The defaults are the nixpkgs apps, and every override for your machine goes in one file, `linux/system-apps.nix`. To find out what your distro already has:
 ```

@@ -57,6 +57,10 @@ let
             -e 's|#!/usr/bin/env bash|#!${lib.getExe pkgs.bash}|g' \
             -e 's|#!/bin/sh|#!${lib.getExe pkgs.bash}|g'
     '';
+    # Races a 60ms deadline against spawning a fixture hyprctl, so it fails
+    # with "signal: killed" instead of DeadlineExceeded when the machine is
+    # busy, e.g. building the rest of a rebuild in parallel.
+    checkFlags = [ "-skip=^TestMonitorsBoundsBlockedConnectorEnrichmentAndRecovers$" ];
   } // lib.optionalAttrs (hyprland == null) {
     # Distro compositor: hyprctl comes from the session $PATH, the same as
     # hypr-workspace-layout-toggle. nixpkgs' wrapper would put its own

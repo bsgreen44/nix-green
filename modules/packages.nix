@@ -76,7 +76,6 @@ in
       brave
       obsidian
       nextcloud-client
-      libreoffice
       signal-desktop
       localsend
       vlc
@@ -106,7 +105,10 @@ in
             pkgs.libX11
           ]}
       '')
-    ];
+    ]
+    # Null when the distro provides it (see linux/system-apps.nix).
+    ++ lib.optional (stdenv.hostPlatform.isLinux && config.green.apps.office.package != null)
+      config.green.apps.office.package;
 
   # bat config
   programs.bat = {

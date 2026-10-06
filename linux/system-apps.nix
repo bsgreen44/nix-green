@@ -42,5 +42,10 @@
       class = "org.kde.okular";
       desktop = "org.kde.okular.desktop";
     };
+
+    office = {
+      command = "libreoffice";
+      package = null; # replaces nixpkgs libreoffice
+    };
   };
 }

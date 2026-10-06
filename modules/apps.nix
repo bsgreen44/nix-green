@@ -77,6 +77,11 @@ in
       };
       archiver = { command = "xarchiver"; };
       pdfViewer = { command = "okular"; };
+      # Nothing launches it by role; it is here so a distro copy can stand in.
+      office = {
+        command = "libreoffice";
+        package = pkgs.libreoffice;
+      };
     }
   );
 }
