@@ -10,7 +10,6 @@ set -euo pipefail
 
 # role:candidate commands, best first. Add rows as roles are added to modules/apps.nix.
 ROLES=(
-  "terminal:ghostty kitty konsole gnome-terminal alacritty foot"
   "fileManager:dolphin nautilus thunar nemo caja"
   "calculator:kcalc gnome-calculator galculator"
   "imageViewer:gwenview loupe eog swayimg imv"
@@ -22,7 +21,6 @@ ROLES=(
 # nixpkgs package the repo installs for a role today, so the report can say what
 # declaring the system app would stop building.
 declare -A NIX_PKG=(
-  [terminal]="ghostty (flake input)"
   [calculator]="gnome-calculator"
   [imageViewer]="swayimg"
   [office]="libreoffice"
