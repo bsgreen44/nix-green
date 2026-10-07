@@ -3,13 +3,13 @@
 let
   # State the toggle writes and the Lua block below reads back on every config
   # load. One `<workspace>=<layout>` line per override, deliberately data rather
-  # than the generated Lua omarchy stores: that makes the state directory an
-  # execution path, and omarchy has had to permanently blocklist two of its own
-  # state files over it (/usr/share/omarchy/default/hypr/toggles.lua).
+  # than generated Lua: storing code there would make the state directory an
+  # execution path, so anything that can write to it could run code inside
+  # Hyprland on the next config load.
   #
   # Interpolated at build time into both the writer and the reader, so the two
-  # halves cannot disagree about the path. Omarchy re-derives it in bash and in
-  # Lua and keeps them in sync by hand.
+  # halves cannot disagree about the path, rather than re-deriving it in bash
+  # and in Lua and keeping them in sync by hand.
   stateDir = "${config.xdg.stateHome}/nix-green";
   stateFile = "${stateDir}/workspace-layouts";
 in

@@ -15,5 +15,9 @@
   "editor.semanticHighlighting.enabled": true,
   "terminal.integrated.minimumContrastRatio": 1,
   "window.titleBarStyle": "custom",
-  "workbench.colorTheme": "Catppuccin Mocha"
+  "workbench.colorTheme": "Catppuccin Mocha",
+  "editor.fontSize": 13,
+  "editor.formatOnSave": true,
+  "claudeCode.hideOnboarding": true,
+  "nix.formatterPath": "nixpkgs-fmt"
 }

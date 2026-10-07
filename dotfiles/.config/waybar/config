@@ -28,15 +28,15 @@
       "tooltip-format-connected": "{device_alias}"
     },
     "clock": {
-      "format": "{:%H:%M %m-%d}",
+      "format": "{:%b %d %H:%M}",
       "format-alt": "{:%H:%M}",
       "tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>"
     },
     "cpu": {
-      "format": "󰻠 {usage}%",
+      "format": "<span size='120%'>󰍛</span> {usage}%",
       "on-click": "ghostty --title=float -e btop"
     },
-    "height": 22,
+    "height": 20,
     "hyprland/window": {
       "max-length": 40
     },
@@ -57,12 +57,22 @@
         "9": "9"
       }
     },
+    "idle_inhibitor": {
+      "format": "{icon}",
+      "format-icons": {
+        "activated": "󰅶",
+        "deactivated": "󰾪"
+      },
+      "start-activated": false,
+      "tooltip-format-activated": "Idle lock screen and screensaver are off. Click to allow them",
+      "tooltip-format-deactivated": "Idle lock screen and screensaver are on. Click to prevent them"
+    },
     "layer": "top",
     "margin-left": 7,
     "margin-right": 7,
     "margin-top": 7,
     "memory": {
-      "format": "󰍛 {used}GB",
+      "format": "<span size='120%'></span> {used}GB",
       "on-click": "ghostty --title=float -e btop"
     },
     "modules-center": [
@@ -73,6 +83,7 @@
     ],
     "modules-right": [
       "tray",
+      "idle_inhibitor",
       "cpu",
       "memory",
       "pulseaudio",
@@ -90,8 +101,8 @@
     },
     "position": "top",
     "pulseaudio": {
-      "format": "{volume}% {icon}",
-      "format-bluetooth": "{volume}% {icon}",
+      "format": "{volume}% <span size='120%'>{icon}</span>",
+      "format-bluetooth": "{volume}% <span size='120%'>{icon}</span>",
       "format-icons": {
         "default": [
           "",

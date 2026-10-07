@@ -6,13 +6,10 @@
   };
 
   # Uncomment to enable bash
-  #programs.bash = {
-  #  enable = true;
-  #  initExtra = ''
-  #    eval "$(starship init bash)"
-  #  '';
-  #};
+  #programs.bash.enable = true;
 
+  # Starship hooks itself into each shell through programs.starship's
+  # enable*Integration options in starship.nix, so no init line is needed here.
   programs.zsh = {
     enable = true;
     plugins = [
@@ -24,16 +21,8 @@
         file = "zsh-syntax-highlighting.zsh";
       }
     ];
-    initContent = ''
-      eval "$(starship init zsh)"
-    '';
   };
 
   # Uncomment to enable fish
-  #programs.fish = {
-  #  enable = true;
-  #  interactiveShellInit = ''
-  #    starship init fish | source
-  #  '';
-  #};
+  #programs.fish.enable = true;
 }
