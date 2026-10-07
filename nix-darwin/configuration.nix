@@ -68,7 +68,10 @@
   system.defaults = {
     dock.autohide = true;
     finder.AppleShowAllExtensions = true;
-    NSGlobalDomain.AppleShowAllExtensions = true;
+    NSGlobalDomain = {
+      AppleShowAllExtensions = true;
+      _HIHideMenuBar = true;
+    };
 
     # Catppuccin-ish appearance (macOS can't be fully re-skinned; this approximates it)
     NSGlobalDomain.AppleInterfaceStyle = "Dark"; # force Dark mode
