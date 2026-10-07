@@ -136,6 +136,7 @@ in
       ];
       userSettings = {
         "claudeCode.preferredLocation" = "panel";
+        "nix.formatterPath" = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
         "[markdown]" = {
           "editor.unicodeHighlight.ambiguousCharacters" = false;
           "editor.unicodeHighlight.invisibleCharacters" = false;
