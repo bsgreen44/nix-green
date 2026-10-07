@@ -217,6 +217,13 @@ in
           font-size: 13px;
       }
 
+      /* Muted audio drops the volume text and shows only an icon, so it
+         takes the icon-only pill sizing above. */
+      #pulseaudio.muted {
+          padding: 0 14px;
+          font-size: 13px;
+      }
+
       /* Wifi icon gets its own size, separate from bluetooth's. */
       #network {
           font-size: 13px;
