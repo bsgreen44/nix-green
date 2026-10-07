@@ -11,6 +11,14 @@ let
   agentsContext = config.lib.file.mkOutOfStoreSymlink
     "${config.home.homeDirectory}/nix-green/global-agents.md";
 
+  # The nix-green skill: how to change a setting on this machine (edit the repo,
+  # rebuild) rather than the read-only links Home Manager leaves in ~/.config.
+  # Out of the store for the same reason as agentsContext. Kept under agents/,
+  # not .agents/ or .claude/, so the harnesses don't also find it as a project
+  # skill of this repo.
+  nixGreenSkill = config.lib.file.mkOutOfStoreSymlink
+    "${config.home.homeDirectory}/nix-green/agents/skills/nix-green";
+
   # VSCodium's settings.json, but writable.
   #
   # Home Manager links it out of the store, so the GUI cannot save anything.
@@ -192,6 +200,10 @@ in
   home.file.".claude/CLAUDE.md".source = agentsContext;      # Claude Code
   home.file.".codex/AGENTS.md".source = agentsContext;       # Codex CLI, $CODEX_HOME
   xdg.configFile."opencode/AGENTS.md".source = agentsContext;
+
+  # Agent skills. opencode reads both of these directories, so it needs no third link.
+  home.file.".claude/skills/nix-green".source = nixGreenSkill;  # Claude Code
+  home.file.".agents/skills/nix-green".source = nixGreenSkill;  # Codex CLI
 
   # opencode
   programs.opencode = {

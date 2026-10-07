@@ -6,6 +6,10 @@ This is the nix configuration I use for my systems. The main focus of the config
 # Folder Structure
 ```
 nix-green
+├── agents
+│   └── skills
+│       └── nix-green
+│           └── SKILL.md
 ├── configuration.nix
 ├── dotfiles
 ├── flake.lock
