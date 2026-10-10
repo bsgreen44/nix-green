@@ -19,8 +19,8 @@ in
       mainBar = {
         layer = "top";
         position = "top";
-        height = 20;
-        margin-top = 7;
+        height = 26;
+        margin-top = 2;
         margin-left = 7;
         margin-right = 7;
         spacing = 4;
@@ -80,12 +80,12 @@ in
         };
 
         "cpu" = {
-          format = "<span size='120%'>󰍛</span> {usage}%";
+          format = "<span size='160%' rise='-2pt'>󰍛</span> {usage}%";
           on-click = "${terminal} --title=float -e btop";
         };
 
         "memory" = {
-          format = "<span size='120%'></span> {used}GB";
+          format = "<span size='160%' rise='-2pt'></span> {used}GB";
           on-click = "${terminal} --title=float -e btop";
         };
 
@@ -101,9 +101,9 @@ in
         };
 
         "pulseaudio" = {
-          format = "{volume}% <span size='120%'>{icon}</span>";
-          format-bluetooth = "{volume}% <span size='120%'>{icon}</span>";
-          format-muted = "";
+          format = "{volume}% <span size='160%' rise='-2pt'>{icon}</span>";
+          format-bluetooth = "{volume}% <span size='160%' rise='-2pt'>{icon}</span><span size='115%'></span>";
+          format-muted = "󰝟";
           format-icons = {
             headphone = "";
             default = [
@@ -128,9 +128,9 @@ in
             warning = 30;
             critical = 15;
           };
-          format = "{capacity}% {icon}";
-          format-charging = "{capacity}% ";
-          format-plugged = "{capacity}% ";
+          format = "{capacity}% <span size='160%' rise='-2pt'>{icon}</span>";
+          format-charging = "{capacity}% <span size='125%' rise='-1pt'></span>";
+          format-plugged = "{capacity}% <span size='125%' rise='-1pt'></span>";
           on-click = "${terminal} --title=float -e btop";
           format-icons = [
             ""
@@ -175,14 +175,14 @@ in
           min-height: 0;
           padding: 0 3px;
           margin: 1.76px;
-          color: #${palette.text};
+          color: #${palette.overlay0};
           background: transparent;
           border-radius: 6.16px;
       }
 
       #workspaces button.active {
-          color: #${palette.surface0};
-          background-color: #${palette.mauve};
+          color: #ffffff;
+          background-color: alpha(#${palette.mauve}, 0.2);
       }
 
       #clock,
@@ -197,11 +197,11 @@ in
       #mode,
       #scratchpad,
       #mpd {
-          padding: 0 5px;
-          background-color: #${palette.mauve};
+          padding: 0 10px;
+          background-color: alpha(#${palette.mauve}, 0.2);
           border-radius: 6.16px;
           margin: 1.76px;
-          color: #${palette.surface0};
+          color: #ffffff;
       }
 
       /* Icon-only pills (no text like the others carry) get extra horizontal
@@ -210,23 +210,36 @@ in
       #network,
       #idle_inhibitor {
           padding: 0 14px;
-          background-color: #${palette.mauve};
+          background-color: alpha(#${palette.mauve}, 0.2);
           border-radius: 6.16px;
           margin: 1.76px;
-          color: #${palette.surface0};
-          font-size: 13px;
+          color: #ffffff;
+          font-size: 17px;
       }
 
       /* Muted audio drops the volume text and shows only an icon, so it
          takes the icon-only pill sizing above. */
       #pulseaudio.muted {
           padding: 0 14px;
-          font-size: 13px;
+          font-size: 17px;
       }
 
-      /* Wifi icon gets its own size, separate from bluetooth's. */
-      #network {
-          font-size: 13px;
+      /* The bluetooth glyph is tall and narrow, so at the shared size it
+         towers over the other icons. */
+      #bluetooth {
+          font-size: 11px;
+      }
+
+      /* The connected glyph adds dots on both sides, so the font squeezes it
+         into the same cell width and it needs a bigger size to keep up. */
+      #bluetooth.connected {
+          font-size: 17px;
+      }
+
+      /* Same for the slash on the off glyph. */
+      #bluetooth.off,
+      #bluetooth.disabled {
+          font-size: 14px;
       }
 
       /* Highlighted while idle lock/screensaver is being held off, so it's
