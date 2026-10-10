@@ -6,11 +6,11 @@
 # the same source waybar.nix uses; SketchyBar wants 0xAARRGGBB, so only the RGB half
 # interpolates and the leading alpha byte stays literal.
 #
-# Styled like waybar: a fully transparent bar with mauve icon/text pills and a
-# Nerd Font glyph per widget (glyphs are copied from waybar.nix). The pills hug the
-# notch so the native app menus and menu bar extras stay clear: AeroSpace workspaces
-# 1-10, the clock and battery sit left of it; idle inhibitor (caffeinate), cpu,
-# memory pressure, volume, bluetooth and network sit right of it. Refresh intervals
+# Styled like waybar: a fully transparent bar with translucent mauve pills, white
+# text and a Nerd Font glyph per widget (glyphs are copied from waybar.nix). The
+# pills hug the notch so the native app menus and menu bar extras stay clear:
+# AeroSpace workspaces 1-10, the clock and battery sit left of it; idle inhibitor
+# (caffeinate), cpu, memory pressure, volume, bluetooth and network sit right of it. Refresh intervals
 # are kept in seconds (volume is event-driven) to stay light.
 #
 # darwin-only; guarded so it's inert if ever imported on Linux (like modules/raycast.nix).
@@ -38,53 +38,65 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
 
         PLUGIN_DIR="$CONFIG_DIR/plugins"
 
-        # Catppuccin Mocha, from modules/palette.nix (0xAARRGGBB)
-        PILL=0xff${palette.mauve}
-        PILL_FG=0xff${palette.surface0}
-        FG=0xff${palette.text}
+        # Catppuccin Mocha, from modules/palette.nix (0xAARRGGBB). Pills are mauve
+        # at 20% alpha (0x33) with white text, like waybar's alpha(mauve, 0.2).
+        PILL=0x33${palette.mauve}
+        PILL_FG=0xffffffff
+        DIM=0xff${palette.overlay0}
+
+        # Text and icon sizes, scaled from waybar's 10.56px base font. The Mono
+        # Nerd Font squeezes every glyph into one cell, so icons run at ~160%.
+        TEXT_FONT="JetBrainsMono Nerd Font Mono:Bold:11.0"
+        ICON_FONT="JetBrainsMono Nerd Font Mono:Bold:17.0"
 
         MONITOR="open -a 'Activity Monitor'"
 
         # Transparent bar; the pills carry the colour, like waybar's islands.
         # notch_width is the gap the q/e positions leave for the notch.
-        sketchybar --bar height=20 \
+        sketchybar --bar height=26 \
                          notch_width=230 \
                          position=top \
                          padding_left=2 \
                          padding_right=2 \
                          color=0x00000000 \
                          margin=7 \
-                         y_offset=7
+                         y_offset=2
 
         # Every item is a mauve pill by default (waybar's shared pill rule).
         # The Mono Nerd Font variant keeps glyphs in a single centred cell.
         sketchybar --default updates=when_shown \
-                             icon.font="JetBrainsMono Nerd Font Mono:Bold:13.0" \
-                             label.font="JetBrainsMono Nerd Font Mono:Bold:11.0" \
+                             icon.font="$ICON_FONT" \
+                             label.font="$TEXT_FONT" \
                              icon.color=$PILL_FG \
                              label.color=$PILL_FG \
                              background.color=$PILL \
                              background.corner_radius=6 \
-                             background.height=20 \
-                             icon.padding_left=5 \
+                             background.height=22 \
+                             icon.padding_left=10 \
                              icon.padding_right=3 \
                              label.padding_left=0 \
-                             label.padding_right=5 \
+                             label.padding_right=10 \
                              padding_left=2 \
                              padding_right=2
 
         # Workspaces (AeroSpace), like waybar's hyprland/workspaces: only workspaces
-        # holding windows (plus the focused one) are shown, and the focused one is a
-        # mauve pill. One hidden controller item redraws all ten on each event, fired
-        # by exec-on-workspace-change / on-focus-changed in modules/aerospace.nix.
+        # holding windows (plus the focused one) are shown, dimmed to overlay0, and the
+        # focused one is a pill with white text. One hidden controller item redraws
+        # all ten on each event, fired by exec-on-workspace-change / on-focus-changed
+        # in modules/aerospace.nix.
         sketchybar --add event aerospace_workspace_change
 
         # q (left of the notch) fills outward from the notch like right does, so the
         # first item added sits against the notch: battery, then clock, then the
         # workspaces, which add 10 first to read 1-10 left to right.
+        #
+        # Battery and volume read "42% <glyph>" like waybar, with the glyph larger
+        # than the text. A label has one font, so the number goes in the icon slot
+        # (drawn first) at the text size and the glyph in the label slot.
         sketchybar --add item battery q \
-                   --set battery update_freq=120 icon.drawing=off \
-                         label.padding_left=5 \
+                   --set battery update_freq=120 \
+                         icon.font="$TEXT_FONT" \
+                         label.font="$ICON_FONT" \
                          click_script="$MONITOR" \
                          script="$PLUGIN_DIR/battery.sh" \
                    --subscribe battery power_source_change system_woke
@@ -92,7 +104,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         sketchybar --add item clock q \
                    --set clock update_freq=10 icon.drawing=off \
                          label.font="JetBrainsMono Nerd Font Mono:Bold:12.0" \
-                         label.padding_left=5 \
+                         label.padding_left=10 \
                          script="$PLUGIN_DIR/clock.sh"
 
         for sid in 10 9 8 7 6 5 4 3 2 1; do
@@ -102,7 +114,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
                            background.drawing=off \
                            icon.drawing=off \
                            label="$sid" \
-                           label.color=$FG \
+                           label.color=$DIM \
                            label.padding_left=5 \
                            label.padding_right=5
         done
@@ -132,8 +144,8 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
                          script="$PLUGIN_DIR/memory.sh"
 
         sketchybar --add item volume e \
-                   --set volume icon.drawing=off \
-                         label.padding_left=5 \
+                   --set volume icon.font="$TEXT_FONT" \
+                         label.font="$ICON_FONT" \
                          click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
                          script="$PLUGIN_DIR/volume.sh" \
                    --subscribe volume volume_change
@@ -172,9 +184,9 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         args=()
         for sid in 1 2 3 4 5 6 7 8 9 10; do
           if [ "$sid" = "$focused" ]; then
-            args+=(--set "space.$sid" drawing=on background.drawing=on label.color=0xff${palette.surface0})
+            args+=(--set "space.$sid" drawing=on background.drawing=on label.color=0xffffffff)
           elif [[ "$used" == *" $sid "* ]]; then
-            args+=(--set "space.$sid" drawing=on background.drawing=off label.color=0xff${palette.text})
+            args+=(--set "space.$sid" drawing=on background.drawing=off label.color=0xff${palette.overlay0})
           else
             args+=(--set "space.$sid" drawing=off)
           fi
@@ -221,7 +233,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         if running; then
           sketchybar --set "$NAME" icon="󰅶" background.color=0xff${palette.red}
         else
-          sketchybar --set "$NAME" icon="󰾪" background.color=0xff${palette.mauve}
+          sketchybar --set "$NAME" icon="󰾪" background.color=0x33${palette.mauve}
         fi
       '';
     };
@@ -246,7 +258,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         case "$(sysctl -n kern.memorystatus_vm_pressure_level)" in
           4) color=0xff${palette.red} ;;
           2) color=0xff${palette.peach} ;;
-          *) color=0xff${palette.mauve} ;;
+          *) color=0x33${palette.mauve} ;;
         esac
         sketchybar --set "$NAME" icon="" label="$((100 - free))%" background.color=$color
       '';
@@ -260,16 +272,24 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         read -r vol muted < <(osascript -e 'set s to get volume settings' \
           -e '(output volume of s as text) & " " & (output muted of s as text)')
 
+        # The number sits in the icon slot and the glyph in the label slot (see
+        # sketchybarrc). Muted shows only the glyph, with the icon-only padding.
+        text() {
+          sketchybar --set "$NAME" icon.drawing=on icon="$1" \
+            label="$2" label.padding_left=0 label.padding_right=10
+        }
+
         case "$vol" in
-          ""|*[!0-9]*) sketchybar --set "$NAME" label="--%" ; exit 0 ;;
+          ""|*[!0-9]*) text "--%" "" ; exit 0 ;;
         esac
 
         if [ "$muted" = "true" ]; then
-          sketchybar --set "$NAME" label=""
+          sketchybar --set "$NAME" icon.drawing=off label="󰝟" \
+            label.padding_left=14 label.padding_right=14
         elif [ "$vol" -lt 50 ]; then
-          sketchybar --set "$NAME" label="$vol% "
+          text "$vol%" ""
         else
-          sketchybar --set "$NAME" label="$vol% "
+          text "$vol%" ""
         fi
       '';
     };
@@ -280,14 +300,17 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         #!/usr/bin/env bash
         blueutil=${pkgs.blueutil}/bin/blueutil
 
+        # The Mono font squeezes each glyph into one cell, so each state gets its own
+        # size to look even (like waybar): the plain glyph is tall and narrow, and
+        # the connected dots and the off slash shrink theirs.
         if [ "$($blueutil -p)" != "1" ]; then
-          icon="󰂲"
+          icon="󰂲" size=14
         elif [ -n "$($blueutil --connected)" ]; then
-          icon="󰂱"
+          icon="󰂱" size=17
         else
-          icon="󰂯"
+          icon="󰂯" size=11
         fi
-        sketchybar --set "$NAME" icon="$icon"
+        sketchybar --set "$NAME" icon="$icon" icon.font="JetBrainsMono Nerd Font Mono:Bold:$size.0"
       '';
     };
 
@@ -332,10 +355,14 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         idx=$((pct * 5 / 100))
         [ "$idx" -gt 4 ] && idx=4
 
+        # The number sits in the icon slot and the glyph in the label slot (see
+        # sketchybarrc). The plug glyph is wide, so it runs smaller (waybar's 125%).
         if echo "$batt" | grep -q "AC Power"; then
-          sketchybar --set "$NAME" drawing=on label="$pct% "
+          sketchybar --set "$NAME" drawing=on icon="$pct%" label="" \
+            label.font="JetBrainsMono Nerd Font Mono:Bold:13.0"
         else
-          sketchybar --set "$NAME" drawing=on label="$pct% ''${icons[$idx]}"
+          sketchybar --set "$NAME" drawing=on icon="$pct%" label="''${icons[$idx]}" \
+            label.font="JetBrainsMono Nerd Font Mono:Bold:17.0"
         fi
       '';
     };
