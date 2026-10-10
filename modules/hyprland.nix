@@ -342,6 +342,14 @@ in
 
       -- Window rules
       hl.window_rule({
+        -- Ignore maximize requests from apps (kitty, VSCodium and browsers restore a
+        -- saved maximized state); SUPER + ALT + F still maximizes on demand.
+        name = "suppress-maximize-events",
+        match = { class = ".*" },
+        suppress_event = "maximize",
+      })
+
+      hl.window_rule({
         name = "float-utilities",
         match = { class = "^(${lib.concatStringsSep "|" floatClasses})$" },
         float = true,

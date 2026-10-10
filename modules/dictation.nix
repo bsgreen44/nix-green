@@ -27,12 +27,13 @@ let
     name = "dictation";
     runtimeInputs = with pkgs; [
       whisper-cpp
-      pipewire   # pw-record; speaks the socket protocol, so the distro daemon is fine
+      pipewire # pw-record; speaks the socket protocol, so the distro daemon is fine
       wtype
       wl-clipboard
       libnotify
       coreutils
       gnused
+      gnugrep
     ];
     text = ''
       state="''${XDG_RUNTIME_DIR:-/tmp}/dictation"
@@ -89,11 +90,16 @@ let
         pid=$!
 
         # With no input device pw-record exits at once ("no target node
-        # available"); say so instead of showing a recording that isn't one
+        # available"); say so in plain words instead of showing a recording
+        # that isn't one
         sleep 0.3
         if ! kill -0 "$pid" 2>/dev/null; then
           rm -f "$audio"
-          notify -u critical -t 5000 "Dictation" "Could not record: $(head -n 1 "$state/record.log")"
+          if grep -q "no target node available" "$state/record.log"; then
+            notify -u critical -t 5000 "Dictation" "No microphone found, check input device."
+          else
+            notify -u critical -t 5000 "Dictation" "Could not record: $(head -n 1 "$state/record.log")"
+          fi
           rm -f "$idfile"
           exit 1
         fi

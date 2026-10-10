@@ -58,6 +58,7 @@
     settings = {
       background_opacity = "0.9";
       tab_bar_style = "hidden"; # matches ghostty window-show-tab-bar = "never"
+      remember_window_size = "no"; # the window manager sizes it; like ghostty, don't restore a saved (maximized) state
     };
     # Matches the ghostty Insert-key binds for Hyprland's universal copy/paste
     keybindings = {
