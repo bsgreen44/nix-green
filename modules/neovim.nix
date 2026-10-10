@@ -38,12 +38,6 @@
     # Build tools for compiling nvim-treesitter parsers
     gcc
     gnumake
-
-    # Image support for snacks.nvim
-    imagemagick
-    chafa # Terminal image viewer
-    ghostscript # gs command for PostScript/PDF processing
-    tectonic # Modern LaTeX engine
   ];
 
   # LazyVim configuration

@@ -1,14 +1,11 @@
-{ pkgs, lib, config, ghostty, ... }:
+{ pkgs, lib, config, ... }:
 
 {
-  # The ghostty flake package on Linux. Null on macOS, where ghostty has no Nix
-  # build and comes from the homebrew cask in nix-darwin/configuration.nix, and
-  # on any machine whose system-apps file nulls it. Lazy, so the flake package is
-  # never forced where something else provides the binary.
+  # nixpkgs ghostty on Linux. Null on macOS, where ghostty has no Nix build and
+  # comes from the homebrew cask in nix-darwin/configuration.nix, and on any
+  # machine whose system-apps file nulls it.
   green.apps.terminal.package = lib.mkDefault (
-    if pkgs.stdenv.hostPlatform.isLinux
-    then ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
-    else null
+    if pkgs.stdenv.hostPlatform.isLinux then pkgs.ghostty else null
   );
 
   # ghostty config

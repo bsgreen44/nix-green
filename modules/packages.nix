@@ -1,4 +1,4 @@
-{ pkgs, lib, config, gazelle, tsui, pvetui, herdr, ... }:
+{ pkgs, lib, config, gazelle, tsui, ... }:
 
 let
   # One global instruction file for every agent harness.
@@ -76,9 +76,7 @@ in
       lazygit
       luarocks
       lua51Packages.lua
-
-      # herdr (AI coding-agent multiplexer) - cross-platform flake package
-      herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
+      herdr # AI coding-agent multiplexer
     ]
     ++ lib.optionals stdenv.hostPlatform.isLinux [
       brave
@@ -92,17 +90,11 @@ in
       yazi # TUI file manager
       wiremix # audio tui
       bluetui # bluez front-end
+      pvetui # Proxmox manager tui
 
       # Linux-only flake packages
       # NetworkManager tui
       gazelle.packages.${pkgs.stdenv.hostPlatform.system}.default
-
-      # pvetui (Proxmox manager tui)
-      #pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default
-
-      (pvetui.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
-        vendorHash = "sha256-WJhQVt+UZj5N+P6spH9soS2UMnaWt2/rj1juiMF6fWU=";
-      }))
 
       # Tailscale tui
       (pkgs.runCommand "tsui-wrapped" {

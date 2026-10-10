@@ -7,27 +7,21 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ghostty = {
-      url = "github:ghostty-org/ghostty";
+    catppuccin.url = "github:catppuccin/nix";
+    gazelle = {
+      url = "github:Zeus-Deus/gazelle-tui";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    catppuccin.url = "github:catppuccin/nix";
-    gazelle.url = "github:Zeus-Deus/gazelle-tui";
-    tsui.url = "github:neuralink/tsui";
+    tsui = {
+      url = "github:neuralink/tsui";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hyprland = {
       url = "github:hyprwm/Hyprland";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    pvetui = {
-      url = "github:devnullvoid/pvetui";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    herdr = {
-      url = "github:ogulcancelik/herdr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     zen-browser = {
@@ -44,12 +38,9 @@
       nixpkgs,
       home-manager,
       catppuccin,
-      ghostty,
       gazelle,
       tsui,
       hyprland,
-      pvetui,
-      herdr,
       nix-darwin,
       zen-browser,
       ...
@@ -57,6 +48,43 @@
     let
       hostname = "nixos"; # change to your hostname
       username = "green"; # change to your username
+
+      # Module args every configuration gets. Not `hyprland`: only the NixOS
+      # Hyprland desktop has the flake input, and linux/hyprland.nix sets it to
+      # null through _module.args, which a specialArg would override.
+      args = { inherit hostname username gazelle tsui; };
+      linuxArgs = args // { inherit zen-browser; };
+
+      hmModules = [
+        catppuccin.homeModules.catppuccin
+        gazelle.homeModules.gazelle
+      ];
+      # No zen-browser on macOS: it ships as a homebrew cask there, and the
+      # module would define programs.zen-browser, which packages.nix must never
+      # reference on that platform.
+      linuxHmModules = hmModules ++ [ zen-browser.homeModules.beta ];
+
+      # Home Manager as a NixOS / nix-darwin module.
+      hmFor = home: extraSpecialArgs: sharedModules: {
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          inherit extraSpecialArgs sharedModules;
+          users.${username} = import home;
+          backupFileExtension = "backup";
+        };
+      };
+
+      nixos = desktop: specialArgs: nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        inherit specialArgs;
+        modules = [
+          ./configuration.nix
+          ./${desktop}/configuration.nix
+          home-manager.nixosModules.home-manager
+          (hmFor ./${desktop}/home.nix specialArgs linuxHmModules)
+        ];
+      };
     in
     {
       # Standalone Home Manager for non-NixOS distros.
@@ -68,24 +96,8 @@
         let
           standalone = entry: home-manager.lib.homeManagerConfiguration {
             pkgs = nixpkgs.legacyPackages."x86_64-linux";
-            extraSpecialArgs = {
-              inherit
-                username
-                hostname
-                ghostty
-                gazelle
-                tsui
-                pvetui
-                herdr
-                zen-browser
-                ;
-            };
-            modules = [
-              entry
-              catppuccin.homeModules.catppuccin
-              gazelle.homeModules.gazelle
-              zen-browser.homeModules.beta
-            ];
+            extraSpecialArgs = linuxArgs;
+            modules = [ entry ] ++ linuxHmModules;
           };
         in
         {
@@ -94,189 +106,19 @@
         };
 
       nixosConfigurations = {
-        # KDE Plasma Desktop
-        kde = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit
-              ghostty
-              gazelle
-              hostname
-              username
-              tsui
-              pvetui
-              herdr
-              zen-browser
-              ;
-          };
-
-          modules = [
-            ./configuration.nix
-            ./kde/configuration.nix
-            home-manager.nixosModules.home-manager
-            (
-              {
-                hostname,
-                username,
-                ghostty,
-                gazelle,
-                tsui,
-                pvetui,
-                herdr,
-                zen-browser,
-                ...
-              }:
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    inherit
-                      hostname
-                      username
-                      ghostty
-                      gazelle
-                      tsui
-                      pvetui
-                      herdr
-                      zen-browser
-                      ;
-                  };
-                  users.${username} = import ./kde/home.nix;
-                  sharedModules = [
-                    catppuccin.homeModules.catppuccin
-                    gazelle.homeModules.gazelle
-                    zen-browser.homeModules.beta
-                  ];
-                  backupFileExtension = "backup";
-                };
-              }
-            )
-          ];
-        };
-
-        # Hyprland Desktop
-        hyprland = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit
-              ghostty
-              gazelle
-              hostname
-              username
-              tsui
-              hyprland
-              pvetui
-              herdr
-              zen-browser
-              ;
-          };
-
-          modules = [
-            ./configuration.nix
-            ./hyprland/configuration.nix
-            home-manager.nixosModules.home-manager
-            (
-              {
-                hostname,
-                username,
-                ghostty,
-                gazelle,
-                tsui,
-                hyprland,
-                pvetui,
-                herdr,
-                zen-browser,
-                ...
-              }:
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    inherit
-                      hostname
-                      username
-                      ghostty
-                      gazelle
-                      tsui
-                      hyprland
-                      pvetui
-                      herdr
-                      zen-browser
-                      ;
-                  };
-                  users.${username} = import ./hyprland/home.nix;
-                  sharedModules = [
-                    catppuccin.homeModules.catppuccin
-                    gazelle.homeModules.gazelle
-                    zen-browser.homeModules.beta
-                  ];
-                  backupFileExtension = "backup";
-                };
-              }
-            )
-          ];
-        };
+        kde = nixos "kde" linuxArgs; # KDE Plasma Desktop
+        hyprland = nixos "hyprland" (linuxArgs // { inherit hyprland; }); # Hyprland Desktop
       };
 
       darwinConfigurations = {
         # macOS (nix-darwin)
-        # No zen-browser here: it ships as a homebrew cask on macOS, and the
-        # module would define programs.zen-browser, which packages.nix must
-        # never reference on this platform.
         nix-darwin = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin"; # use "x86_64-darwin" for Intel CPU
-          specialArgs = {
-            inherit
-              ghostty
-              gazelle
-              hostname
-              username
-              tsui
-              pvetui
-              herdr
-              ;
-          };
-
+          specialArgs = args;
           modules = [
             ./nix-darwin/configuration.nix
             home-manager.darwinModules.home-manager
-            (
-              {
-                hostname,
-                username,
-                ghostty,
-                gazelle,
-                tsui,
-                pvetui,
-                herdr,
-                ...
-              }:
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  extraSpecialArgs = {
-                    inherit
-                      hostname
-                      username
-                      ghostty
-                      gazelle
-                      tsui
-                      pvetui
-                      herdr
-                      ;
-                  };
-                  users.${username} = import ./nix-darwin/home.nix;
-                  sharedModules = [
-                    catppuccin.homeModules.catppuccin
-                    gazelle.homeModules.gazelle
-                  ];
-                  backupFileExtension = "backup";
-                };
-              }
-            )
+            (hmFor ./nix-darwin/home.nix args hmModules)
           ];
         };
       };
