@@ -68,6 +68,13 @@ let
     postFixup = "";
   });
 
+  # Opens a window in the already-running ghostty instance instead of starting
+  # a new process.
+  terminal =
+    if apps.terminal.command == "ghostty"
+    then "ghostty +new-window"
+    else apps.terminal.command;
+
   # hyprmoncfg's generated rules. It would append the include to hyprland.lua
   # itself, but that is a read-only store path here, so the include is below.
   hyprmoncfgMonitors = ''(os.getenv("XDG_CONFIG_HOME") or os.getenv("HOME") .. "/.config") .. "/hypr/hyprmoncfg-monitors.lua"'';
@@ -195,7 +202,7 @@ in
     # attrset. Since Hyprland 0.55 hyprlang is deprecated in favor of Lua, so this
     # is emitted to ~/.config/hypr/hyprland.lua. See https://hypr.land/news/26_lua/
     extraConfig = lib.mkMerge [ ''
-      local terminal  = "${apps.terminal.command}"
+      local terminal  = "${terminal}"
       local mod       = "SUPER"
       local menu      = [[rofi -show drun -show-icons -display-drun ""]]
       local browser   = "brave"
@@ -215,7 +222,7 @@ in
       -- Cursor configuration
       hl.env("XCURSOR_THEME", "Bibata-Modern-Classic")
       hl.env("XCURSOR_SIZE", "20")
-      hl.config({ cursor = { no_hardware_cursors = false } })
+      hl.config({ cursor = { no_hardware_cursors = false, hide_on_key_press = true } })
 
       -- Autostart
       -- cliphist, swaybg and waybar are omitted here: all run as user units
@@ -285,24 +292,47 @@ in
           -- background-blur is KDE-only on Linux and is a no-op here).
           blur = {
             enabled = true,
-            size = 8,
-            passes = 3,
+            size = 6,
+            passes = 2,
             new_optimizations = true,
+            -- Tiled windows blur only the wallpaper, not the windows behind them.
+            xray = true,
             ignore_opacity = true,
           },
           shadow = { enabled = false },
         },
       })
 
-      -- Animations
+      -- Animations. Speed is in 100ms units.
       hl.config({ animations = { enabled = true } })
-      hl.curve("myBezier", { type = "bezier", points = { {0.05, 0.9}, {0.1, 1.05} } })
-      hl.animation({ leaf = "windows",     enabled = true, speed = 7,  bezier = "myBezier" })
-      hl.animation({ leaf = "windowsOut",  enabled = true, speed = 7,  bezier = "default", style = "popin 80%" })
-      hl.animation({ leaf = "border",      enabled = true, speed = 10, bezier = "default" })
-      hl.animation({ leaf = "borderangle", enabled = true, speed = 8,  bezier = "default" })
-      hl.animation({ leaf = "fade",        enabled = true, speed = 7,  bezier = "default" })
-      hl.animation({ leaf = "workspaces",  enabled = true, speed = 6,  bezier = "default", style = "slidevert" })
+      hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
+      hl.curve("linear",       { type = "bezier", points = { {0, 0}, {1, 1} } })
+      hl.curve("almostLinear", { type = "bezier", points = { {0.5, 0.5}, {0.75, 1} } })
+      hl.curve("quick",        { type = "bezier", points = { {0.15, 0}, {0.1, 1} } })
+      hl.animation({ leaf = "global",           enabled = true, speed = 10,   bezier = "default" })
+      hl.animation({ leaf = "border",           enabled = true, speed = 5.39, bezier = "easeOutQuint" })
+      hl.animation({ leaf = "windows",          enabled = true, speed = 3.79, bezier = "easeOutQuint" })
+      hl.animation({ leaf = "windowsIn",        enabled = true, speed = 4.1,  bezier = "easeOutQuint", style = "popin 87%" })
+      hl.animation({ leaf = "windowsOut",       enabled = true, speed = 1.49, bezier = "linear",       style = "popin 87%" })
+      hl.animation({ leaf = "fadeIn",           enabled = true, speed = 1.73, bezier = "almostLinear" })
+      hl.animation({ leaf = "fadeOut",          enabled = true, speed = 1.46, bezier = "almostLinear" })
+      hl.animation({ leaf = "fade",             enabled = true, speed = 3.03, bezier = "quick" })
+      hl.animation({ leaf = "fadeSwitch",       enabled = false })
+      hl.animation({ leaf = "layers",           enabled = true, speed = 3.81, bezier = "easeOutQuint" })
+      hl.animation({ leaf = "layersIn",         enabled = true, speed = 4,    bezier = "easeOutQuint", style = "fade" })
+      hl.animation({ leaf = "layersOut",        enabled = true, speed = 1.5,  bezier = "linear",       style = "fade" })
+      hl.animation({ leaf = "fadeLayersIn",     enabled = true, speed = 1.79, bezier = "almostLinear" })
+      hl.animation({ leaf = "fadeLayersOut",    enabled = true, speed = 1.39, bezier = "almostLinear" })
+      hl.animation({ leaf = "workspaces",       enabled = true, speed = 2.5,  bezier = "easeOutQuint", style = "slidevert" })
+      hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3,    bezier = "easeOutQuint", style = "slidevert" })
+
+      hl.config({
+        misc = {
+          disable_hyprland_logo = true,
+          disable_splash_rendering = true,
+          focus_on_activate = true,
+        },
+      })
 
       -- Layout
       hl.config({ dwindle = { preserve_split = true } })

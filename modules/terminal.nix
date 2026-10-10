@@ -32,6 +32,8 @@
       #window-decoration = false;
     } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
       window-show-tab-bar = "never"; # GTK-only - Ghostty uses native UI on macOS
+      # Keep the instance alive so new windows open without a cold start.
+      quit-after-last-window-closed = false;
       # Hyprland's universal copy/paste (SUPER+C/V) sends CTRL/SHIFT+Insert;
       # shift+insert pastes the primary selection by default.
       keybind = [
@@ -40,6 +42,13 @@
       ];
     };
   };
+
+  # Start the ghostty instance at login so the first window opens instantly
+  # too. The module installs the unit but does not enable it.
+  xdg.configFile."systemd/user/graphical-session.target.wants/app-com.mitchellh.ghostty.service" =
+    lib.mkIf config.programs.ghostty.systemd.enable {
+      source = "${config.programs.ghostty.package}/share/systemd/user/app-com.mitchellh.ghostty.service";
+    };
 
   # kitty config - mirrors the ghostty settings above
   programs.kitty = {
