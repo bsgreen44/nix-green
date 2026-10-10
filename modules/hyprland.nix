@@ -368,6 +368,10 @@ in
       hl.bind(mod .. " + SHIFT + Z",  hl.dsp.exec_cmd("screensaver"))
       hl.bind(mod .. " + ESCAPE",     hl.dsp.exec_cmd(powermenu))
       hl.bind(mod .. " + CTRL + V",   hl.dsp.exec_cmd([[cliphist list | rofi -dmenu | cliphist decode | wl-copy]]))
+      -- Universal clipboard: the Insert-key forms work in terminals and GUI apps alike
+      hl.bind(mod .. " + C",          hl.dsp.send_shortcut({ mods = "CTRL",  key = "Insert" }))
+      hl.bind(mod .. " + V",          hl.dsp.send_shortcut({ mods = "SHIFT", key = "Insert" }))
+      hl.bind(mod .. " + X",          hl.dsp.send_shortcut({ mods = "CTRL",  key = "X" }))
       hl.bind(mod .. " + SHIFT + S",  hl.dsp.exec_cmd([[grim -g "$(slurp)" -t png | wl-copy]]))
       -- Local Whisper dictation: press to record, press again to type the transcript
       hl.bind(mod .. " + D",          hl.dsp.exec_cmd("dictation"))

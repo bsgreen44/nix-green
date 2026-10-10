@@ -32,6 +32,12 @@
       #window-decoration = false;
     } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
       window-show-tab-bar = "never"; # GTK-only - Ghostty uses native UI on macOS
+      # Hyprland's universal copy/paste (SUPER+C/V) sends CTRL/SHIFT+Insert;
+      # shift+insert pastes the primary selection by default.
+      keybind = [
+        "ctrl+insert=copy_to_clipboard"
+        "shift+insert=paste_from_clipboard"
+      ];
     };
   };
 
@@ -46,6 +52,11 @@
     settings = {
       background_opacity = "0.9";
       tab_bar_style = "hidden"; # matches ghostty window-show-tab-bar = "never"
+    };
+    # Matches the ghostty Insert-key binds for Hyprland's universal copy/paste
+    keybindings = {
+      "ctrl+insert" = "copy_to_clipboard";
+      "shift+insert" = "paste_from_clipboard";
     };
   };
 }

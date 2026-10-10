@@ -70,6 +70,9 @@ Super + Shift + Esc            →  Exit Hyprland
 Super + Shift + Space          →  Toggle Waybar
 Super + K                      →  Show this keybind list
 Super + Shift + H              →  Show this keybind list
+Super + C                      →  Copy (any app)
+Super + V                      →  Paste (any app)
+Super + X                      →  Cut (any app)
 Super + Ctrl + V               →  Clipboard history
 Super + Shift + S              →  Screenshot to clipboard
 Print                          →  Screenshot to clipboard
