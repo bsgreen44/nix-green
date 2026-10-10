@@ -29,6 +29,7 @@ nix-green
 │   ├── aerospace.nix
 │   ├── apps.nix
 │   ├── dictation.nix
+│   ├── herdr.nix
 │   ├── hypr-workspace-layout.nix
 │   ├── hypridle.nix
 │   ├── hyprland.nix
@@ -52,6 +53,7 @@ nix-green
 │   ├── configuration.nix
 │   └── home.nix
 ├── README.md
+├── screenshots
 ├── scripts
 │   ├── detect-system-apps.sh
 │   └── install.sh
@@ -59,10 +61,9 @@ nix-green
 ```
 
 # Screenshots
-<img width="1907" height="1057" alt="20260806_12h02m12s_grim" src="https://github.com/user-attachments/assets/add3248f-c40f-4357-92cc-ebc1b4818b88" />
+![Hyprland desktop with tiled Neovim, cmatrix and btop](screenshots/hyprland-desktop.png)
 
-<img width="1903" height="1072" alt="20260806_12h15m35s_grim" src="https://github.com/user-attachments/assets/32c1df3d-f85a-4bae-b175-6b38e2938a73" />
-
+![Hyprland with floating VSCodium and yazi windows](screenshots/hyprland-floating.png)
 
 # DISCLAIMER:
 **WHILE CHANGES ARE TESTED BEFORE EACH COMMIT, THIS IS AN ONGOING PROJECT THAT CAN POSSIBLY BREAK YOUR SYSTEM. PLEASE INSTALL AT YOUR OWN RISK!**
@@ -128,6 +129,29 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#nix-darwin
 # For macOS desktop (every rebuild after that)
 sudo darwin-rebuild switch --flake .#nix-darwin
 ``` 
+
+# FAQ Index
+**General**
+
+- [Can I use this on a different Linux distro?](#can-i-use-this-on-a-different-linux-distro)
+- [Can I run the Hyprland desktop on a different Linux distro?](#can-i-run-the-hyprland-desktop-on-a-different-linux-distro)
+- [How do I use apps my distro already installed, instead of the ones Nix declares?](#how-do-i-use-apps-my-distro-already-installed-instead-of-the-ones-nix-declares)
+- [Why don't my brightness keys work on a different Linux distro?](#why-dont-my-brightness-keys-work-on-a-different-linux-distro)
+- [How do I update the system and packages?](#how-do-i-update-the-system-and-packages)
+- [Is there voice dictation?](#is-there-voice-dictation)
+- [Where do I put instructions for AI coding agents?](#where-do-i-put-instructions-for-ai-coding-agents)
+- [How do I change herdr's keybinds or theme?](#how-do-i-change-herdrs-keybinds-or-theme)
+
+**Hyprland**
+
+- [Is there a keybind list?](#is-there-a-keybind-list)
+- [How do I copy and paste the same way in every app?](#how-do-i-copy-and-paste-the-same-way-in-every-app)
+- [How do I change the wallpaper?](#how-do-i-change-the-wallpaper)
+- [How do I change the hyprland environment?](#how-do-i-change-the-hyprland-environment)
+- [Is there a way to manage hyprland NOT through nix?](#is-there-a-way-to-manage-hyprland-not-through-nix)
+- [How do I change the scaling and resolution?](#how-do-i-change-the-scaling-and-resolution)
+- [How do I change the screensaver?](#how-do-i-change-the-screensaver)
+- [How do I toggle a workspace's layout?](#how-do-i-toggle-a-workspaces-layout)
 
 # FAQ
 
@@ -235,10 +259,22 @@ The path is hardcoded to `~/nix-green`. A checkout anywhere else needs `agentsCo
 
 **Why it is not called `AGENTS.md`.** All three harnesses walk up from the current directory looking for a project `AGENTS.md`. Naming the file that would make it double as *this repo's* project instructions, so working inside `nix-green` would load the same content twice - once globally, once as project context. opencode keys its instruction set on `path.resolve`, which does not follow symlinks, so it cannot tell the two apart; neither it nor Codex has a way to opt out. The `global-agents.md` name is discovered by nothing, so it stays purely global. Project instructions, if this repo ever wants them, belong in a separate `AGENTS.md` or `CLAUDE.md`.
 
+### How do I change herdr's keybinds or theme?
+Edit `modules/herdr.nix`, then run `rebuild`. [herdr](https://github.com/ogulcancelik/herdr) (the AI coding-agent multiplexer) has no Home Manager module, so the file generates `~/.config/herdr/config.toml` with `pkgs.formats.toml`. It is imported on every configuration: Hyprland, KDE, other Linux distros and macOS.
+
+The keybinds are tmux-style with `Ctrl + Space` as the prefix: a tmux session is a herdr workspace, a window is a tab and a pane is a pane. Press `Ctrl + Space` then `?` inside herdr to see them all.
+
+Only the config file is linked, not the directory, because herdr keeps `session.json`, sockets and logs next to it. `onboarding = false` is declared so herdr never needs to write to the read-only file.
+
 ## Hyprland
 
 ### Is there a keybind list?
 `SUPER + SHIFT + H` opens a searchable keybind list. Edit the keybinds in `hyprland.nix`, and the descriptions in `rofi.nix`. App names that come from the role registry (terminal, file manager) are interpolated into both, so those stay in sync on their own. See [hyprland wiki](https://wiki.hypr.land/Configuring/Binds/) on how to set binds.
+
+### How do I copy and paste the same way in every app?
+Use `SUPER + C` to copy, `SUPER + V` to paste and `SUPER + X` to cut. They send `Ctrl + Insert`, `Shift + Insert` and `Ctrl + X` to the focused window, which terminals and GUI apps both understand, so one set of keys works everywhere. Ghostty and kitty normally paste the primary selection on `Shift + Insert`, so both are set to paste the clipboard instead. `SUPER + CTRL + V` opens the clipboard history.
+
+The binds are in `hyprland.nix` and their descriptions in `rofi.nix`.
 
 ### How do I change the wallpaper?
 Set `wallpaper` in the `_module.args` block to the path of the desired wallpaper. On NixOS this is in `~/nix-green/hyprland/home.nix`; on other distros it's `~/nix-green/linux/hyprland.nix`.
