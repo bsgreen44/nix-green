@@ -4,6 +4,7 @@
     ../modules/apps.nix
     ./system-apps.nix   # what this distro already provides; the per-distro file
     ../modules/packages.nix
+    ../modules/herdr.nix
     ../modules/terminal.nix
     ../modules/shells.nix
     ../modules/starship.nix

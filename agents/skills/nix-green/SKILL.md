@@ -4,7 +4,7 @@ description: >
   REQUIRED before changing any user setting, dotfile, app or package on a machine
   managed by nix-green (~/nix-green), and when something broke after a rebuild.
   Triggers: editing anything under ~/.config (hypr, waybar, rofi, mako, ghostty,
-  kitty, starship, nvim, swayosd, opencode, aerospace, sketchybar), keybindings,
+  kitty, starship, nvim, swayosd, opencode, herdr, aerospace, sketchybar), keybindings,
   monitors and displays, wallpaper, theme and colors, notifications, lock screen,
   idle and screensaver, status bar, terminal, shell aliases, installing or
   removing apps and packages, default apps, KDE/Hyprland/macOS desktop settings,
@@ -61,6 +61,7 @@ All under `modules/` unless a path says otherwise.
 | Wallpaper | `wallpaper` arg in `hyprland/home.nix`, `linux/hyprland.nix` |
 | Which app fills a role (terminal, file manager, ...) | `apps.nix`; Fedora overrides in `linux/system-apps.nix` |
 | Packages, CLI tools, VSCodium, opencode, agent files | `packages.nix` |
+| herdr (agent multiplexer) keybinds, theme, UI | `herdr.nix` |
 | Terminal / shell and aliases / prompt / editor | `terminal.nix` / `shells.nix` / `starship.nix` / `neovim.nix` |
 | macOS window manager, launcher, system defaults, casks | `aerospace.nix`, `raycast.nix`, `nix-darwin/configuration.nix` |
 | NixOS system (boot, services, users) | `configuration.nix`, `{kde,hyprland}/configuration.nix` |
