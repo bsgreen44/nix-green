@@ -80,6 +80,9 @@
       ui = {
         accent = "blue";
 
+        # Group the agent panel by workspace
+        agent_panel_sort = "spaces";
+
         # tmux drew single-line dividers between adjacent panes and no outer frame
         pane_gaps = false;
         pane_outer_borders = false;
