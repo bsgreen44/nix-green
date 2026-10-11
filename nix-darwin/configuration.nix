@@ -61,6 +61,7 @@
       "nextcloud"
       "zen-browser"
       "raycast"
+      "protonvpn"
     ];
   };
 

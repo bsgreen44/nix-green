@@ -77,6 +77,7 @@ in
       luarocks
       lua51Packages.lua
       herdr # AI coding-agent multiplexer
+      pvetui # Proxmox manager tui
     ]
     ++ lib.optionals stdenv.hostPlatform.isLinux [
       brave
@@ -85,12 +86,12 @@ in
       signal-desktop
       localsend
       vlc
+      proton-vpn
 
       # Linux-only TUIs (skipped on macOS)
       yazi # TUI file manager
       wiremix # audio tui
       bluetui # bluez front-end
-      pvetui # Proxmox manager tui
 
       # Linux-only flake packages
       # NetworkManager tui
