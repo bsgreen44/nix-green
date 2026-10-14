@@ -2,6 +2,7 @@
 This is the nix configuration I use for my systems. The main focus of the configuration is that it is simple to use, lightweight and preconfigured with programs that are essential to me. You can choose between [KDE Plasma](https://kde.org/plasma-desktop/) or [Hyprland](https://hypr.land/) on Linux, or run it on macOS through [nix-darwin](https://github.com/LnL7/nix-darwin). This can be installed on most machines due to its low resource usage. Feel free to use this configuration as is or customize it as you see fit!
 
 ## In Progress/Future updates
+- Gaming support
 
 # Folder Structure
 ```
