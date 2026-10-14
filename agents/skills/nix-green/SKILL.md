@@ -68,6 +68,8 @@ All under `modules/` unless a path says otherwise.
 | herdr (agent multiplexer) keybinds, theme, UI | `herdr.nix` |
 | Terminal / shell and aliases / prompt / editor | `terminal.nix` / `shells.nix` / `starship.nix` / `neovim.nix` |
 | macOS window manager, launcher, system defaults, casks | `aerospace.nix`, `raycast.nix`, `nix-darwin/configuration.nix` |
+| Gaming (Steam, Proton, Lutris; off unless `gaming = true;` in `flake.nix`) | `gaming.nix` (NixOS module); macOS casks in `nix-darwin/configuration.nix` |
+| NVIDIA driver (on when install.sh writes `gpu = "nvidia";`) | `nvidia.nix` (NixOS module) |
 | NixOS system (boot, services, users) | `configuration.nix`, `{kde,hyprland}/configuration.nix` |
 
 ## Apply

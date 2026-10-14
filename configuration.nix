@@ -4,6 +4,8 @@
   imports = [
     # Use local hardware configuation file. Use --impure flag
     /etc/nixos/hardware-configuration.nix
+    ./modules/gaming.nix
+    ./modules/nvidia.nix
   ];
 
   # Bootloader.

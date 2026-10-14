@@ -142,6 +142,7 @@ sudo darwin-rebuild switch --flake .#nix-darwin
 - [Is there voice dictation?](#is-there-voice-dictation)
 - [Where do I put instructions for AI coding agents?](#where-do-i-put-instructions-for-ai-coding-agents)
 - [How do I change herdr's keybinds or theme?](#how-do-i-change-herdrs-keybinds-or-theme)
+- [Can I play games?](#can-i-play-games)
 
 **Hyprland**
 
@@ -266,6 +267,18 @@ Edit `modules/herdr.nix`, then run `rebuild`. [herdr](https://github.com/ogulcan
 The keybinds are tmux-style with `Ctrl + Space` as the prefix: a tmux session is a herdr workspace, a window is a tab and a pane is a pane. Press `Ctrl + Space` then `?` inside herdr to see them all.
 
 Only the config file is linked, not the directory, because herdr keeps `session.json`, sockets and logs next to it. `onboarding = false` is declared so herdr never needs to write to the read-only file.
+
+### Can I play games?
+Yes, on NixOS and macOS. Gaming is off by default so low-end machines stay lean. On a gaming machine, set `gaming = true;` in `flake.nix` and run `rebuild`.
+
+On NixOS this turns on `modules/gaming.nix`: Steam with Proton and [GE-Proton](https://github.com/GloriousEggroll/proton-ge-custom), gamescope, GameMode, protontricks, [Lutris](https://lutris.net) and MangoHud. Steam also adds a "Steam Big Picture" session to the login screen.
+
+- **Steam games (e.g. Cyberpunk 2077):** in Steam, open Settings > Compatibility and enable Steam Play for all titles. Pick GE-Proton per game under Properties > Compatibility if Valve's Proton gives trouble. Add `gamemoderun mangohud %command%` to a game's launch options for GameMode and the FPS overlay.
+- **World of Warcraft:** in Lutris, search for Battle.net and run its installer, then install WoW from Battle.net. Alternatively, add the Battle.net installer to Steam as a non-Steam game and force GE-Proton.
+
+The NVIDIA driver (`modules/nvidia.nix`) is separate from `gaming`: `install.sh` detects the GPU and writes `gpu = "nvidia";` (or `amd`, `intel`, `none`) to `flake.nix`, so every NixOS machine with an NVIDIA card gets the proprietary driver. It uses the open kernel module, which needs an RTX 20xx / GTX 16xx or newer. Hybrid laptops also need `hardware.nvidia.prime` set up by hand. AMD and Intel work out of the box.
+
+On macOS, `gaming = true;` installs the Steam and Battle.net casks. WoW and Cyberpunk 2077 run natively on Apple Silicon, so no Proton is needed.
 
 ## Hyprland
 

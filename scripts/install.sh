@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Install or rebuild nix-green on whatever machine this runs on: detect NixOS,
 # macOS or another Linux distro, write this machine's username, hostname
-# (NixOS and macOS only) and the Mac's CPU architecture into flake.nix,
+# (NixOS and macOS only), GPU vendor (NixOS only) and the Mac's CPU
+# architecture into flake.nix,
 # install Nix if it is missing, and run the matching switch command.
 #
 # Usage: ./scripts/install.sh [kde|hyprland|cli] [--dry-run]
@@ -50,6 +51,23 @@ detect_darwin_system() {
     arm64) printf 'aarch64-darwin\n' ;;
     x86_64) printf 'x86_64-darwin\n' ;;
     *) die "unsupported Mac architecture: $(uname -m)" ;;
+  esac
+}
+
+# Print the GPU vendor modules/nvidia.nix keys on: nvidia, amd, intel or none.
+# With several GPUs (a hybrid laptop) the discrete vendor wins.
+detect_gpu() {
+  local dev vendors=""
+  for dev in /sys/bus/pci/devices/*; do
+    # PCI class 0x03xxxx is a display controller.
+    case "$(cat "$dev/class" 2>/dev/null)" in 0x03*) ;; *) continue ;; esac
+    vendors="$vendors $(cat "$dev/vendor")"
+  done
+  case "$vendors" in
+    *0x10de*) printf 'nvidia\n' ;;
+    *0x1002*) printf 'amd\n' ;;
+    *0x8086*) printf 'intel\n' ;;
+    *) printf 'none\n' ;;
   esac
 }
 
@@ -180,6 +198,9 @@ main() {
   printf 'flake.nix:\n'
   [ -z "$hostname" ] || set_flake_value hostname "$hostname" '[^"]*'
   set_flake_value username "$username" '[^"]*'
+  if [ "$platform" = nixos ]; then
+    set_flake_value gpu "$(detect_gpu)" '[a-z]+'
+  fi
   if [ "$platform" = darwin ]; then
     set_flake_value system "$(detect_darwin_system)" '[a-z0-9_]+-darwin'
   fi

@@ -1,4 +1,4 @@
-{ pkgs, username, hostname, ... }:
+{ pkgs, lib, username, hostname, gaming, ... }:
 
 {
   # Nix itself is installed and managed by Determinate (see README), which runs
@@ -62,6 +62,12 @@
       "zen-browser"
       "raycast"
       "protonvpn"
+    ]
+    # World of Warcraft and Cyberpunk 2077 have native Apple Silicon builds,
+    # so macOS needs no Proton or Wine.
+    ++ lib.optionals gaming [
+      "steam"
+      "battle-net"
     ];
   };
 

@@ -48,11 +48,13 @@
     let
       hostname = "nixos"; # change to your hostname
       username = "green"; # change to your username
+      gaming = false; # true installs Steam, Proton and game launchers (modules/gaming.nix)
+      gpu = "none"; # written by install.sh on NixOS: nvidia, amd, intel or none
 
       # Module args every configuration gets. Not `hyprland`: only the NixOS
       # Hyprland desktop has the flake input, and linux/hyprland.nix sets it to
       # null through _module.args, which a specialArg would override.
-      args = { inherit hostname username gazelle tsui; };
+      args = { inherit hostname username gaming gpu gazelle tsui; };
       linuxArgs = args // { inherit zen-browser; };
 
       hmModules = [
