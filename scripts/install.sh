@@ -201,9 +201,9 @@ main() {
       local hm_target=$username
       [ "$target" = hyprland ] && hm_target="$username-hyprland"
       if command -v home-manager >/dev/null 2>&1; then
-        run home-manager switch --flake ".#$hm_target"
+        run home-manager switch -b backup --flake ".#$hm_target"
       else
-        run nix run home-manager/master -- switch --flake ".#$hm_target"
+        run nix run home-manager/master -- switch -b backup --flake ".#$hm_target"
       fi
       ;;
   esac
