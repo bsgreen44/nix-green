@@ -29,14 +29,14 @@ window#waybar {
     min-height: 0;
     padding: 0 3px;
     margin: 1.76px;
-    color: #cdd6f4;
+    color: #6c7086;
     background: transparent;
     border-radius: 6.16px;
 }
 
 #workspaces button.active {
-    color: #313244;
-    background-color: #cba6f7;
+    color: #ffffff;
+    background-color: alpha(#cba6f7, 0.2);
 }
 
 #clock,
@@ -51,11 +51,11 @@ window#waybar {
 #mode,
 #scratchpad,
 #mpd {
-    padding: 0 5px;
-    background-color: #cba6f7;
+    padding: 0 10px;
+    background-color: alpha(#cba6f7, 0.2);
     border-radius: 6.16px;
     margin: 1.76px;
-    color: #313244;
+    color: #ffffff;
 }
 
 /* Icon-only pills (no text like the others carry) get extra horizontal
@@ -64,16 +64,36 @@ window#waybar {
 #network,
 #idle_inhibitor {
     padding: 0 14px;
-    background-color: #cba6f7;
+    background-color: alpha(#cba6f7, 0.2);
     border-radius: 6.16px;
     margin: 1.76px;
-    color: #313244;
-    font-size: 13px;
+    color: #ffffff;
+    font-size: 17px;
 }
 
-/* Wifi icon gets its own size, separate from bluetooth's. */
-#network {
-    font-size: 13px;
+/* Muted audio drops the volume text and shows only an icon, so it
+   takes the icon-only pill sizing above. */
+#pulseaudio.muted {
+    padding: 0 14px;
+    font-size: 17px;
+}
+
+/* The bluetooth glyph is tall and narrow, so at the shared size it
+   towers over the other icons. */
+#bluetooth {
+    font-size: 11px;
+}
+
+/* The connected glyph adds dots on both sides, so the font squeezes it
+   into the same cell width and it needs a bigger size to keep up. */
+#bluetooth.connected {
+    font-size: 17px;
+}
+
+/* Same for the slash on the off glyph. */
+#bluetooth.off,
+#bluetooth.disabled {
+    font-size: 14px;
 }
 
 /* Highlighted while idle lock/screensaver is being held off, so it's

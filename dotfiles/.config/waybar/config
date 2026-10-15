@@ -1,8 +1,8 @@
 [
   {
     "battery": {
-      "format": "{capacity}% {icon}",
-      "format-charging": "{capacity}% ",
+      "format": "{capacity}% <span size='160%' rise='-2pt'>{icon}</span>",
+      "format-charging": "{capacity}% <span size='125%' rise='-1pt'></span>",
       "format-icons": [
         "",
         "",
@@ -10,7 +10,7 @@
         "",
         ""
       ],
-      "format-plugged": "{capacity}% ",
+      "format-plugged": "{capacity}% <span size='125%' rise='-1pt'></span>",
       "on-click": "ghostty --title=float -e btop",
       "states": {
         "critical": 15,
@@ -33,10 +33,10 @@
       "tooltip-format": "<big>{:%Y %B}</big>\n<tt>{calendar}</tt>"
     },
     "cpu": {
-      "format": "<span size='120%'>󰍛</span> {usage}%",
+      "format": "<span size='160%' rise='-2pt'>󰍛</span> {usage}%",
       "on-click": "ghostty --title=float -e btop"
     },
-    "height": 20,
+    "height": 26,
     "hyprland/window": {
       "max-length": 40
     },
@@ -70,9 +70,9 @@
     "layer": "top",
     "margin-left": 7,
     "margin-right": 7,
-    "margin-top": 7,
+    "margin-top": 2,
     "memory": {
-      "format": "<span size='120%'></span> {used}GB",
+      "format": "<span size='160%' rise='-2pt'></span> {used}GB",
       "on-click": "ghostty --title=float -e btop"
     },
     "modules-center": [
@@ -101,8 +101,8 @@
     },
     "position": "top",
     "pulseaudio": {
-      "format": "{volume}% <span size='120%'>{icon}</span>",
-      "format-bluetooth": "{volume}% <span size='120%'>{icon}</span>",
+      "format": "{volume}% <span size='160%' rise='-2pt'>{icon}</span>",
+      "format-bluetooth": "{volume}% <span size='160%' rise='-2pt'>{icon}</span><span size='115%'></span>",
       "format-icons": {
         "default": [
           "",
@@ -110,7 +110,7 @@
         ],
         "headphone": ""
       },
-      "format-muted": "",
+      "format-muted": "󰝟",
       "on-click": "ghostty --title=float -e wiremix"
     },
     "spacing": 4
