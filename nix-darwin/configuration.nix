@@ -1,6 +1,8 @@
 { pkgs, username, hostname, ... }:
 
 {
+  imports = [ ./privacy.nix ];
+
   # Nix itself is installed and managed by Determinate (see README), which runs
   # its own daemon and has flakes on by default. nix-darwin aborts activation if
   # it also tries to manage Nix, and every other `nix.*` option needs this on.
