@@ -2,6 +2,9 @@ background-blur = true
 background-opacity = 0.750000
 font-family = JetBrainsMono Nerd Font Mono
 font-size = 10
+keybind = ctrl+insert=copy_to_clipboard
+keybind = shift+insert=paste_from_clipboard
+quit-after-last-window-closed = false
 theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 window-show-tab-bar = never
 window-theme = dark

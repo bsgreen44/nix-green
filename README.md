@@ -57,7 +57,8 @@ nix-green
 ├── screenshots
 ├── scripts
 │   ├── detect-system-apps.sh
-│   └── install.sh
+│   ├── install.sh
+│   └── uninstall-nix.sh
 └── wallpapers
 ```
 
@@ -131,6 +132,25 @@ sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .#nix-darwin
 sudo darwin-rebuild switch --flake .#nix-darwin
 ``` 
 
+# How to uninstall
+On macOS or another Linux distro, the uninstall script removes nix-green and Nix and returns the machine to a clean state. Run it as your normal user; it asks for `sudo` itself:
+```
+~/nix-green/scripts/uninstall-nix.sh
+```
+It asks a few questions up front, then runs without stopping:
+- Delete app data: browser profiles, Signal messages, Obsidian/VSCodium settings, AI agent logins and history, Neovim plugins, shell history and the configs nix-green wrote. Your Obsidian vaults and `~/Nextcloud` folder are never deleted.
+- Reset the macOS settings nix-green changed (macOS only).
+- Remove Homebrew completely (macOS only).
+- Delete the `~/nix-green` folder.
+
+What it removes:
+- **macOS**: Homebrew casks, Nix apps, nix-darwin, Home Manager, Nix and the Nix Store volume, the Tailscale daemon, SketchyBar, AeroSpace and Nix fonts.
+- **Other Linux distros**: Nix apps, Home Manager dotfiles and user services, Nix itself (`/nix`, the `nix-daemon` service and the `nixbld` users) and the swayosd udev rule from [the brightness FAQ](#why-dont-my-brightness-keys-work-on-a-different-linux-distro). Anything you installed with your distro's package manager, such as Hyprland, stays. If you run it from the Hyprland session, log out and pick another session afterwards, since its bar, launcher and config came from Nix.
+
+Files it edits outside your home folder are backed up to `~/nix-uninstall-backup-<date>`, and it lists any `.backup` files Home Manager kept from before nix-green so you can restore them. If it gets interrupted, just run it again. Reboot (macOS) or log out (Linux) at the end.
+
+NixOS is not supported, since Nix is the operating system. Switch to another configuration, or install a different distro instead.
+
 # FAQ Index
 **General**
 
@@ -169,7 +189,7 @@ cd ~/nix-green
 
 To do it by hand instead, install Nix with Determinate (see [How to install](#how-to-install)), set `username` in `flake.nix`, and run:
 ```
-nix run home-manager/master -- switch --flake .#username
+nix run home-manager/master -- switch -b backup --flake .#username
 ```
 
 For future updates, use `./scripts/install.sh cli` or:
@@ -185,7 +205,7 @@ Yes. There are two Home Manager configurations: `.#username` installs CLI tools 
 ```
 ./scripts/install.sh hyprland
 ```
-Or do it by hand with `home-manager switch --flake .#username-hyprland`.
+Or do it by hand with `home-manager switch -b backup --flake .#username-hyprland`.
 3. On a laptop, allow swayosd to control screen brightness (see the FAQ entry below). Volume works without this.
 4. Log out and pick Hyprland from your login screen's session list.
 
