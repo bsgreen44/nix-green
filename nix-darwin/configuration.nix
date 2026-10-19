@@ -64,6 +64,7 @@
       "zen-browser"
       "raycast"
       "protonvpn"
+      "lm-studio"
     ];
   };
 

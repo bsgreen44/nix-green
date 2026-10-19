@@ -202,29 +202,32 @@ in
   programs.opencode = {
     enable = true;
     settings = {
-      model = "openai/gpt-5.5";
-      small_model = "openai/gpt-5.4-mini";
+      model = "openai/gpt-6-astra";
+      small_model = "openai/gpt-6-luna";
       default_agent = "plan";
       agent = {
-        plan.model = "openai/gpt-5.5";
-        general.model = "openai/gpt-5.5";
-        explore.model = "openai/gpt-5.4-mini";
-        scout.model = "openai/gpt-5.4-mini";
+        plan.model = "openai/gpt-6-astra";
+        general.model = "openai/gpt-6-astra";
+        explore.model = "openai/gpt-6-luna";
+        scout.model = "openai/gpt-6-luna";
       };
 
       autoupdate = false;
 
-      # Local fallback, selectable at runtime with /models.
-      provider = {
-        ollama = {
+      # Local models via LM Studio on the Mac, selectable at runtime with /models.
+      provider = lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+        lmstudio = {
           npm = "@ai-sdk/openai-compatible";
-          name = "Ollama";
+          name = "LM Studio";
           options = {
-            baseURL = "http://127.0.0.1:11434/v1";
+            baseURL = "http://127.0.0.1:1234/v1";
           };
           models = {
-            "qwen2.5-coder:3b" = {
-              name = "qwen2.5-coder:3b";
+            "qwen/qwen3.6-35b-a3b" = {
+              name = "Qwen3.6 35B-A3B";
+            };
+            "qwen/qwen3.8-27b" = {
+              name = "Qwen3.8 27B";
             };
           };
         };
