@@ -83,6 +83,7 @@ Vol Up/Down                    →  Volume ±5%
 Mute                           →  Toggle mute
 Mic Mute                       →  Toggle microphone mute
 Brightness Up/Down             →  Brightness ±10%
+Kbd Brightness Up/Down         →  Keyboard backlight ±10%
 Super + G                      →  Toggle window grouping
 Super + Alt + G                →  Move window out of group
 Super + Alt + ←/→/↑/↓          →  Move window into group (direction)
