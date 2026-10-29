@@ -50,6 +50,7 @@
       username = "green"; # change to your username
       gaming = false; # true installs Steam, Proton and game launchers (modules/gaming.nix)
       gpu = "none"; # written by install.sh on NixOS: nvidia, amd, intel or none
+      linuxSystem = "x86_64-linux"; # use "aarch64-linux" for ARM, e.g. Asahi on Apple Silicon
 
       # Module args every configuration gets. Not `hyprland`: only the NixOS
       # Hyprland desktop has the flake input, and linux/hyprland.nix sets it to
@@ -78,7 +79,7 @@
       };
 
       nixos = desktop: specialArgs: nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        system = linuxSystem;
         inherit specialArgs;
         modules = [
           ./configuration.nix
@@ -97,7 +98,7 @@
       homeConfigurations =
         let
           standalone = entry: home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages."x86_64-linux";
+            pkgs = nixpkgs.legacyPackages.${linuxSystem};
             extraSpecialArgs = linuxArgs;
             modules = [ entry ] ++ linuxHmModules;
           };

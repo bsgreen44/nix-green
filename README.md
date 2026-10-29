@@ -86,7 +86,7 @@ git clone https://github.com/bsgreen44/nix-green
 cd ~/nix-green
 ./scripts/install.sh
 ```
-It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`, and on macOS whether it is Apple Silicon or Intel), installs Nix if it is missing, and runs the matching rebuild command. On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question:
+It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`) and whether your CPU is ARM (e.g. Apple Silicon, including Asahi Linux) or Intel/AMD, installs Nix if it is missing, and runs the matching rebuild command. On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question:
 ```
 ./scripts/install.sh hyprland
 ```
@@ -107,11 +107,12 @@ If you'd rather not use the script, follow these steps instead. On macOS or anot
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 ```
 
-1. Update `hostname` and `username` in `~/nix-green/flake.nix` to match your system
+1. Update `hostname` and `username` in `~/nix-green/flake.nix` to match your system. On an ARM Linux machine, such as Asahi Linux on Apple Silicon, also set `linuxSystem` to `"aarch64-linux"`
 ```
     let
       hostname = "nixos"; # change to your hostname
       username = "green"; # change to your username
+      linuxSystem = "x86_64-linux"; # use "aarch64-linux" for ARM, e.g. Asahi on Apple Silicon
     in
 ```
 2. While in the `nix-green` directory, rebuild your system using **ONE** of the commands below and you're good to go! 

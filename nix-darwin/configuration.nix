@@ -64,6 +64,7 @@
       "zen-browser"
       "raycast"
       "protonvpn"
+      "lm-studio"
     ]
     # World of Warcraft and Cyberpunk 2077 have native Apple Silicon builds,
     # so macOS needs no Proton or Wine.

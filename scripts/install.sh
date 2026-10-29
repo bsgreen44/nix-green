@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install or rebuild nix-green on whatever machine this runs on: detect NixOS,
 # macOS or another Linux distro, write this machine's username, hostname
-# (NixOS and macOS only), GPU vendor (NixOS only) and the Mac's CPU
+# (NixOS and macOS only), GPU vendor (NixOS only) and the CPU
 # architecture into flake.nix,
 # install Nix if it is missing, and run the matching switch command.
 #
@@ -46,11 +46,15 @@ detect_hostname() {
   fi
 }
 
-detect_darwin_system() {
+# Nix system double for this machine: <arch>-darwin on macOS, <arch>-linux on
+# NixOS and other distros. macOS reports arm64, Linux aarch64.
+detect_system() {
+  local os=linux
+  [ "$1" = darwin ] && os=darwin
   case "$(uname -m)" in
-    arm64) printf 'aarch64-darwin\n' ;;
-    x86_64) printf 'x86_64-darwin\n' ;;
-    *) die "unsupported Mac architecture: $(uname -m)" ;;
+    arm64 | aarch64) printf 'aarch64-%s\n' "$os" ;;
+    x86_64) printf 'x86_64-%s\n' "$os" ;;
+    *) die "unsupported architecture: $(uname -m)" ;;
   esac
 }
 
@@ -85,10 +89,10 @@ set_flake_value() {
 
   old=$(sed -nE "s/${pattern}/\\2/p" flake.nix)
   if [ "$old" = "$new" ]; then
-    printf '  %-9s %s (unchanged)\n' "$key" "$new"
+    printf '  %-11s %s (unchanged)\n' "$key" "$new"
     return
   fi
-  printf '  %-9s %s -> %s\n' "$key" "$old" "$new"
+  printf '  %-11s %s -> %s\n' "$key" "$old" "$new"
   $DRY_RUN && return
 
   # sed -i differs between GNU and BSD. Writing back through cat keeps
@@ -202,7 +206,9 @@ main() {
     set_flake_value gpu "$(detect_gpu)" '[a-z]+'
   fi
   if [ "$platform" = darwin ]; then
-    set_flake_value system "$(detect_darwin_system)" '[a-z0-9_]+-darwin'
+    set_flake_value system "$(detect_system "$platform")" '[a-z0-9_]+-darwin'
+  else
+    set_flake_value linuxSystem "$(detect_system "$platform")" '[a-z0-9_]+-linux'
   fi
 
   case "$platform" in
