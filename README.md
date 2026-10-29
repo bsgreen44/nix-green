@@ -294,11 +294,13 @@ Yes, on NixOS and macOS. Gaming is off by default so low-end machines stay lean.
 On NixOS this turns on `modules/gaming.nix`: Steam with Proton and [GE-Proton](https://github.com/GloriousEggroll/proton-ge-custom), gamescope, GameMode, protontricks, [Lutris](https://lutris.net) and MangoHud. Steam also adds a "Steam Big Picture" session to the login screen.
 
 - **Steam games (e.g. Cyberpunk 2077):** in Steam, open Settings > Compatibility and enable Steam Play for all titles. Pick GE-Proton per game under Properties > Compatibility if Valve's Proton gives trouble. Add `gamemoderun mangohud %command%` to a game's launch options for GameMode and the FPS overlay.
-- **World of Warcraft:** in Lutris, search for Battle.net and run its installer, then install WoW from Battle.net. Alternatively, add the Battle.net installer to Steam as a non-Steam game and force GE-Proton.
+- **Battle.net games:** in Lutris, search for Battle.net and run its installer, then install your games from Battle.net. Alternatively, add the Battle.net installer to Steam as a non-Steam game and force GE-Proton.
+
+With `gaming = true;`, Hyprland uses focused-window rules to inhibit automatic dimming, screensaver, locking, display shutdown and idle suspend for games matched in `modules/hyprland.nix`, in windowed or fullscreen mode. Switching away or closing the game releases this inhibitor; manual locking still works. Coverage depends on the game's window class; the rule does not cover every Battle.net game or the Battle.net and Lutris launchers. GameMode's process-wide screensaver inhibition is disabled on Hyprland so it does not keep background games awake; other applications or the Waybar idle toggle can still inhibit idle independently. To inspect a game's window class, run `hyprctl clients -j`.
 
 The NVIDIA driver (`modules/nvidia.nix`) is separate from `gaming`: `install.sh` detects the GPU and writes `gpu = "nvidia";` (or `amd`, `intel`, `none`) to `flake.nix`, so every NixOS machine with an NVIDIA card gets the proprietary driver. It uses the open kernel module, which needs an RTX 20xx / GTX 16xx or newer. Hybrid laptops also need `hardware.nvidia.prime` set up by hand. AMD and Intel work out of the box.
 
-On macOS, `gaming = true;` installs the Steam and Battle.net casks. WoW and Cyberpunk 2077 run natively on Apple Silicon, so no Proton is needed.
+On macOS, `gaming = true;` installs the Steam and Battle.net casks. Game availability and hardware requirements depend on each game's macOS support.
 
 ## Hyprland
 

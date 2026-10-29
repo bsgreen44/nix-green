@@ -1,7 +1,7 @@
 # `hyprland` is the flake input on NixOS, null where the distro installs the
 # compositor. Must be supplied either way - the module system resolves declared
 # args eagerly, so a `? null` default here would never apply.
-{ pkgs, lib, config, wallpaper, hyprland, palette, ... }:
+{ pkgs, lib, config, wallpaper, hyprland, palette, gaming, ... }:
 
 let
   apps = config.green.apps;
@@ -341,6 +341,14 @@ in
       hl.config({ master = { new_status = "master" } })
 
       -- Window rules
+      ${lib.optionalString gaming ''
+      -- Retail and Classic stay awake only while focused, including windowed play.
+      hl.window_rule({
+        name = "wow-idle-inhibit",
+        match = { class = [[(?i)^wow(classic)?[.]exe$]] },
+        idle_inhibit = "focus",
+      })
+      ''}
       hl.window_rule({
         -- Ignore maximize requests from apps (kitty, VSCodium and browsers restore a
         -- saved maximized state); SUPER + ALT + F still maximizes on demand.

@@ -16,6 +16,7 @@ in
 
     settings = {
       general = {
+        ignore_wayland_inhibit = false; # Respect focused-game and Waybar inhibitors
         lock_cmd = "pidof hyprlock || hyprlock"; # Avoid starting multiple hyprlock instances
         before_sleep_cmd = "loginctl lock-session"; # Lock before suspend
         after_sleep_cmd = "hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\" })'"; # Turn display on immediately after resume

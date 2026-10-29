@@ -1,6 +1,6 @@
 # NixOS module (not Home Manager): Steam, Proton and game launchers.
 # Off unless `gaming = true;` in flake.nix, so low-end machines stay lean.
-{ pkgs, lib, username, gaming, ... }:
+{ config, pkgs, lib, username, gaming, ... }:
 
 lib.mkIf gaming {
   # Also turns on hardware.graphics.enable32Bit, which Proton needs.
@@ -24,7 +24,14 @@ lib.mkIf gaming {
   };
 
   # Run a game with `gamemoderun %command%` in Steam's launch options.
-  programs.gamemode.enable = true;
+  programs.gamemode = {
+    enable = true;
+    # Hyprland's focused-window rule controls idle inhibition instead of keeping
+    # the session awake for the entire lifetime of a background game.
+    settings = lib.mkIf config.programs.hyprland.enable {
+      general.inhibit_screensaver = 0;
+    };
+  };
   users.users.${username}.extraGroups = [ "gamemode" ];
 
   environment.systemPackages = with pkgs; [
