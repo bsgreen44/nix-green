@@ -1,16 +1,15 @@
 { config, pkgs, lib, ... }:
 
-# Amethyst tiling window manager. Replaced AeroSpace (modules/aerospace.nix, no
-# longer imported) because AeroSpace's virtual workspaces don't coexist with
-# macOS Desktops; Amethyst tiles each native Desktop separately, so the native
-# 3-finger swipe, Mission Control and Ctrl+arrow keep working. Installed as a
-# Homebrew cask (nix-darwin/configuration.nix); it needs Accessibility.
+# Amethyst tiling window manager - the macOS analogue of modules/hyprland.nix.
+# It tiles each native Desktop separately, so the native 3-finger swipe, Mission
+# Control and Ctrl+arrow keep working. Installed as a Homebrew cask
+# (nix-darwin/configuration.nix); it needs Accessibility.
 #
-# Tiling only: Amethyst can't launch apps or run commands, so AeroSpace's
-# launcher/action binds were dropped (Raycast on alt-space launches apps).
+# Tiling only: Amethyst can't launch apps or run commands (Raycast on alt-space
+# launches apps).
 #
-# Mod key is Alt/Option like AeroSpace (mod1 = alt, mod2 = alt+shift); the binds
-# follow modules/aerospace.nix where Amethyst has an equivalent. Amethyst orders
+# Mod key is Alt/Option (mod1 = alt, mod2 = alt+shift), deliberately avoiding
+# command-chords so it never collides with macOS system shortcuts. Amethyst orders
 # windows in a ring, so left/right map to counter-clockwise/clockwise.
 #
 # Amethyst reads ~/.amethyst.yml only at launch: quit and reopen it to apply
@@ -81,7 +80,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     # Dwindle only (above); alt-f / alt-u toggle fullscreen.
     layouts = [ "dwindle" "fullscreen" ];
 
-    # Match AeroSpace/Hyprland gaps (inner 3, outer 7). Margins go between and
+    # Match Hyprland gaps (inner 3, outer 7). Margins go between and
     # around windows, so the screen padding adds the remaining 4 at the edges.
     window-margins = true;
     window-margin-size = 3;
@@ -105,7 +104,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     swap-cw = bind "mod2" "right";
     swap-main = bind "mod2" "up";
 
-    # Resize the first dwindle split (aerospace.nix mod + minus/equal).
+    # Resize the first dwindle split (hyprland.nix mod + minus/equal).
     shrink-main = bind "mod1" "-";
     expand-main = bind "mod1" "=";
 

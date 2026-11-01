@@ -4,7 +4,7 @@ description: >
   REQUIRED before changing any user setting, dotfile, app or package on a machine
   managed by nix-green (~/nix-green), and when something broke after a rebuild.
   Triggers: editing anything under ~/.config (hypr, waybar, rofi, mako, ghostty,
-  kitty, starship, nvim, swayosd, opencode, herdr, amethyst, aerospace, sketchybar), keybindings,
+  kitty, starship, nvim, swayosd, opencode, herdr, amethyst, sketchybar), keybindings,
   monitors and displays, wallpaper, theme and colors, notifications, lock screen,
   idle and screensaver, status bar, terminal, shell aliases, installing or
   removing apps and packages, default apps, KDE/Hyprland/macOS desktop settings,
@@ -67,7 +67,7 @@ All under `modules/` unless a path says otherwise.
 | Package versions (updating apps) | `~/nix-green/flake.lock`: `nix flake update [input]`, then switch |
 | herdr (agent multiplexer) keybinds, theme, UI | `herdr.nix` |
 | Terminal / shell and aliases / prompt / editor | `terminal.nix` / `shells.nix` / `starship.nix` / `neovim.nix` |
-| macOS window manager, launcher, system defaults, casks | `amethyst.nix` (`aerospace.nix` is no longer imported), `raycast.nix`, `nix-darwin/configuration.nix` |
+| macOS window manager, launcher, system defaults, casks | `amethyst.nix`, `raycast.nix`, `nix-darwin/configuration.nix` |
 | NixOS system (boot, services, users) | `configuration.nix`, `{kde,hyprland}/configuration.nix` |
 
 ## Apply

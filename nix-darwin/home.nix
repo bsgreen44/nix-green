@@ -14,7 +14,6 @@
     ../modules/themes.nix
     ../modules/raycast.nix
     ../modules/amethyst.nix
-    # ../modules/aerospace.nix # replaced by amethyst.nix
     # ../modules/sketchybar.nix
   ];
 

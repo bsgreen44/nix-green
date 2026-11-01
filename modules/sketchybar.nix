@@ -9,7 +9,7 @@
 # Styled like waybar: a fully transparent bar with translucent mauve pills, white
 # text and a Nerd Font glyph per widget (glyphs are copied from waybar.nix). The
 # pills hug the notch so the native app menus and menu bar extras stay clear:
-# AeroSpace workspaces 1-10, the clock and battery sit left of it; idle inhibitor
+# Desktops 1-10, the clock and battery sit left of it; idle inhibitor
 # (caffeinate), cpu, memory pressure, volume, bluetooth and network sit right of it. Refresh intervals
 # are kept in seconds (volume is event-driven) to stay light.
 #
@@ -79,16 +79,16 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
                              padding_left=2 \
                              padding_right=2
 
-        # Workspaces (AeroSpace), like waybar's hyprland/workspaces: only workspaces
-        # holding windows (plus the focused one) are shown, dimmed to overlay0, and the
-        # focused one is a pill with white text. One hidden controller item redraws
-        # all ten on each event, fired by exec-on-workspace-change / on-focus-changed
-        # in modules/aerospace.nix.
-        sketchybar --add event aerospace_workspace_change
+        # Desktops (native macOS Spaces, which modules/amethyst.nix tiles), like
+        # waybar's hyprland/workspaces: every Desktop that exists is shown, dimmed to
+        # overlay0, and the active one is a pill with white text. SketchyBar's space
+        # items track the active Desktop per display; plugins/space.sh hides the
+        # numbers past the Desktops that exist (macOS has no "empty" Desktop state
+        # to read without a window manager that tracks it).
 
         # q (left of the notch) fills outward from the notch like right does, so the
         # first item added sits against the notch: battery, then clock, then the
-        # workspaces, which add 10 first to read 1-10 left to right.
+        # Desktops, which add 10 first to read 1-10 left to right.
         #
         # Battery and volume read "42% <glyph>" like waybar, with the glyph larger
         # than the text. A label has one font, so the number goes in the icon slot
@@ -107,23 +107,22 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
                          label.padding_left=10 \
                          script="$PLUGIN_DIR/clock.sh"
 
+        # updates=on: a hidden Desktop must still run its script to reappear.
         for sid in 10 9 8 7 6 5 4 3 2 1; do
-          sketchybar --add item space.$sid q \
+          sketchybar --add space space.$sid q \
                      --set space.$sid \
+                           space=$sid \
+                           updates=on \
                            drawing=off \
                            background.drawing=off \
                            icon.drawing=off \
                            label="$sid" \
                            label.color=$DIM \
                            label.padding_left=5 \
-                           label.padding_right=5
+                           label.padding_right=5 \
+                           script="$PLUGIN_DIR/space.sh" \
+                     --subscribe space.$sid display_change system_woke
         done
-
-        # updates=on: the controller never draws, and when_shown would skip it.
-        sketchybar --add item aerospace q \
-                   --set aerospace drawing=off updates=on \
-                         script="$PLUGIN_DIR/aerospace.sh" \
-                   --subscribe aerospace aerospace_workspace_change front_app_switched system_woke
 
         # e (right of the notch) fills outward from the notch like left does.
         # Icon-only pills get the wide padding, like waybar's icon-only CSS rule.
@@ -165,33 +164,28 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
                    --subscribe network wifi_change system_woke
 
         sketchybar --update
-
-        # Draw the workspaces once at startup.
-        sketchybar --trigger aerospace_workspace_change
       '';
     };
 
-    "sketchybar/plugins/aerospace.sh" = {
+    # Runs per Desktop item on space_change (SketchyBar sets $SELECTED), and on
+    # display_change / system_woke. Mission Control numbers Desktops across all
+    # displays in order, so the count is the total over every display.
+    "sketchybar/plugins/space.sh" = {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        aerospace=${config.programs.aerospace.package}/bin/aerospace
+        count=$(plutil -extract "SpacesDisplayConfiguration.Management Data.Monitors" json -o - \
+          "$HOME/Library/Preferences/com.apple.spaces.plist" 2>/dev/null \
+          | ${pkgs.jq}/bin/jq '[.[].Spaces | length] | add')
+        sid=''${NAME#space.}
 
-        # exec-on-workspace-change passes the focused workspace; other events don't.
-        focused="''${FOCUSED_WORKSPACE:-$($aerospace list-workspaces --focused)}"
-        used=" $($aerospace list-workspaces --monitor all --empty no | tr '\n' ' ') "
-
-        args=()
-        for sid in 1 2 3 4 5 6 7 8 9 10; do
-          if [ "$sid" = "$focused" ]; then
-            args+=(--set "space.$sid" drawing=on background.drawing=on label.color=0xffffffff)
-          elif [[ "$used" == *" $sid "* ]]; then
-            args+=(--set "space.$sid" drawing=on background.drawing=off label.color=0xff${palette.overlay0})
-          else
-            args+=(--set "space.$sid" drawing=off)
-          fi
-        done
-        sketchybar "''${args[@]}"
+        if [ "$sid" -gt "$count" ]; then
+          sketchybar --set "$NAME" drawing=off
+        elif [ "$SELECTED" = "true" ]; then
+          sketchybar --set "$NAME" drawing=on background.drawing=on label.color=0xffffffff
+        else
+          sketchybar --set "$NAME" drawing=on background.drawing=off label.color=0xff${palette.overlay0}
+        fi
       '';
     };
 

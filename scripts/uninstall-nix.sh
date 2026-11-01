@@ -5,7 +5,7 @@
 #
 # macOS removes: Homebrew casks, Nix-installed apps (Brave, Obsidian, LibreOffice,
 # Signal, LocalSend, VLC, VSCodium), nix-darwin, Home Manager, Determinate/
-# official Nix, the Nix Store volume, Tailscale daemon, SketchyBar, AeroSpace, Amethyst,
+# official Nix, the Nix Store volume, Tailscale daemon, SketchyBar, Amethyst,
 # Nix fonts, and the macOS settings nix-darwin changed.
 # Linux removes: Nix-installed apps, Home Manager dotfiles and user services,
 # Determinate/official Nix (/nix, nix-daemon, nixbld users), and the swayosd
@@ -89,7 +89,7 @@ This removes nix-green and Nix from this Mac:
   • every Homebrew cask (Ghostty, Nextcloud, Zen, Raycast, ProtonVPN, and any others)
   • Nix apps: Brave, Obsidian, LibreOffice, Signal, LocalSend, VLC, VSCodium
   • nix-darwin, Home Manager, Nix itself and the Nix Store volume
-  • Tailscale daemon, SketchyBar, AeroSpace, Amethyst, Nix fonts, Home Manager dotfiles
+  • Tailscale daemon, SketchyBar, Amethyst, Nix fonts, Home Manager dotfiles
 Your Documents, Desktop, Downloads, Photos and iCloud are not touched.
 EOF
 else
@@ -154,7 +154,7 @@ shopt -s nullglob
 
 # ------------------------------------------------------------- user services
 if [[ $OS == darwin ]]; then
-  info "Stopping SketchyBar, AeroSpace, Amethyst and other Home Manager login agents"
+  info "Stopping SketchyBar, Amethyst and other Home Manager login agents"
   for f in "$HOME"/Library/LaunchAgents/*.plist; do
     if is_nix_plist "$f"; then
       label=$(plist_label "$f")
@@ -163,8 +163,6 @@ if [[ $OS == darwin ]]; then
     fi
   done
   pkill -x sketchybar 2>/dev/null
-  pkill -x AeroSpace 2>/dev/null
-  osascript -e 'quit app "AeroSpace"' >/dev/null 2>&1
   osascript -e 'quit app "Amethyst"' >/dev/null 2>&1
 else
   info "Stopping Home Manager user services"
@@ -249,7 +247,7 @@ if [[ $DEL_DATA -eq 1 ]]; then
       "Library/Application Support/VSCodium" ".vscode-oss" "Library/Preferences/com.vscodium.plist" \
       "Library/Saved Application State/com.vscodium.savedState" "Library/Caches/com.vscodium*" \
       "Library/Application Support/lazygit" \
-      ".config/sketchybar" ".config/aerospace" ".aerospace.toml" \
+      ".config/sketchybar" \
       "Library/Preferences/com.amethyst.Amethyst.plist"
   else
     rm_home \
