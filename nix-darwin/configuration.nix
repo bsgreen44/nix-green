@@ -74,7 +74,7 @@
     finder.AppleShowAllExtensions = true;
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
-      _HIHideMenuBar = true;
+      # _HIHideMenuBar = true;
     };
 
     # Catppuccin-ish appearance (macOS can't be fully re-skinned; this approximates it)

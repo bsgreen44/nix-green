@@ -5,6 +5,10 @@
     cat = "bat";
   };
 
+  # CLIs installed outside Nix put their launchers here and can't edit the
+  # read-only rc files to add it themselves.
+  home.sessionPath = [ "$HOME/.local/bin" ];
+
   # Uncomment to enable bash
   #programs.bash.enable = true;
 
