@@ -66,6 +66,7 @@
       "protonvpn"
       "lm-studio"
       "amethyst" # tiling window manager, configured in ../modules/amethyst.nix
+      "font-sf-pro" # menu bar font for ../modules/sketchybar.nix
     ];
   };
 

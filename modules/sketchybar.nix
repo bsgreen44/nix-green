@@ -1,17 +1,12 @@
-{ config, pkgs, lib, palette, ... }:
+{ pkgs, lib, ... }:
 
-# SketchyBar status bar - the macOS analogue of modules/waybar.nix. Self-contained
-# like waybar.nix: installs the binary, writes the config + plugin scripts, and runs
-# it as a keep-alive launchd agent. Catppuccin Mocha comes from modules/palette.nix,
-# the same source waybar.nix uses; SketchyBar wants 0xAARRGGBB, so only the RGB half
-# interpolates and the leading alpha byte stays literal.
-#
-# Styled like waybar: a fully transparent bar with translucent mauve pills, white
-# text and a Nerd Font glyph per widget (glyphs are copied from waybar.nix). The
-# pills hug the notch so the native app menus and menu bar extras stay clear:
-# Desktops 1-10, the clock and battery sit left of it; idle inhibitor
-# (caffeinate), cpu, memory pressure, volume, bluetooth and network sit right of it. Refresh intervals
-# are kept in seconds (volume is event-driven) to stay light.
+# SketchyBar - a small extension of the native macOS menu bar, not a status bar of
+# its own. The menu bar already shows the clock, battery, volume, Wi-Fi and
+# Bluetooth, so SketchyBar adds only what macOS lacks, styled like a native menu
+# extra (no background, white SF Pro text) and placed against the notch: the
+# active Desktop number left of it, and a screen-awake (caffeinate) toggle right
+# of it. The system is forced to Dark mode (nix-darwin/configuration.nix), so the
+# menu bar text is always white. SF Pro comes from the font-sf-pro cask there.
 #
 # darwin-only; guarded so it's inert if ever imported on Linux (like modules/raycast.nix).
 lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
@@ -19,7 +14,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
 
   # Keep-alive agent so the bar runs at login and restarts if it dies. It reads
   # ~/.config/sketchybar/sketchybarrc (written below). PATH covers sketchybar plus
-  # the system tools the plugins call (pmset, top, networksetup, osascript, ...).
+  # the system tools the plugins call (caffeinate, ps, ...).
   launchd.agents.sketchybar = {
     enable = true;
     config = {
@@ -38,167 +33,85 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
 
         PLUGIN_DIR="$CONFIG_DIR/plugins"
 
-        # Catppuccin Mocha, from modules/palette.nix (0xAARRGGBB). Pills are mauve
-        # at 20% alpha (0x33) with white text, like waybar's alpha(mauve, 0.2).
-        PILL=0x33${palette.mauve}
-        PILL_FG=0xffffffff
-        DIM=0xff${palette.overlay0}
-
-        # Text and icon sizes, scaled from waybar's 10.56px base font. The Mono
-        # Nerd Font squeezes every glyph into one cell, so icons run at ~160%.
-        TEXT_FONT="JetBrainsMono Nerd Font Mono:Bold:11.0"
-        ICON_FONT="JetBrainsMono Nerd Font Mono:Bold:17.0"
-
-        MONITOR="open -a 'Activity Monitor'"
-
-        # Transparent bar; the pills carry the colour, like waybar's islands.
-        # notch_width is the gap the q/e positions leave for the notch.
-        sketchybar --bar height=26 \
-                         notch_width=230 \
+        # Transparent and as tall as the native menu bar on the notched built-in
+        # display. notch_width is the gap the q/e positions leave for the notch.
+        # With the menu bar visible, y_offset=0 puts the bar below it; a negative
+        # offset and topmost lift it into the menu bar, on top of the native one.
+        # The bar window swallows clicks even where it is transparent, so margin
+        # narrows it to a strip around the notch (NOTCH plus room for an item on
+        # each side), leaving the app menus and menu extras clickable. The main
+        # display sets the width; q/e stay centred whatever the margin.
+        NOTCH=230
+        STRIP=$((NOTCH + 180))
+        WIDTH=$(sketchybar --query displays | ${pkgs.jq}/bin/jq '.[0].frame.w | floor')
+        sketchybar --bar height=37 \
+                         notch_width=$NOTCH \
                          position=top \
-                         padding_left=2 \
-                         padding_right=2 \
+                         padding_left=0 \
+                         padding_right=0 \
                          color=0x00000000 \
-                         margin=7 \
-                         y_offset=2
+                         margin=$(( (WIDTH - STRIP) / 2 )) \
+                         y_offset=-1 \
+                         topmost=on
 
-        # Every item is a mauve pill by default (waybar's shared pill rule).
-        # The Mono Nerd Font variant keeps glyphs in a single centred cell.
+        # Menu extra styling: no background, white text in the menu bar's font.
+        # Icons use the Mono Nerd Font, which keeps each glyph in one centred cell.
+        # Sizes and the y_offsets match the native menu text and extras by screenshot.
         sketchybar --default updates=when_shown \
-                             icon.font="$ICON_FONT" \
-                             label.font="$TEXT_FONT" \
-                             icon.color=$PILL_FG \
-                             label.color=$PILL_FG \
-                             background.color=$PILL \
-                             background.corner_radius=6 \
-                             background.height=22 \
-                             icon.padding_left=10 \
-                             icon.padding_right=3 \
+                             icon.font="JetBrainsMono Nerd Font Mono:Regular:18.0" \
+                             label.font="SF Pro:Regular:14.0" \
+                             icon.y_offset=-2 \
+                             label.y_offset=-2 \
+                             icon.color=0xffffffff \
+                             label.color=0xffffffff \
+                             background.drawing=off \
+                             icon.padding_left=0 \
+                             icon.padding_right=0 \
                              label.padding_left=0 \
-                             label.padding_right=10 \
-                             padding_left=2 \
-                             padding_right=2
+                             label.padding_right=0 \
+                             padding_left=8 \
+                             padding_right=8
 
-        # Desktops (native macOS Spaces, which modules/amethyst.nix tiles), like
-        # waybar's hyprland/workspaces: every Desktop that exists is shown, dimmed to
-        # overlay0, and the active one is a pill with white text. SketchyBar's space
-        # items track the active Desktop per display; plugins/space.sh hides the
-        # numbers past the Desktops that exist (macOS has no "empty" Desktop state
-        # to read without a window manager that tracks it).
-
-        # q (left of the notch) fills outward from the notch like right does, so the
-        # first item added sits against the notch: battery, then clock, then the
-        # Desktops, which add 10 first to read 1-10 left to right.
-        #
-        # Battery and volume read "42% <glyph>" like waybar, with the glyph larger
-        # than the text. A label has one font, so the number goes in the icon slot
-        # (drawn first) at the text size and the glyph in the label slot.
-        sketchybar --add item battery q \
-                   --set battery update_freq=120 \
-                         icon.font="$TEXT_FONT" \
-                         label.font="$ICON_FONT" \
-                         click_script="$MONITOR" \
-                         script="$PLUGIN_DIR/battery.sh" \
-                   --subscribe battery power_source_change system_woke
-
-        sketchybar --add item clock q \
-                   --set clock update_freq=10 icon.drawing=off \
-                         label.font="JetBrainsMono Nerd Font Mono:Bold:12.0" \
-                         label.padding_left=10 \
-                         script="$PLUGIN_DIR/clock.sh"
-
-        # updates=on: a hidden Desktop must still run its script to reappear.
-        for sid in 10 9 8 7 6 5 4 3 2 1; do
+        # Active Desktop (native macOS Spaces, which modules/amethyst.nix tiles).
+        # SketchyBar's space items track the active Desktop per display, so only the
+        # selected one draws and each display shows its own. updates=on: a hidden
+        # item must still run its script to reappear.
+        for sid in 1 2 3 4 5 6 7 8 9 10; do
           sketchybar --add space space.$sid q \
                      --set space.$sid \
                            space=$sid \
                            updates=on \
                            drawing=off \
-                           background.drawing=off \
                            icon.drawing=off \
                            label="$sid" \
-                           label.color=$DIM \
-                           label.padding_left=5 \
-                           label.padding_right=5 \
-                           script="$PLUGIN_DIR/space.sh" \
-                     --subscribe space.$sid display_change system_woke
+                           script="$PLUGIN_DIR/space.sh"
         done
 
-        # e (right of the notch) fills outward from the notch like left does.
-        # Icon-only pills get the wide padding, like waybar's icon-only CSS rule.
         sketchybar --add item idle_inhibitor e \
                    --set idle_inhibitor update_freq=10 label.drawing=off \
-                         icon.padding_left=14 icon.padding_right=14 \
                          click_script="$PLUGIN_DIR/idle_inhibitor.sh toggle" \
                          script="$PLUGIN_DIR/idle_inhibitor.sh"
-
-        sketchybar --add item cpu e \
-                   --set cpu update_freq=10 \
-                         click_script="$MONITOR" \
-                         script="$PLUGIN_DIR/cpu.sh"
-
-        sketchybar --add item memory e \
-                   --set memory update_freq=5 \
-                         click_script="$MONITOR" \
-                         script="$PLUGIN_DIR/memory.sh"
-
-        sketchybar --add item volume e \
-                   --set volume icon.font="$TEXT_FONT" \
-                         label.font="$ICON_FONT" \
-                         click_script="open 'x-apple.systempreferences:com.apple.Sound-Settings.extension'" \
-                         script="$PLUGIN_DIR/volume.sh" \
-                   --subscribe volume volume_change
-
-        sketchybar --add item bluetooth e \
-                   --set bluetooth update_freq=30 label.drawing=off \
-                         icon.padding_left=14 icon.padding_right=14 \
-                         click_script="open 'x-apple.systempreferences:com.apple.BluetoothSettings'" \
-                         script="$PLUGIN_DIR/bluetooth.sh" \
-                   --subscribe bluetooth system_woke
-
-        sketchybar --add item network e \
-                   --set network update_freq=30 label.drawing=off \
-                         icon.padding_left=14 icon.padding_right=14 \
-                         click_script="open 'x-apple.systempreferences:com.apple.wifi-settings-extension'" \
-                         script="$PLUGIN_DIR/network.sh" \
-                   --subscribe network wifi_change system_woke
 
         sketchybar --update
       '';
     };
 
-    # Runs per Desktop item on space_change (SketchyBar sets $SELECTED), and on
-    # display_change / system_woke. Mission Control numbers Desktops across all
-    # displays in order, so the count is the total over every display.
+    # Runs per Desktop item on space_change (SketchyBar sets $SELECTED).
     "sketchybar/plugins/space.sh" = {
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        count=$(plutil -extract "SpacesDisplayConfiguration.Management Data.Monitors" json -o - \
-          "$HOME/Library/Preferences/com.apple.spaces.plist" 2>/dev/null \
-          | ${pkgs.jq}/bin/jq '[.[].Spaces | length] | add')
-        sid=''${NAME#space.}
-
-        if [ "$sid" -gt "$count" ]; then
-          sketchybar --set "$NAME" drawing=off
-        elif [ "$SELECTED" = "true" ]; then
-          sketchybar --set "$NAME" drawing=on background.drawing=on label.color=0xffffffff
+        if [ "$SELECTED" = "true" ]; then
+          sketchybar --set "$NAME" drawing=on
         else
-          sketchybar --set "$NAME" drawing=on background.drawing=off label.color=0xff${palette.overlay0}
+          sketchybar --set "$NAME" drawing=off
         fi
-      '';
-    };
-
-    "sketchybar/plugins/clock.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        sketchybar --set "$NAME" label="$(date '+%b %d %H:%M')"
       '';
     };
 
     # Mirrors waybar's idle_inhibitor: a click toggles a background caffeinate that
     # holds off display/idle sleep (and so the lock screen). It starts deactivated.
+    # Like a native menu extra, the state shows in the glyph alone.
     "sketchybar/plugins/idle_inhibitor.sh" = {
       executable = true;
       text = ''
@@ -225,138 +138,9 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         fi
 
         if running; then
-          sketchybar --set "$NAME" icon="󰅶" background.color=0xff${palette.red}
+          sketchybar --set "$NAME" icon="󰅶"
         else
-          sketchybar --set "$NAME" icon="󰾪" background.color=0x33${palette.mauve}
-        fi
-      '';
-    };
-
-    "sketchybar/plugins/cpu.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        cpu=$(top -l 1 | awk '/CPU usage/ {gsub("%","",$7); printf "%.0f", 100-$7}')
-        sketchybar --set "$NAME" icon="󰍛" label="$cpu%"
-      '';
-    };
-
-    "sketchybar/plugins/memory.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        # Memory pressure instead of memory used: the kernel's system-wide free
-        # percentage (what `memory_pressure` prints), inverted. The pill turns peach
-        # at the warn level and red at critical, like Activity Monitor's graph.
-        free=$(sysctl -n kern.memorystatus_level)
-        case "$(sysctl -n kern.memorystatus_vm_pressure_level)" in
-          4) color=0xff${palette.red} ;;
-          2) color=0xff${palette.peach} ;;
-          *) color=0x33${palette.mauve} ;;
-        esac
-        sketchybar --set "$NAME" icon="" label="$((100 - free))%" background.color=$color
-      '';
-    };
-
-    "sketchybar/plugins/volume.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        # Query both values every time: volume_change only carries the level.
-        read -r vol muted < <(osascript -e 'set s to get volume settings' \
-          -e '(output volume of s as text) & " " & (output muted of s as text)')
-
-        # The number sits in the icon slot and the glyph in the label slot (see
-        # sketchybarrc). Muted shows only the glyph, with the icon-only padding.
-        text() {
-          sketchybar --set "$NAME" icon.drawing=on icon="$1" \
-            label="$2" label.padding_left=0 label.padding_right=10
-        }
-
-        case "$vol" in
-          ""|*[!0-9]*) text "--%" "" ; exit 0 ;;
-        esac
-
-        if [ "$muted" = "true" ]; then
-          sketchybar --set "$NAME" icon.drawing=off label="󰝟" \
-            label.padding_left=14 label.padding_right=14
-        elif [ "$vol" -lt 50 ]; then
-          text "$vol%" ""
-        else
-          text "$vol%" ""
-        fi
-      '';
-    };
-
-    "sketchybar/plugins/bluetooth.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        blueutil=${pkgs.blueutil}/bin/blueutil
-
-        # The Mono font squeezes each glyph into one cell, so each state gets its own
-        # size to look even (like waybar): the plain glyph is tall and narrow, and
-        # the connected dots and the off slash shrink theirs.
-        if [ "$($blueutil -p)" != "1" ]; then
-          icon="󰂲" size=14
-        elif [ -n "$($blueutil --connected)" ]; then
-          icon="󰂱" size=17
-        else
-          icon="󰂯" size=11
-        fi
-        sketchybar --set "$NAME" icon="$icon" icon.font="JetBrainsMono Nerd Font Mono:Bold:$size.0"
-      '';
-    };
-
-    # Icon only: the SSID is not used because `networksetup -getairportnetwork`
-    # is redacted on recent macOS. The default route's interface decides.
-    "sketchybar/plugins/network.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        iface=$(route -n get default 2>/dev/null | awk '/interface:/ {print $2}')
-
-        if [ -z "$iface" ]; then
-          icon="󰖪"
-        else
-          port=$(networksetup -listallhardwareports | awk -v i="$iface" '
-            /^Hardware Port:/ {sub(/^Hardware Port: /, ""); p=$0}
-            /^Device:/ && $2 == i {print p; exit}')
-          case "$port" in
-            Wi-Fi) icon="󰖩" ;;
-            *) icon="󰀂" ;;
-          esac
-        fi
-        sketchybar --set "$NAME" icon="$icon"
-      '';
-    };
-
-    "sketchybar/plugins/battery.sh" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        batt=$(pmset -g batt)
-        pct=$(echo "$batt" | grep -Eo "[0-9]+%" | head -1 | tr -d '%')
-
-        # No battery (desktop Mac): hide the pill.
-        if [ -z "$pct" ]; then
-          sketchybar --set "$NAME" drawing=off
-          exit 0
-        fi
-
-        # Five levels, like waybar's format-icons; charging and plugged share a glyph.
-        icons=("" "" "" "" "")
-        idx=$((pct * 5 / 100))
-        [ "$idx" -gt 4 ] && idx=4
-
-        # The number sits in the icon slot and the glyph in the label slot (see
-        # sketchybarrc). The plug glyph is wide, so it runs smaller (waybar's 125%).
-        if echo "$batt" | grep -q "AC Power"; then
-          sketchybar --set "$NAME" drawing=on icon="$pct%" label="" \
-            label.font="JetBrainsMono Nerd Font Mono:Bold:13.0"
-        else
-          sketchybar --set "$NAME" drawing=on icon="$pct%" label="''${icons[$idx]}" \
-            label.font="JetBrainsMono Nerd Font Mono:Bold:17.0"
+          sketchybar --set "$NAME" icon="󰾪"
         fi
       '';
     };
