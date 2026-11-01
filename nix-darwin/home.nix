@@ -13,7 +13,8 @@
     ../modules/neovim.nix
     ../modules/themes.nix
     ../modules/raycast.nix
-    ../modules/aerospace.nix
+    ../modules/amethyst.nix
+    # ../modules/aerospace.nix # replaced by amethyst.nix
     # ../modules/sketchybar.nix
   ];
 

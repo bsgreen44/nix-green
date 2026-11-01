@@ -4,7 +4,7 @@ description: >
   REQUIRED before changing any user setting, dotfile, app or package on a machine
   managed by nix-green (~/nix-green), and when something broke after a rebuild.
   Triggers: editing anything under ~/.config (hypr, waybar, rofi, mako, ghostty,
-  kitty, starship, nvim, swayosd, opencode, herdr, aerospace, sketchybar), keybindings,
+  kitty, starship, nvim, swayosd, opencode, herdr, amethyst, aerospace, sketchybar), keybindings,
   monitors and displays, wallpaper, theme and colors, notifications, lock screen,
   idle and screensaver, status bar, terminal, shell aliases, installing or
   removing apps and packages, default apps, KDE/Hyprland/macOS desktop settings,
@@ -67,7 +67,7 @@ All under `modules/` unless a path says otherwise.
 | Package versions (updating apps) | `~/nix-green/flake.lock`: `nix flake update [input]`, then switch |
 | herdr (agent multiplexer) keybinds, theme, UI | `herdr.nix` |
 | Terminal / shell and aliases / prompt / editor | `terminal.nix` / `shells.nix` / `starship.nix` / `neovim.nix` |
-| macOS window manager, launcher, system defaults, casks | `aerospace.nix`, `raycast.nix`, `nix-darwin/configuration.nix` |
+| macOS window manager, launcher, system defaults, casks | `amethyst.nix` (`aerospace.nix` is no longer imported), `raycast.nix`, `nix-darwin/configuration.nix` |
 | NixOS system (boot, services, users) | `configuration.nix`, `{kde,hyprland}/configuration.nix` |
 
 ## Apply
@@ -75,7 +75,7 @@ All under `modules/` unless a path says otherwise.
 1. `git -C ~/nix-green add` any new file; flakes ignore untracked files.
 2. From `~/nix-green`, `nix eval --raw` the drvPath for this setup (table above). Also run the darwin one if you changed a shared module. Off NixOS, `nixosConfigurations.*` always fails on the missing `/etc/nixos/hardware-configuration.nix`; that is the host, not a bug. To check that half, evaluate `kde/home.nix` or `hyprland/home.nix` with `home-manager.lib.homeManagerConfiguration`, setting `config.allowUnfree = true` on pkgs.
 3. Switch with `~/nix-green/scripts/install.sh <target>`. `--dry-run` shows the command and the `flake.nix` changes without switching. The `rebuild` alias runs the same thing but may not exist in a non-interactive shell. A distro needs no root, so run it yourself. NixOS and macOS need `sudo`, so ask the user to run `! rebuild`.
-4. Reload: `hyprctl reload`, `systemctl --user restart waybar` (likewise `swayosd`, `hypridle`, `swaybg`), `makoctl reload`; on macOS `sketchybar --reload`, `aerospace reload-config`.
+4. Reload: `hyprctl reload`, `systemctl --user restart waybar` (likewise `swayosd`, `hypridle`, `swaybg`), `makoctl reload`; on macOS `sketchybar --reload`; Amethyst reads its config only at launch, so quit and reopen it.
 5. Check the setting actually took effect (`hyprctl` queries, a `grim` screenshot). A clean switch is not proof.
 
 ## Pitfalls

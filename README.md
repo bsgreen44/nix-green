@@ -28,6 +28,7 @@ nix-green
 │   └── system-apps.nix
 ├── modules
 │   ├── aerospace.nix
+│   ├── amethyst.nix
 │   ├── apps.nix
 │   ├── dictation.nix
 │   ├── herdr.nix
@@ -145,7 +146,7 @@ It asks a few questions up front, then runs without stopping:
 - Delete the `~/nix-green` folder.
 
 What it removes:
-- **macOS**: Homebrew casks, Nix apps, nix-darwin, Home Manager, Nix and the Nix Store volume, the Tailscale daemon, SketchyBar, AeroSpace and Nix fonts.
+- **macOS**: Homebrew casks, Nix apps, nix-darwin, Home Manager, Nix and the Nix Store volume, the Tailscale daemon, SketchyBar, AeroSpace, Amethyst and Nix fonts.
 - **Other Linux distros**: Nix apps, Home Manager dotfiles and user services, Nix itself (`/nix`, the `nix-daemon` service and the `nixbld` users) and the swayosd udev rule from [the brightness FAQ](#why-dont-my-brightness-keys-work-on-a-different-linux-distro). Anything you installed with your distro's package manager, such as Hyprland, stays. If you run it from the Hyprland session, log out and pick another session afterwards, since its bar, launcher and config came from Nix.
 
 Files it edits outside your home folder are backed up to `~/nix-uninstall-backup-<date>`, and it lists any `.backup` files Home Manager kept from before nix-green so you can restore them. If it gets interrupted, just run it again. Reboot (macOS) or log out (Linux) at the end.

@@ -65,6 +65,7 @@
       "raycast"
       "protonvpn"
       "lm-studio"
+      "amethyst" # tiling window manager, configured in ../modules/amethyst.nix
     ];
   };
 
@@ -72,6 +73,10 @@
   system.defaults = {
     dock.autohide = true;
     finder.AppleShowAllExtensions = true;
+    # Desktops are native (modules/amethyst.nix tiles each one): 3-finger swipe
+    # switches them, and keep them in a fixed order instead of most recent use.
+    trackpad.TrackpadThreeFingerHorizSwipeGesture = 2;
+    dock.mru-spaces = false;
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
       # _HIHideMenuBar = true;
