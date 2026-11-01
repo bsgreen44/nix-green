@@ -14,4 +14,30 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     # Keep the menubar tidy (mirrors dock.autohide intent).
     "NSStatusItem Visible raycastIcon" = false;
   };
+
+  # Raycast script commands. Raycast keeps hotkeys in its encrypted database, so
+  # this directory is added and the hotkey (Shift+Option+Return) set once by hand:
+  # Settings > Extensions > + > Add Script Directory.
+  home.file.".config/raycast/script-commands/new-ghostty-window.sh" = {
+    executable = true;
+    text = ''
+      #!/bin/bash
+      # @raycast.schemaVersion 1
+      # @raycast.title New Ghostty Window
+      # @raycast.mode silent
+      # @raycast.packageName Ghostty
+      # @raycast.icon /Applications/Ghostty.app/Contents/Resources/Ghostty.icns
+
+      # Ghostty's AppleScript `new window` opens on the current desktop, where
+      # activating the app first would switch to a desktop that has a Ghostty
+      # window. A cold launch opens its own first window, so only launch then.
+      osascript <<'EOF'
+      if application "Ghostty" is running then
+        tell application "Ghostty" to activate window (new window)
+      else
+        tell application "Ghostty" to activate
+      end if
+      EOF
+    '';
+  };
 }
