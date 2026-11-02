@@ -34,9 +34,6 @@
     nerd-fonts.jetbrains-mono
   ];
 
-  # Enable Tailscale
-  services.tailscale.enable = true;
-
   environment.systemPackages = with pkgs; [
     tree
     terminaltexteffects
@@ -67,6 +64,7 @@
       "lm-studio"
       "amethyst" # tiling window manager, configured in ../modules/amethyst.nix
       "font-sf-pro" # menu bar font for ../modules/sketchybar.nix
+      "tailscale-app"
     ];
   };
 
@@ -90,6 +88,11 @@
       AppleHighlightColor = "0.796078 0.650980 0.968627 Purple"; # Mocha mauve #cba6f7, see ../modules/palette.nix
     };
   };
+
+  # Don't boot when the lid opens or power connects (%01 = lid only, %02 = power only)
+  system.activationScripts.postActivation.text = ''
+    /usr/sbin/nvram BootPreference=%00
+  '';
 
   # SSH hardening (sshd itself is started by toggling System Settings → General → Sharing → Remote Login)
   environment.etc."ssh/sshd_config.d/100-nix-darwin.conf".text = ''
