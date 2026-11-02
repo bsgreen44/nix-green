@@ -39,11 +39,13 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         # offset and topmost lift it into the menu bar, on top of the native one.
         # The bar window swallows clicks even where it is transparent, so margin
         # narrows it to a strip around the notch (NOTCH plus room for an item on
-        # each side), leaving the app menus and menu extras clickable. The main
-        # display sets the width; q/e stay centred whatever the margin.
+        # each side), leaving the app menus and menu extras clickable. The primary
+        # display sets the width; q/e stay centred whatever the margin. The width
+        # comes from AppKit, since sketchybar --query returns nothing while this
+        # file is still loading.
         NOTCH=230
         STRIP=$((NOTCH + 180))
-        WIDTH=$(sketchybar --query displays | ${pkgs.jq}/bin/jq '.[0].frame.w | floor')
+        WIDTH=$(osascript -l JavaScript -e 'ObjC.import("AppKit"); Math.floor($.NSScreen.screens.objectAtIndex(0).frame.size.width)')
         sketchybar --bar height=37 \
                          notch_width=$NOTCH \
                          position=top \
