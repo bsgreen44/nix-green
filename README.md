@@ -86,7 +86,7 @@ git clone https://github.com/bsgreen44/nix-green
 cd ~/nix-green
 ./scripts/install.sh
 ```
-It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`) and whether your CPU is ARM (e.g. Apple Silicon, including Asahi Linux) or Intel/AMD, installs Nix if it is missing, and runs the matching rebuild command. On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question:
+It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`) and whether your CPU is ARM (e.g. Apple Silicon, including Asahi Linux) or Intel/AMD, installs Nix if it is missing, and runs the matching rebuild command. On other Linux distros it then makes the distro's zsh your login shell, and for `hyprland` installs the compositor from the distro (see [the Hyprland FAQ](#can-i-run-the-hyprland-desktop-on-a-different-linux-distro)). On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question:
 ```
 ./scripts/install.sh hyprland
 ```
@@ -180,7 +180,7 @@ NixOS is not supported, since Nix is the operating system. Switch to another con
 ### Can I use this on a different Linux distro?
 Yes (mostly)! The `~/nix-green/modules` directory contains all of the Home Manager setup including packages, dotfiles and user preferences. What won't transfer over are system level settings and services specific to NixOS set in `configuration.nix` such as boot loader, kernel, openssh and tailscale. These are set on your Linux distro.
 
-To install on any Linux distro, clone the repo and run the install script, choosing `cli`. It installs Nix if needed and runs Home Manager:
+To install on any Linux distro, clone the repo and run the install script, choosing `cli`. It installs Nix if needed, runs Home Manager and makes the distro's zsh your login shell (Home Manager can't change it), installing zsh with `dnf`, `apt-get` or `pacman` if it is missing:
 ```
 git clone https://github.com/bsgreen44/nix-green
 cd ~/nix-green
@@ -200,14 +200,13 @@ home-manager switch --flake .#username
 ### Can I run the Hyprland desktop on a different Linux distro?
 Yes. There are two Home Manager configurations: `.#username` installs CLI tools and dotfiles only, and `.#username-hyprland` adds the Hyprland desktop on top of it. Nix writes the config, your distro supplies the compositor.
 
-1. Install `hyprland`, `xdg-desktop-portal-hyprland` and `hyprlock` with your distro's package manager. Some distros ship these in a third-party repository rather than the default ones.
-2. Switch to the desktop configuration
+1. Switch to the desktop configuration
 ```
 ./scripts/install.sh hyprland
 ```
-Or do it by hand with `home-manager switch -b backup --flake .#username-hyprland`.
-3. On a laptop, allow swayosd to control screen brightness (see the FAQ entry below). Volume works without this.
-4. Log out and pick Hyprland from your login screen's session list.
+On Fedora and Arch this also installs `hyprland`, `xdg-desktop-portal-hyprland` and `hyprlock` with the distro's package manager, on Fedora from the [sdegler/hyprland](https://copr.fedorainfracloud.org/coprs/sdegler/hyprland/) COPR. On other distros, install those three packages yourself. Like the `cli` target, it also makes the distro's zsh your login shell. To switch by hand instead, install the packages and run `home-manager switch -b backup --flake .#username-hyprland`.
+2. On a laptop, allow swayosd to control screen brightness (see the FAQ entry below). Volume works without this.
+3. Log out and pick Hyprland from your login screen's session list.
 
 Distro-specific settings, such as the wallpaper path, live in `~/nix-green/linux/hyprland.nix`.
 

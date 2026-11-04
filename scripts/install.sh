@@ -2,7 +2,9 @@
 # Install or rebuild nix-green on whatever machine this runs on: detect NixOS,
 # macOS or another Linux distro, write this machine's username, hostname
 # (NixOS and macOS only) and the CPU architecture into flake.nix,
-# install Nix if it is missing, and run the matching switch command.
+# install Nix if it is missing, and run the matching switch command. On other
+# distros, also install Hyprland from the distro (hyprland target) and make the
+# distro's zsh the login shell.
 #
 # Usage: ./scripts/install.sh [kde|hyprland|cli] [--dry-run]
 #   kde, hyprland  NixOS desktops
@@ -140,6 +142,59 @@ run() {
   $DRY_RUN || "$@"
 }
 
+# Make the distro's zsh the login shell, as NixOS and nix-darwin do through
+# users.users.<name>.shell. Home Manager can't change it. The distro build,
+# not the Nix one, so the path stays listed in /etc/shells and survives
+# profile changes; it reads the same Home Manager ~/.zshrc.
+ensure_login_shell() {
+  local username=$1 zsh_path="" candidate
+  for candidate in /usr/bin/zsh /bin/zsh; do
+    grep -qx "$candidate" /etc/shells && { zsh_path=$candidate; break; }
+  done
+  [ "$(getent passwd "$username" | cut -d: -f7)" = "${zsh_path:-none}" ] && return
+
+  if [ -z "$zsh_path" ]; then
+    if command -v dnf >/dev/null 2>&1; then
+      run sudo dnf install -y zsh
+    elif command -v apt-get >/dev/null 2>&1; then
+      run sudo apt-get install -y zsh
+    elif command -v pacman >/dev/null 2>&1; then
+      run sudo pacman -S --needed --noconfirm zsh
+    else
+      printf 'warning: install zsh with your package manager and make it your login shell\n' >&2
+      return
+    fi
+    zsh_path=/usr/bin/zsh
+  fi
+  run sudo usermod -s "$zsh_path" "$username"
+  $DRY_RUN || printf 'Login shell is now %s. Log out and back in to use it.\n' "$zsh_path"
+}
+
+# Install the compositor, portal and lock screen from the distro for the
+# hyprland target; linux/hyprland.nix only writes their config. On Fedora
+# they come from the sdegler/hyprland COPR, which tracks current Hyprland.
+ensure_hyprland() {
+  local packages="hyprland xdg-desktop-portal-hyprland hyprlock" pkg missing=""
+  if command -v dnf >/dev/null 2>&1; then
+    for pkg in $packages; do
+      rpm -q "$pkg" >/dev/null 2>&1 || missing="$missing $pkg"
+    done
+    [ -n "$missing" ] || return
+    run sudo dnf copr enable -y sdegler/hyprland
+    # shellcheck disable=SC2086 # word splitting of $missing is the point
+    run sudo dnf install -y $missing
+  elif command -v pacman >/dev/null 2>&1; then
+    for pkg in $packages; do
+      pacman -Q "$pkg" >/dev/null 2>&1 || missing="$missing $pkg"
+    done
+    [ -n "$missing" ] || return
+    # shellcheck disable=SC2086 # word splitting of $missing is the point
+    run sudo pacman -S --needed --noconfirm $missing
+  else
+    printf 'warning: install %s with your package manager\n' "$packages" >&2
+  fi
+}
+
 main() {
   local target="" arg
   for arg in "$@"; do
@@ -211,6 +266,8 @@ main() {
       else
         run nix run home-manager/master -- switch -b backup --flake ".#$hm_target"
       fi
+      [ "$target" = hyprland ] && ensure_hyprland
+      ensure_login_shell "$username"
       ;;
   esac
 }
