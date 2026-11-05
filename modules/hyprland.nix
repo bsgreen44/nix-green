@@ -258,12 +258,12 @@ in
         },
       })
 
-      -- General settings: layout is the default for every workspace (dwindle
-      -- is also available as layout = "dwindle"). Per-workspace overrides are
+      -- General settings: layout is the default for every workspace (scrolling
+      -- is also available as layout = "scrolling"). Per-workspace overrides are
       -- applied at runtime by modules/hypr-workspace-layout.nix, not pinned here.
       hl.config({
         general = {
-          layout = "scrolling",
+          layout = "dwindle",
           gaps_in = 3,
           gaps_out = 7,
           border_size = 2,
