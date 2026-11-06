@@ -79,7 +79,7 @@ nix-green
 This setup works right out of the box, so all you have to do is:
 1. Clone the repo to your directory by opening the terminal and running the following command (*if you are using `nix-shell`, make sure to `exit` the shell after running the command*):
 ```
-git clone https://github.com/bsgreen44/nix-green
+git clone https://github.com/bsgreen44/nix-green.git
 ```
 2. Run the install script from the repo
 ```

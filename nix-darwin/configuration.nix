@@ -76,6 +76,12 @@
     # switches them, and keep them in a fixed order instead of most recent use.
     trackpad.TrackpadThreeFingerHorizSwipeGesture = 2;
     dock.mru-spaces = false;
+    # macOS's own edge-drag tiling would fight Amethyst's drag-to-swap.
+    WindowManager = {
+      EnableTilingByEdgeDrag = false;
+      EnableTopTilingByEdgeDrag = false;
+      EnableTilingOptionAccelerator = false;
+    };
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
       # _HIHideMenuBar = true;
