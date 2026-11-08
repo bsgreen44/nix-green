@@ -333,6 +333,8 @@ Use `hyprmoncfg`. Run `hyprmoncfg` (or open it from the launcher), arrange the d
 
 Displays no profile covers fall back to their preferred mode at scale 1.
 
+Closing the lid never suspends or locks the laptop, so it keeps running closed on an external display, like clamshell mode on macOS. The profile decides whether the internal panel stays on while the lid is closed.
+
 ### How do I change the screensaver?
 Edit `screensaver.nix` to change the screensaver text/ASCII art.
 

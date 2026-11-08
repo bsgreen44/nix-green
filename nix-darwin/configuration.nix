@@ -62,7 +62,11 @@
       "raycast"
       "protonvpn"
       "lm-studio"
-      "amethyst" # tiling window manager, configured in ../modules/amethyst.nix
+      # Amethyst tiling window manager, configured in ../modules/amethyst.nix. To switch
+      # back, also set system.defaults.WindowManager.{EnableTilingByEdgeDrag,
+      # EnableTopTilingByEdgeDrag,EnableTilingOptionAccelerator} = false, since
+      # macOS's edge-drag tiling fights Amethyst's drag-to-swap.
+      # "amethyst"
       "font-sf-pro" # menu bar font for ../modules/sketchybar.nix
       "tailscale-app"
     ];
@@ -72,16 +76,10 @@
   system.defaults = {
     dock.autohide = true;
     finder.AppleShowAllExtensions = true;
-    # Desktops are native (modules/amethyst.nix tiles each one): 3-finger swipe
-    # switches them, and keep them in a fixed order instead of most recent use.
+    # Desktops are native: 3-finger swipe switches them, and keep them in a
+    # fixed order instead of most recent use.
     trackpad.TrackpadThreeFingerHorizSwipeGesture = 2;
     dock.mru-spaces = false;
-    # macOS's own edge-drag tiling would fight Amethyst's drag-to-swap.
-    WindowManager = {
-      EnableTilingByEdgeDrag = false;
-      EnableTopTilingByEdgeDrag = false;
-      EnableTilingOptionAccelerator = false;
-    };
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
       # _HIHideMenuBar = true;

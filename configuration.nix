@@ -73,6 +73,14 @@
     };
   };
 
+  # Closing the lid does nothing, so the laptop keeps running closed on an
+  # external display, like clamshell mode on macOS.
+  services.logind.settings.Login = {
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchExternalPower = "ignore";
+    HandleLidSwitchDocked = "ignore";
+  };
+
   # Enable power profiles
   services.power-profiles-daemon.enable = false; # set to false to avoid conflicts with TLP
 

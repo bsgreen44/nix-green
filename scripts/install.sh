@@ -170,6 +170,24 @@ ensure_login_shell() {
   $DRY_RUN || printf 'Login shell is now %s. Log out and back in to use it.\n' "$zsh_path"
 }
 
+# Make closing the lid do nothing, as configuration.nix does on NixOS through
+# services.logind.settings, so the laptop keeps running closed on an external
+# display. Home Manager can't write /etc. HUP reloads logind's config; a
+# restart would end the running sessions.
+ensure_lid_ignore() {
+  local conf=/etc/systemd/logind.conf.d/nix-green.conf
+  local want="[Login]
+HandleLidSwitch=ignore
+HandleLidSwitchExternalPower=ignore
+HandleLidSwitchDocked=ignore"
+  [ "$(cat "$conf" 2>/dev/null)" = "$want" ] && return
+
+  run sudo mkdir -p "$(dirname "$conf")"
+  printf '+ sudo tee %s\n' "$conf"
+  $DRY_RUN || printf '%s\n' "$want" | sudo tee "$conf" >/dev/null
+  run sudo systemctl kill -s HUP systemd-logind
+}
+
 # Install the compositor, portal and lock screen from the distro for the
 # hyprland target; linux/hyprland.nix only writes their config. On Fedora
 # they come from the sdegler/hyprland COPR, which tracks current Hyprland.
@@ -268,6 +286,7 @@ main() {
       fi
       [ "$target" = hyprland ] && ensure_hyprland
       ensure_login_shell "$username"
+      ensure_lid_ignore
       ;;
   esac
 }
