@@ -9,6 +9,10 @@ SAVEHIST=10000
 HISTFILE=~/.zsh_history
 setopt HIST_FCNTL_LOCK HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
 
+# CLIs installed outside Nix put their launchers here.
+typeset -U path
+path=("$HOME/.local/bin" $path)
+
 autoload -U compinit && compinit
 
 # zsh-syntax-highlighting's docs want it sourced after other widgets, so it goes

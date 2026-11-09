@@ -2,34 +2,21 @@
   "$schema": "https://opencode.ai/config.json",
   "agent": {
     "explore": {
-      "model": "openai/gpt-5.4-mini"
+      "model": "openai/gpt-6-luna"
     },
     "general": {
-      "model": "openai/gpt-5.5"
+      "model": "openai/gpt-6-astra"
     },
     "plan": {
-      "model": "openai/gpt-5.5"
+      "model": "openai/gpt-6-astra"
     },
     "scout": {
-      "model": "openai/gpt-5.4-mini"
+      "model": "openai/gpt-6-luna"
     }
   },
   "autoupdate": false,
   "default_agent": "plan",
-  "model": "openai/gpt-5.5",
-  "provider": {
-    "ollama": {
-      "models": {
-        "qwen2.5-coder:3b": {
-          "name": "qwen2.5-coder:3b"
-        }
-      },
-      "name": "Ollama",
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "http://127.0.0.1:11434/v1"
-      }
-    }
-  },
-  "small_model": "openai/gpt-5.4-mini"
+  "model": "openai/gpt-6-astra",
+  "provider": {},
+  "small_model": "openai/gpt-6-luna"
 }

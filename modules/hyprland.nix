@@ -486,6 +486,7 @@ in
       hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd([[swayosd-client --input-volume mute-toggle]]))
       hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd([[swayosd-client --brightness=+10]]))
       hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd([[swayosd-client --brightness=-10]]))
+
       -- Keyboard backlight: brightnessctl matches the LED by wildcard
       -- (kbd_backlight on Asahi, tpacpi::kbd_backlight on ThinkPads) and does
       -- nothing without one. Min 0 so it can turn off; swayosd defaults to 5.
