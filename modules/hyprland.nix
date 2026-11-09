@@ -205,7 +205,7 @@ in
       local terminal  = "${terminal}"
       local mod       = "SUPER"
       local menu      = [[rofi -show drun -show-icons -display-drun ""]]
-      local browser   = "brave"
+      local browser   = "brave-browser"
       local powermenu = [[rofi -show power-menu -theme-str 'inputbar { enabled: false; }' -theme-str 'window {width: 225px;}' -theme-str 'window {height: 260px;}' -modi "power-menu:rofi-power-menu"]]
 
 

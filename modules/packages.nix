@@ -19,6 +19,12 @@ let
   nixGreenSkill = config.lib.file.mkOutOfStoreSymlink
     "${config.home.homeDirectory}/nix-green/agents/skills/nix-green";
 
+  # nixpkgs' cargo setup hook now forces -sys crates onto system libraries
+  # (aws-lc, zstd, sqlite, jemalloc), none of which codex 0.167.0 lists, so it
+  # fails to build. Build them vendored as before. Drop the override once
+  # nixpkgs fixes codex.
+  codex = pkgs.codex.overrideAttrs { dontCargoUseSystemLibs = true; };
+
   # VSCodium's settings.json, but writable.
   #
   # Home Manager links it out of the store, so the GUI cannot save anything.
@@ -80,7 +86,8 @@ in
       pvetui # Proxmox manager tui
     ]
     ++ lib.optionals stdenv.hostPlatform.isLinux [
-      brave
+      # Brave comes from Brave's own repo (scripts/install.sh, nix-darwin casks);
+      # nixpkgs removed it in 2026-11.
       obsidian
       nextcloud-client
       signal-desktop

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   # Supplies the `palette` module argument to the hand-themed programs below.
@@ -16,6 +16,5 @@
     kitty.enable = true;
     opencode.enable = true;
     vscodium.profiles.default.enable = true; # follows catppuccin.flavor
-    brave.enable = pkgs.stdenv.hostPlatform.isLinux;
   };
 }
