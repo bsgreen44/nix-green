@@ -36,6 +36,7 @@
   # On NixOS these come from configuration.nix, which this path never evaluates.
   home.packages = with pkgs; [
     terminaltexteffects  # `tte`, used by screensaver.nix
+    hyprland-qtutils     # hyprland-dialog etc; distro build doesn't ship it
   ];
 
   # Let a new lock client replace a dead one; without it a crashed hyprlock

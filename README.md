@@ -86,7 +86,7 @@ git clone https://github.com/bsgreen44/nix-green.git
 cd ~/nix-green
 ./scripts/install.sh
 ```
-It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`) and whether your CPU is ARM (e.g. Apple Silicon, including Asahi Linux) or Intel/AMD, installs Nix if it is missing, and runs the matching rebuild command. On other Linux distros it then installs Brave from Brave's own repo (nixpkgs dropped it), makes the distro's zsh your login shell, and for `hyprland` installs the compositor from the distro (see [the Hyprland FAQ](#can-i-run-the-hyprland-desktop-on-a-different-linux-distro)). On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question:
+It detects whether you are on NixOS, macOS or another Linux distro, writes your `username` into `flake.nix` (on NixOS and macOS also your `hostname`) and whether your CPU is ARM (e.g. Apple Silicon, including Asahi Linux) or Intel/AMD, installs Nix if it is missing, and runs the matching rebuild command. On other Linux distros it then makes the distro's zsh your login shell, and for `hyprland` installs the compositor from the distro (see [the Hyprland FAQ](#can-i-run-the-hyprland-desktop-on-a-different-linux-distro)). On Linux it asks which configuration you want: `kde` or `hyprland` on NixOS, `cli` or `hyprland` on other distros. Pass the name to skip the question:
 ```
 ./scripts/install.sh hyprland
 ```
@@ -204,7 +204,7 @@ Yes. There are two Home Manager configurations: `.#username` installs CLI tools 
 ```
 ./scripts/install.sh hyprland
 ```
-On Fedora and Arch this also installs `hyprland`, `xdg-desktop-portal-hyprland`, `hyprlock` and `hyprland-guiutils` with the distro's package manager, on Fedora from the [sdegler/hyprland](https://copr.fedorainfracloud.org/coprs/sdegler/hyprland/) COPR. On other distros, install those four packages yourself. Like the `cli` target, it also makes the distro's zsh your login shell. To switch by hand instead, install the packages and run `home-manager switch -b backup --flake .#username-hyprland`.
+On Fedora and Arch this also installs `hyprland`, `xdg-desktop-portal-hyprland` and `hyprlock` with the distro's package manager, on Fedora from the [sdegler/hyprland](https://copr.fedorainfracloud.org/coprs/sdegler/hyprland/) COPR. On other distros, install those three packages yourself. Like the `cli` target, it also makes the distro's zsh your login shell. To switch by hand instead, install the packages and run `home-manager switch -b backup --flake .#username-hyprland`.
 2. On a laptop, allow swayosd to control screen brightness (see the FAQ entry below). Volume works without this.
 3. Log out and pick Hyprland from your login screen's session list.
 

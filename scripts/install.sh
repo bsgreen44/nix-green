@@ -3,8 +3,8 @@
 # macOS or another Linux distro, write this machine's username, hostname
 # (NixOS and macOS only) and the CPU architecture into flake.nix,
 # install Nix if it is missing, and run the matching switch command. On other
-# distros, also install Hyprland from the distro (hyprland target) and Brave
-# from Brave's repo, and make the distro's zsh the login shell.
+# distros, also install Hyprland from the distro (hyprland target) and make the
+# distro's zsh the login shell.
 #
 # Usage: ./scripts/install.sh [kde|hyprland|cli] [--dry-run]
 #   kde, hyprland  NixOS desktops
@@ -199,34 +199,11 @@ ensure_tailscale_operator() {
   run sudo tailscale set --operator="$username"
 }
 
-# Install Brave from Brave's own repo, which ships its security fixes quickly.
-# nixpkgs removed brave in 2026-11; nix-darwin installs it as a cask instead.
-ensure_brave() {
-  if command -v dnf >/dev/null 2>&1; then
-    rpm -q brave-browser >/dev/null 2>&1 && return
-    run sudo dnf config-manager addrepo --overwrite \
-      --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-    run sudo dnf install -y brave-browser
-  elif command -v apt-get >/dev/null 2>&1; then
-    dpkg -s brave-browser >/dev/null 2>&1 && return
-    run sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
-      https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-    run sudo curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources \
-      https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
-    run sudo apt-get update
-    run sudo apt-get install -y brave-browser
-  else
-    command -v brave >/dev/null 2>&1 || command -v brave-browser >/dev/null 2>&1 \
-      || printf 'warning: install Brave from https://brave.com/linux/\n' >&2
-  fi
-}
-
-# Install the compositor, portal, lock screen and hyprland-dialog from the
-# distro for the hyprland target; linux/hyprland.nix only writes their config.
-# On Fedora they come from the sdegler/hyprland COPR, which tracks current
-# Hyprland.
+# Install the compositor, portal and lock screen from the distro for the
+# hyprland target; linux/hyprland.nix only writes their config. On Fedora
+# they come from the sdegler/hyprland COPR, which tracks current Hyprland.
 ensure_hyprland() {
-  local packages="hyprland xdg-desktop-portal-hyprland hyprlock hyprland-guiutils" pkg missing=""
+  local packages="hyprland xdg-desktop-portal-hyprland hyprlock" pkg missing=""
   if command -v dnf >/dev/null 2>&1; then
     for pkg in $packages; do
       rpm -q "$pkg" >/dev/null 2>&1 || missing="$missing $pkg"
@@ -319,7 +296,6 @@ main() {
         run nix run home-manager/master -- switch -b backup --flake ".#$hm_target"
       fi
       [ "$target" = hyprland ] && ensure_hyprland
-      ensure_brave
       ensure_login_shell "$username"
       ensure_lid_ignore
       ensure_tailscale_operator "$username"

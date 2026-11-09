@@ -37,6 +37,7 @@
   environment.systemPackages = with pkgs; [
     tree
     terminaltexteffects
+    brave
     obsidian
     libreoffice-bin
     signal-desktop
@@ -55,7 +56,6 @@
       extraEnv.HOMEBREW_NO_ANALYTICS = "1";
     };
     casks = [
-      "brave-browser" # nixpkgs removed brave in 2026-11
       "ghostty"
       "nextcloud"
       "zen-browser"
