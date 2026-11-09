@@ -37,6 +37,10 @@
         "ctrl+insert=copy_to_clipboard"
         "shift+insert=paste_from_clipboard"
       ];
+    } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+      # The default blur makes full redraws (e.g. leaving lazygit or claude)
+      # lag on macOS; the native glass effect keeps translucency without it.
+      background-blur = "macos-glass-regular";
     };
   };
 
