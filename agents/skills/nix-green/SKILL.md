@@ -75,7 +75,7 @@ All under `modules/` unless a path says otherwise.
 1. `git -C ~/nix-green add` any new file; flakes ignore untracked files.
 2. From `~/nix-green`, `nix eval --raw` the drvPath for this setup (table above). Also run the darwin one if you changed a shared module. Off NixOS, `nixosConfigurations.*` always fails on the missing `/etc/nixos/hardware-configuration.nix`; that is the host, not a bug. To check that half, evaluate `kde/home.nix` or `hyprland/home.nix` with `home-manager.lib.homeManagerConfiguration`, setting `config.allowUnfree = true` on pkgs.
 3. Switch with `~/nix-green/scripts/install.sh <target>`. `--dry-run` shows the command and the `flake.nix` changes without switching. The `rebuild` alias runs the same thing but may not exist in a non-interactive shell. A distro needs no root, so run it yourself. NixOS and macOS need `sudo`, so ask the user to run `! rebuild`.
-4. Reload: `hyprctl reload`, `systemctl --user restart waybar` (likewise `swayosd`, `hypridle`, `swaybg`), `makoctl reload`; on macOS `sketchybar --reload`; Amethyst reads its config only at launch, so quit and reopen it.
+4. Reload: `hyprctl reload`, `systemctl --user restart waybar` (likewise `swayosd`, `hypridle`, `swaybg`), `makoctl reload`; on macOS `sketchybar --reload` (and `sketchybar2`, `sketchybar3`: one instance per display); Amethyst reads its config only at launch, so quit and reopen it.
 5. Check the setting actually took effect (`hyprctl` queries, a `grim` screenshot). A clean switch is not proof.
 
 ## Pitfalls
