@@ -154,7 +154,11 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         while id=$(plutil -extract "$i.arrangement-id" raw -o - - <<<"$displays" 2>/dev/null); do
           if [ "$id" = "$index" ]; then
             width=$(plutil -extract "$i.frame.w" raw -o - - <<<"$displays")
-            "$BAR_NAME" --bar margin=$(( (''${width%.*} - STRIP) / 2 ))
+            # topmost always recreates the bar window, here at the new margin.
+            # A display change rebuilds the bars with the old margin first,
+            # which can be more than half the new display's width, and a window
+            # created that narrow stays white even after it is resized.
+            "$BAR_NAME" --bar margin=$(( (''${width%.*} - STRIP) / 2 )) topmost=on
           fi
           i=$((i + 1))
         done
