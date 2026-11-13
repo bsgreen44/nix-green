@@ -22,7 +22,7 @@
     settings = {
       background-blur = true;
       theme = "dark:Catppuccin Mocha,light:Catppuccin Latte";
-      background-opacity = 0.75;
+      background-opacity = 0.9; # matches kitty background_opacity
       window-theme = "dark";
       font-family = "JetBrainsMono Nerd Font Mono";
       font-size = 10;
@@ -38,9 +38,15 @@
         "shift+insert=paste_from_clipboard"
       ];
     } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
-      # The default blur makes full redraws (e.g. leaving lazygit or claude)
-      # lag on macOS; the native glass effect keeps translucency without it.
-      background-blur = "macos-glass-regular";
+      # The default blur radius (20) makes full redraws (e.g. leaving lazygit
+      # or claude) lag on macOS, and the native glass effect tints the
+      # background lighter; a small radius keeps a hint of blur cheaply.
+      background-blur = 10;
+      # Heavier, brighter text, like kitty's default macOS rendering.
+      font-thicken = true;
+      alpha-blending = "linear-corrected";
+      # Go fully opaque (fastest, most contrast) on demand.
+      keybind = [ "cmd+shift+o=toggle_background_opacity" ];
     };
   };
 
