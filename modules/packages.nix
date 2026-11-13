@@ -19,6 +19,12 @@ let
   nixGreenSkill = config.lib.file.mkOutOfStoreSymlink
     "${config.home.homeDirectory}/nix-green/agents/skills/nix-green";
 
+  # Claude Code mod: subscription windows, session usage and API-priced cost.
+  # Claude Code loads a plugin folder from ~/.claude/skills/<name> and reloads
+  # it on save, so it is out of the store like the skill above.
+  usageMonitorMod = config.lib.file.mkOutOfStoreSymlink
+    "${config.home.homeDirectory}/nix-green/agents/mods/usage-monitor";
+
   # VSCodium's settings.json, but writable.
   #
   # Home Manager links it out of the store, so the GUI cannot save anything.
@@ -197,6 +203,9 @@ in
   # Agent skills. opencode reads both of these directories, so it needs no third link.
   home.file.".claude/skills/nix-green".source = nixGreenSkill;  # Claude Code
   home.file.".agents/skills/nix-green".source = nixGreenSkill;  # Codex CLI
+
+  # Claude Code mods.
+  home.file.".claude/skills/usage-monitor".source = usageMonitorMod;
 
   # opencode
   programs.opencode = {

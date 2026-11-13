@@ -1,0 +1,6 @@
+{
+  "name": "usage-monitor",
+  "version": "0.1.0",
+  "description": "Subscription windows, session usage and API-priced cost in a band and a pane",
+  "types": "./types/index.d.ts"
+}
