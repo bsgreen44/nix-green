@@ -69,6 +69,7 @@
       # "amethyst"
       "font-sf-pro" # menu bar font for ../modules/sketchybar.nix
       "tailscale-app"
+      "handy"
     ];
   };
 

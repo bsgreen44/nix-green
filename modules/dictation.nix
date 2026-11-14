@@ -111,7 +111,8 @@ let
   };
 in
 {
-  # Linux-only for now (pw-record, wl-clipboard, wtype)
+  # Linux-only (pw-record, wl-clipboard, wtype); macOS uses the Handy cask in
+  # nix-darwin/configuration.nix
   config = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     home.packages = [ dictation ];
   };
