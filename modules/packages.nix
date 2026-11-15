@@ -200,6 +200,13 @@ in
   home.file.".codex/AGENTS.md".source = agentsContext;       # Codex CLI, $CODEX_HOME
   xdg.configFile."opencode/AGENTS.md".source = agentsContext;
 
+  # UsageNow (menu bar app) reads Codex limits through `codex app-server`, but
+  # only looks for the CLI in ~/.local/bin, Homebrew and app bundles - never in
+  # the Nix profile, so without this link Codex shows "Usage limits unavailable".
+  home.file.".local/bin/codex" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+    source = "${pkgs.codex}/bin/codex";
+  };
+
   # Agent skills. opencode reads both of these directories, so it needs no third link.
   home.file.".claude/skills/nix-green".source = nixGreenSkill;  # Claude Code
   home.file.".agents/skills/nix-green".source = nixGreenSkill;  # Codex CLI
