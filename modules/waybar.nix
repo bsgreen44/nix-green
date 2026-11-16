@@ -85,7 +85,7 @@ in
         };
 
         "memory" = {
-          format = "<span size='160%' rise='-2pt'></span> {used}GB";
+          format = "<span size='160%' rise='-2pt'></span> {used:0.1f}GB";
           on-click = "${terminal} --title=float -e btop";
         };
 
