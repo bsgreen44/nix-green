@@ -13,7 +13,6 @@
     ../modules/neovim.nix
     ../modules/themes.nix
     ../modules/raycast.nix
-    # ../modules/amethyst.nix # Amethyst tiling, off for now; uncomment (and its cask) to switch back
     ../modules/sketchybar.nix
   ];
 

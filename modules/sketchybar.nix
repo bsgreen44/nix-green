@@ -107,7 +107,7 @@ lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
                              padding_left=8 \
                              padding_right=8
 
-        # Active Desktop (native macOS Spaces, which modules/amethyst.nix tiles).
+        # Active Desktop (native macOS Spaces).
         # SketchyBar's space items track the active Desktop per display, so only the
         # selected one draws and each display shows its own. updates=on: a hidden
         # item must still run its script to reappear.
